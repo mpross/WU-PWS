@@ -19,6 +19,7 @@ import java.io.*;
 import android.widget.*;
 import java.util.*;
 import java.text.*;
+import android.content.Intent;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -38,8 +39,9 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                TextView text =(TextView) findViewById(R.id.text1);
+                text.setText("Loading...");
+                new datagrab().execute("");
             }
         });
 
@@ -241,9 +243,11 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        Intent intent = new Intent(this, SettingsActivity.class);
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(intent);
             return true;
         }
 
