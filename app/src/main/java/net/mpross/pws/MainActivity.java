@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity
                 int j=0;
                 for(String line:lines){
                     String[] col=line.split(",");
-                    if(col.length>1 && j>1){
+                    if(col.length>1 && j>1 && Float.parseFloat(col[1])>0){
                         temp[j]=Float.parseFloat(col[1]);
                         dew[j]=Float.parseFloat(col[2]);
                         press[j]=Float.parseFloat(col[3]);
