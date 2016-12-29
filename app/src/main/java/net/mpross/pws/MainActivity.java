@@ -63,22 +63,17 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected String doInBackground(String[] p1)
         {
-            String station="KWABAINB47";
-            //String station="";
+            //String station="KWABAINB47";
+            String station="";
             byte[] by=new byte[10];
-            /*try {
+            try {
                 FileInputStream fis = openFileInput("station_file");
                 int n= fis.read(by);
-                if(n>=9) {
-                    station = by.toString();
-                }
-                else{
-                    station="KWABAINB47";
-                }
+                station = new String(by, "UTF-8");
             }
             catch (IOException e){
                 System.out.println(e);
-            }*/
+            }
 
             String day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
             String month = new SimpleDateFormat("MM").format(Calendar.getInstance().getTime());
@@ -125,15 +120,31 @@ public class MainActivity extends AppCompatActivity
                 int j=0;
                 for(String line:lines){
                     String[] col=line.split(",");
-                    if(col.length>1 && j>1 && Float.parseFloat(col[1])>0){
-                        temp[j]=Float.parseFloat(col[1]);
-                        dew[j]=Float.parseFloat(col[2]);
-                        press[j]=Float.parseFloat(col[3]);
-                        windDeg[j]=Float.parseFloat(col[5]);
-                        windSpeed[j]=Float.parseFloat(col[6]);
-                        windGust[j]=Float.parseFloat(col[7]);
-                        hum[j]=Float.parseFloat(col[8]);
-                        precip[j]=Float.parseFloat(col[9]);
+                    if(col.length>1 && j>1 ){
+                        if(Float.parseFloat(col[1])>0) {
+                            temp[j] = Float.parseFloat(col[1]);
+                        }
+                        if(Float.parseFloat(col[2])>0){
+                            dew[j]=Float.parseFloat(col[2]);
+                        }
+                        if(Float.parseFloat(col[3])>0){
+                            press[j]=Float.parseFloat(col[3]);
+                        }
+                        if(Float.parseFloat(col[5])>0){
+                            windDeg[j]=Float.parseFloat(col[5]);
+                        }
+                        if(Float.parseFloat(col[6])>0){
+                            windSpeed[j]=Float.parseFloat(col[6]);
+                        }
+                        if(Float.parseFloat(col[7])>0){
+                            windGust[j]=Float.parseFloat(col[7]);
+                        }
+                        if(Float.parseFloat(col[8])>0){
+                            hum[j]=Float.parseFloat(col[8]);
+                        }
+                        if(Float.parseFloat(col[9])>0){
+                            precip[j]=Float.parseFloat(col[9]);
+                        }
 
                         tempAvg+=temp[j];
                         dewAvg+=dew[j];
@@ -207,6 +218,21 @@ public class MainActivity extends AppCompatActivity
             StringBuilder outCur=new StringBuilder();
             StringBuilder outDay=new StringBuilder();
             TextView text =(TextView) findViewById(R.id.text1);
+
+            String station="";
+            byte[] by=new byte[10];
+            try {
+                FileInputStream fis = openFileInput("station_file");
+                int n= fis.read(by);
+                station = new String(by, "UTF-8");
+            }
+            catch (IOException e){
+                System.out.println(e);
+            }
+            TextView text2 =(TextView) findViewById(R.id.textView2);
+            text2.setText(station);
+
+
             String[] fields= fieldString.split(",");
             String[] fieldsD= fieldStringD.split(",");
             String[] ends= endString.split(",");
@@ -244,6 +270,7 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+            new datagrab().execute("");
         } else {
             super.onBackPressed();
         }
@@ -263,16 +290,24 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         Intent intent = new Intent(this, SettingsActivity.class);
+        int result=0;
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            startActivity(intent);
+            startActivityForResult(intent,result);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            if (resultCode == 1) {
+                new datagrab().execute("");
+            }
+        }
+    }
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
