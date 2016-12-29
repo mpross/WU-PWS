@@ -1,5 +1,6 @@
 package net.mpross.pws;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,6 +21,8 @@ import android.widget.*;
 import java.util.*;
 import java.text.*;
 import android.content.Intent;
+import java.io.*;
+import java.lang.Byte;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -61,6 +64,22 @@ public class MainActivity extends AppCompatActivity
         protected String doInBackground(String[] p1)
         {
             String station="KWABAINB47";
+            //String station="";
+            byte[] by=new byte[10];
+            /*try {
+                FileInputStream fis = openFileInput("station_file");
+                int n= fis.read(by);
+                if(n>=9) {
+                    station = by.toString();
+                }
+                else{
+                    station="KWABAINB47";
+                }
+            }
+            catch (IOException e){
+                System.out.println(e);
+            }*/
+
             String day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
             String month = new SimpleDateFormat("MM").format(Calendar.getInstance().getTime());
             String year = new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime());

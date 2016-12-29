@@ -7,7 +7,7 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="4efadf088d7f4ac57973b38b12f800aecdd971e9">
+        sha1="f106d9bd327073ca93f2431f0d640edc6ad66715">
         <dex dex="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_ea05dec3073efffe2a8caa1b7d7e5dfabec06e1b\classes.dex" />
     </item>
     <item
@@ -30,6 +30,51 @@
     </item>
     <item
         is-multidex="true"
+        jar="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="67bd36ee9340ec7c254108936ad16b24bed160cc">
+        <dex dex="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-v4-23.4.0_a92266de8de0215ce962f5101eec3db800fa8e3f\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Michael\AndroidStudioProjects\PWS\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="7fc647f44607ef455afd9cb10434b0eb78748820">
+        <dex dex="C:\Users\Michael\AndroidStudioProjects\PWS\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_6cdcabb4e53884c97386be4fc2ba73fa60c328fe\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="ec75036c3c52e451d0cde50a5aedaf5fd32354a0">
+        <dex dex="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-recyclerview-v7-23.4.0_54866a587801a1ac68ed61228fe89d854f43d4eb\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Michael\AndroidStudioProjects\PWS\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="de4db3785756bfb0915a9f59a9b3f2fea7407be4">
+        <dex dex="C:\Users\Michael\AndroidStudioProjects\PWS\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-animated-vector-drawable-23.4.0_18527999e9c2e4c3a81ea7a62073f513425db527\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="c2c594cace5d83a3227b2b6e658ecbfd586d3ed9">
+        <dex dex="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-vector-drawable-23.4.0_25183da8f246a8e774802361c9f941540f2fc439\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="C:\Users\Michael\AndroidStudioProjects\PWS\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\classes.jar"
         jumboMode="true"
         optimize="true"
@@ -48,15 +93,6 @@
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="67bd36ee9340ec7c254108936ad16b24bed160cc">
-        <dex dex="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-v4-23.4.0_a92266de8de0215ce962f5101eec3db800fa8e3f\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
         jar="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\23.4.0\jars\classes.jar"
         jumboMode="true"
         optimize="true"
@@ -70,17 +106,8 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="ba14e6b0f27cbc57723184c917b49af0e8acd90c">
+        sha1="71c8cd2b2a9e44c0dad37b8f18314f4a8e1f6630">
         <dex dex="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_614ba0a3ae4d5d99b51e786df040a130c2d5b04d\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\Michael\AndroidStudioProjects\PWS\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="7fc647f44607ef455afd9cb10434b0eb78748820">
-        <dex dex="C:\Users\Michael\AndroidStudioProjects\PWS\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_6cdcabb4e53884c97386be4fc2ba73fa60c328fe\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -90,15 +117,6 @@
         revision="25.0.2"
         sha1="ffbe55fdb2bb456b1485831706a9eac3300bb6b8">
         <dex dex="C:\Users\Michael\AndroidStudioProjects\PWS\app\build\intermediates\transforms\dex\debug\folders\1000\10\support-annotations-23.4.0_791152ed5ce094e92579b2c8b35178f4c7b902f1\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\23.4.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="ec75036c3c52e451d0cde50a5aedaf5fd32354a0">
-        <dex dex="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-recyclerview-v7-23.4.0_54866a587801a1ac68ed61228fe89d854f43d4eb\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -117,15 +135,6 @@
         revision="25.0.2"
         sha1="023d80953950b8c27c46888ca110361771acff63">
         <dex dex="C:\Users\Michael\AndroidStudioProjects\PWS\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_fea9c1eacad9c5669ce6d5f84ea6169283d45359\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\Michael\AndroidStudioProjects\PWS\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\23.4.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="de4db3785756bfb0915a9f59a9b3f2fea7407be4">
-        <dex dex="C:\Users\Michael\AndroidStudioProjects\PWS\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-animated-vector-drawable-23.4.0_18527999e9c2e4c3a81ea7a62073f513425db527\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -153,15 +162,6 @@
         revision="25.0.2"
         sha1="548f06de403a9409f00554b3ee12a9fdea0e236c">
         <dex dex="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-23.4.0_a410f90c6acff430e5ce531d26686c05777c6a8e\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\23.4.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="c2c594cace5d83a3227b2b6e658ecbfd586d3ed9">
-        <dex dex="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-vector-drawable-23.4.0_25183da8f246a8e774802361c9f941540f2fc439\classes.dex" />
     </item>
     <item
         is-multidex="true"
