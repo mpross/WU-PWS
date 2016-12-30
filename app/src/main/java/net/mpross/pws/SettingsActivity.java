@@ -19,11 +19,21 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        TextView errText =(TextView) findViewById(R.id.errorText);
+
+        if(getIntent().getExtras().getBoolean("error")==true){
+            errText.setText("Weather Station Error");
+        }
+        else{
+            errText.setText("");
+        }
+
         final EditText editText = (EditText) findViewById(R.id.station);
         byte[] by=new byte[10];
         try {
             FileInputStream fis = openFileInput("station_file");
             int n= fis.read(by);
+            fis.close();
             String str = new String(by, "UTF-8");
             editText.setText(str);
         }
@@ -37,10 +47,22 @@ public class SettingsActivity extends AppCompatActivity {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
 
                     String string = editText.getText().toString();
+                    StringBuilder build =new StringBuilder();
 
                     try {
                         FileOutputStream fos = openFileOutput("station_file", Context.MODE_PRIVATE);
-                        fos.write(string.getBytes());
+                        if(string.length()<10){
+                            build.append(string);
+                            for(int i=0; i<(10-string.length());i++) {
+                                build.append("0");
+                            }
+                            string=build.toString();
+                        }
+                        if(string.length()>10){
+                            string=string.substring(0,10);
+                        }
+                        fos.write(string.toUpperCase().getBytes());
+                        //fos.write("KWABAINB47".getBytes());
                         fos.close();
                         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -48,7 +70,7 @@ public class SettingsActivity extends AppCompatActivity {
                         finish();
                     }
                     catch (IOException e){
-
+                        System.out.println(e);
                     }
 
                     handled = true;
