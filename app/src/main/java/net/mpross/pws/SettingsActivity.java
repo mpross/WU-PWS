@@ -58,9 +58,6 @@ public class SettingsActivity extends AppCompatActivity {
                             }
                             string=build.toString();
                         }
-                        if(string.length()>10){
-                            string=string.substring(0,10);
-                        }
                         fos.write(string.toUpperCase().getBytes());
                         //fos.write("KWABAINB47".getBytes());
                         fos.close();
