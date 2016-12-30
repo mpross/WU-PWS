@@ -1,16 +1,18 @@
 package net.mpross.pws;
 
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.widget.*;
-import android.view.*;
-import android.view.inputmethod.EditorInfo;
-import java.io.*;
-import android.content.*;
-import android.view.inputmethod.InputMethodManager;
 import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class SettingsActivity extends AppCompatActivity {
 
