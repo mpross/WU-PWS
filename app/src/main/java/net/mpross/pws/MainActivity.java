@@ -1,5 +1,6 @@
 package net.mpross.pws;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -31,10 +33,25 @@ public class MainActivity extends AppCompatActivity
     String currentString=new String();
     String dailyString=new String();
     String station="";
+    String viewSel="current";
+    int units=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        byte[] byU=new byte[1];
+
+        try {
+            FileInputStream fis = openFileInput("unit_file");
+            fis.read(byU);
+            fis.close();
+            units=(int)byU[0];
+            System.out.println(byU);
+        }
+        catch (IOException e){
+            System.out.println(e);
+        }
 
         new datagrab().execute("");
 
@@ -50,6 +67,7 @@ public class MainActivity extends AppCompatActivity
                 new datagrab().execute("");
             }
         });
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -118,38 +136,72 @@ public class MainActivity extends AppCompatActivity
                 float tempAvg = 0;
                 float dewAvg = 0;
                 float pressAvg = 0;
+                String windDir="";
                 float windDAvg = 0;
                 float windSAvg = 0;
                 float windG = 0;
                 float humAvg = 0;
                 float precipMax = 0;
+                String tim="";
                 int j = 0;
                 for (String line : lines) {
                     String[] col = line.split(",");
                     if (col.length > 1 && j > 1) {
+                        tim=col[0];
                         if (Float.parseFloat(col[1]) > 0) {
-                            temp[j] = Float.parseFloat(col[1]);
+                            if(units==0) {
+                                temp[j] = Float.parseFloat(col[1]);
+                            }
+                            else{
+                                temp[j] = (Float.parseFloat(col[1])-32.0f)*5.0f/9.0f;
+                            }
                         }
                         if (Float.parseFloat(col[2]) > 0) {
-                            dew[j] = Float.parseFloat(col[2]);
+                            if(units==0) {
+                                dew[j] = Float.parseFloat(col[2]);
+                            }
+                            else{
+                                dew[j] = (Float.parseFloat(col[2])-32.0f)*5.0f/9.0f;
+                            }
                         }
                         if (Float.parseFloat(col[3]) > 0) {
-                            press[j] = Float.parseFloat(col[3]);
+                            if(units==0) {
+                                press[j] = Float.parseFloat(col[3]);
+                            }
+                            else {
+                                press[j] = Float.parseFloat(col[3])*3.38639f;
+                            }
                         }
+                        windDir=col[4];
                         if (Float.parseFloat(col[5]) > 0) {
                             windDeg[j] = Float.parseFloat(col[5]);
                         }
                         if (Float.parseFloat(col[6]) > 0) {
-                            windSpeed[j] = Float.parseFloat(col[6]);
+                            if(units==0) {
+                                windSpeed[j] = Float.parseFloat(col[6]);
+                            }
+                            else{
+                                windSpeed[j] = Float.parseFloat(col[6])*0.44704f;
+                            }
                         }
                         if (Float.parseFloat(col[7]) > 0) {
-                            windGust[j] = Float.parseFloat(col[7]);
+                            if(units==0) {
+                                windGust[j] = Float.parseFloat(col[7]);
+                            }
+                            else{
+                                windGust[j] = Float.parseFloat(col[7])*0.44704f;
+                            }
                         }
                         if (Float.parseFloat(col[8]) > 0) {
                             hum[j] = Float.parseFloat(col[8]);
                         }
                         if (Float.parseFloat(col[9]) > 0) {
-                            precip[j] = Float.parseFloat(col[9]);
+                            if(units==1) {
+                                precip[j] = Float.parseFloat(col[9]);
+                            }
+                            else{
+                                precip[j] = Float.parseFloat(col[9])*25.4f;
+                            }
                         }
 
                         tempAvg += temp[j];
@@ -177,8 +229,32 @@ public class MainActivity extends AppCompatActivity
                 windDAvg /= j / 2;
                 windSAvg /= j / 2;
                 humAvg /= j / 2;
+                if(units==0){
+                    outBuild.append(lines[lines.length - 2]);
+                }
+                else{
+                    outBuild.append(tim);
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(Math.round(temp[temp.length-2]* 100.0) / 100.0));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(Math.round(dew[dew.length-2]* 100.0) / 100.0));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(Math.round(press[press.length-2]* 100.0) / 100.0));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(windDir));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(windDeg[windDeg.length-2]));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(Math.round(windSpeed[windSpeed.length-2]* 100.0) / 100.0));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(Math.round(windGust[windGust.length-2]* 100.0) / 100.0));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(hum[hum.length-2]));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(Math.round(precip[precip.length-2]* 100.0) / 100.0));
+                    outBuild.append(",,,,,,");
+                }
 
-                outBuild.append(lines[lines.length - 2]);
                 outBuild.append(";");
                 //outBuild.append(String.valueOf(tempAvg));
                 outBuild.append(String.valueOf(Math.round(tempAvg * 100.0) / 100.0));
@@ -191,7 +267,7 @@ public class MainActivity extends AppCompatActivity
                 outBuild.append(",");
                 outBuild.append(String.valueOf(Math.round(windSAvg * 100.0) / 100.0));
                 outBuild.append(",");
-                outBuild.append(String.valueOf(windG));
+                outBuild.append(String.valueOf(Math.round(windG * 100.0) / 100.0));
                 outBuild.append(",");
                 outBuild.append(String.valueOf(Math.round(humAvg * 100.0) / 100.0));
                 outBuild.append(",");
@@ -217,10 +293,19 @@ public class MainActivity extends AppCompatActivity
                     "Wind Gust,Humidity,Hourly Precip,Conditions,Clouds,Daily Rain,SoftwareType,DateUTC";
             String fieldStringD="Average Temperature,Average Dewpoint,Average Pressure,Average Wind Direction," +
                     "Average Wind Speed,Maximum Wind Gust,Average Humidity,Daily Rain";
-            String endString=", °F, °F, inHg,, °, mph, mph, %, in,,, in,,";
-            String endStringD=" °F, °F, inHg, °, mph, mph, %, in";
+            String endString = "";
+            String endStringD = "";
+            if(units==0) {
+                endString = ", °F, °F, inHg,, °, mph, mph, %, in,,, in,,";
+                endStringD = " °F, °F, inHg, °, mph, mph, %, in";
+            }
+            else{
+                endString = ", °C, °C, kPa,, °, m/s, m/s, %, mm,,, mm,,";
+                endStringD = " °C, °C, kPa, °, m/s, m/s, %, mm";
+            }
             String exString="Conditions,Clouds,SoftwareType,DateUTC,Daily Rain";
             String[] split=result.split(";");
+            System.out.println(split[0].toString());
             String[] dataCur=split[0].split(",");
             String[] dataDay=split[1].split(",");
             StringBuilder outCur=new StringBuilder();
@@ -269,7 +354,12 @@ public class MainActivity extends AppCompatActivity
                 }
                 currentString = outCur.toString();
                 dailyString = outDay.toString();
-                text.setText(currentString);
+                if (viewSel=="current") {
+                    text.setText(currentString);
+                }
+                if (viewSel=="daily") {
+                    text.setText(dailyString);
+                }
             }
             catch(ArrayIndexOutOfBoundsException a) {
                 stationError();
@@ -312,6 +402,7 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             intent.putExtra("error",false);
+            intent.putExtra("unit",units);
             startActivityForResult(intent,result);
             return true;
         }
@@ -320,11 +411,16 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0) {
-            if (resultCode == 1) {
-                new datagrab().execute("");
-            }
+        units=resultCode;
+        try {
+            FileOutputStream fos = openFileOutput("unit_file", Context.MODE_PRIVATE);
+            fos.write(units);
+            fos.close();
         }
+        catch (IOException e){
+            System.out.println(e);
+        }
+        new datagrab().execute("");
     }
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -333,8 +429,10 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         TextView text =(TextView) findViewById(R.id.text1);
         if (id == R.id.nav_current) {
+            viewSel="current";
             text.setText(currentString.toString());
         } else if (id == R.id.nav_daily) {
+            viewSel="daily";
             text.setText(dailyString.toString());
         }
 
