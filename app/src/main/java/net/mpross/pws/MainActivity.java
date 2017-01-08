@@ -18,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
@@ -42,7 +41,7 @@ public class MainActivity extends AppCompatActivity
     String currentString=new String();
     String dailyString=new String();
     String station="";
-    String viewSel="current";
+    static String viewSel="current";
     int units=0;
     LineGraphSeries<DataPoint> seriesT = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesD = new LineGraphSeries<>();
@@ -412,6 +411,285 @@ public class MainActivity extends AppCompatActivity
 
             GraphView graph = (GraphView) findViewById(R.id.graph);
 
+            if (viewSel=="current") {
+
+                text.setVisibility(View.VISIBLE);
+                graph.setVisibility(View.GONE);
+                text.setText(currentString.toString());
+            } else if (viewSel=="daily") {
+
+                text.setVisibility(View.VISIBLE);
+                graph.setVisibility(View.GONE);
+                text.setText(dailyString.toString());
+            }
+            else if (viewSel=="tempPlot"){
+
+                text.setVisibility(View.GONE);
+                graph.setVisibility(View.VISIBLE);
+                graph.removeAllSeries();
+
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(0);
+                graph.getViewport().setMaxX(seriesT.getHighestValueX());
+                graph.getViewport().setYAxisBoundsManual(true);
+                if (seriesT.getLowestValueY()<seriesD.getLowestValueY()) {
+                    if(seriesT.getLowestValueY()>0) {
+                        graph.getViewport().setMinY(seriesT.getLowestValueY() * .9);
+                    }
+                    else{
+                        graph.getViewport().setMinY(seriesT.getLowestValueY() * 1.1);
+                    }
+                }
+                else{
+                    if(seriesD.getLowestValueY()>0) {
+                        graph.getViewport().setMinY(seriesD.getLowestValueY() * .9);
+                    }
+                    else{
+                        graph.getViewport().setMinY(seriesD.getLowestValueY() * 1.1);
+                    }
+                }
+                if (seriesT.getHighestValueY()>seriesD.getHighestValueY()) {
+                    if(seriesT.getHighestValueY()>0) {
+                        graph.getViewport().setMaxY(seriesT.getHighestValueY() * 1.1);
+                    }
+                    else{
+                        graph.getViewport().setMaxY(seriesT.getHighestValueY() * 0.9);
+                    }
+                }
+                else{
+                    if(seriesD.getHighestValueY()>0) {
+                        graph.getViewport().setMaxY(seriesD.getHighestValueY() * 1.1);
+                    }
+                    else{
+                        graph.getViewport().setMaxY(seriesD.getHighestValueY() * 0.9);
+                    }
+                }
+                graph.getLegendRenderer().setVisible(true);
+                graph.getLegendRenderer().setTextSize(40f);
+                graph.getLegendRenderer().setSpacing(30);
+                graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+                graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
+
+                graph.addSeries(seriesT);
+                graph.addSeries(seriesD);
+                graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                    @Override
+                    public String formatLabel(double value, boolean isValueX) {
+                        if (isValueX) {
+                            return super.formatLabel(value, isValueX)+" h";
+                        } else {
+                            if(units==0) {
+                                return super.formatLabel(value, isValueX) + " °F";
+                            }
+                            else{
+                                return super.formatLabel(value, isValueX) + " °C";
+                            }
+                        }
+                    }
+                });
+                seriesD.setColor(Color.GRAY);
+            }
+            else if (viewSel=="pressPlot"){
+
+                text.setVisibility(View.GONE);
+                graph.setVisibility(View.VISIBLE);
+
+                graph.removeAllSeries();
+
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(0);
+                graph.getViewport().setMaxX(seriesP.getHighestValueX());
+                graph.getViewport().setYAxisBoundsManual(true);
+                if(seriesP.getLowestValueY()>0) {
+                    graph.getViewport().setMinY(seriesP.getLowestValueY() * .9);
+                }
+                else{
+                    graph.getViewport().setMinY(seriesP.getLowestValueY() * 1.1);
+                }
+                if(seriesP.getHighestValueY()>0) {
+                    graph.getViewport().setMaxY(seriesP.getHighestValueY() * 1.1);
+                }
+                else{
+                    graph.getViewport().setMaxY(seriesP.getHighestValueY() * 0.9);
+                }
+                graph.getLegendRenderer().setVisible(true);
+                graph.getLegendRenderer().setTextSize(40f);
+                graph.getLegendRenderer().setSpacing(30);
+                graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+                graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
+
+                graph.addSeries(seriesP);
+                graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                    @Override
+                    public String formatLabel(double value, boolean isValueX) {
+                        if (isValueX) {
+                            return super.formatLabel(value, isValueX)+" h";
+                        } else {
+                            if(units==0) {
+                                return super.formatLabel(value, isValueX) + " inHg";
+                            }
+                            else{
+                                return super.formatLabel(value, isValueX) + " kPa";
+                            }
+                        }
+                    }
+                });
+            }
+            else if (viewSel=="windPlot"){
+                text.setVisibility(View.GONE);
+                graph.setVisibility(View.VISIBLE);
+
+                graph.removeAllSeries();
+
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(0);
+                graph.getViewport().setMaxX(seriesT.getHighestValueX());
+                graph.getViewport().setYAxisBoundsManual(true);
+                if (seriesWS.getLowestValueY()<seriesWG.getLowestValueY()) {
+                    if(seriesWS.getLowestValueY()>0) {
+                        graph.getViewport().setMinY(seriesWS.getLowestValueY() * .9);
+                    }
+                    else{
+                        graph.getViewport().setMinY(seriesWS.getLowestValueY() * 1.1);
+                    }
+                }
+                else{
+                    if(seriesWG.getLowestValueY()>0) {
+                        graph.getViewport().setMinY(seriesWG.getLowestValueY() * .9);
+                    }
+                    else{
+                        graph.getViewport().setMinY(seriesWG.getLowestValueY() * 1.1);
+                    }
+                }
+                if (seriesWS.getHighestValueY()>seriesWG.getHighestValueY()) {
+                    if(seriesWS.getHighestValueY()>0) {
+                        graph.getViewport().setMaxY(seriesWS.getHighestValueY() * 1.1);
+                    }
+                    else{
+                        graph.getViewport().setMaxY(seriesWS.getHighestValueY() * 0.9);
+                    }
+                }
+                else{
+                    if(seriesWG.getHighestValueY()>0) {
+                        graph.getViewport().setMaxY(seriesWG.getHighestValueY() * 1.1);
+                    }
+                    else{
+                        graph.getViewport().setMaxY(seriesWG.getHighestValueY() * 0.9);
+                    }
+                }
+                graph.getLegendRenderer().setVisible(true);
+                graph.getLegendRenderer().setTextSize(40f);
+                graph.getLegendRenderer().setSpacing(30);
+                graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+                graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
+
+                graph.addSeries(seriesWS);
+                graph.addSeries(seriesWG);
+                graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                    @Override
+                    public String formatLabel(double value, boolean isValueX) {
+                        if (isValueX) {
+                            return super.formatLabel(value, isValueX)+" h";
+                        } else {
+                            if(units==0) {
+                                return super.formatLabel(value, isValueX) + " mph";
+                            }
+                            else{
+                                return super.formatLabel(value, isValueX) + " m/s";
+                            }
+                        }
+                    }
+                });
+
+                seriesWG.setColor(Color.GRAY);
+            }
+            else if (viewSel=="humPlot"){
+
+                text.setVisibility(View.GONE);
+                graph.setVisibility(View.VISIBLE);
+
+                graph.removeAllSeries();
+
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(0);
+                graph.getViewport().setMaxX(seriesH.getHighestValueX());
+                graph.getViewport().setYAxisBoundsManual(true);
+                if(seriesP.getLowestValueY()>0) {
+                    graph.getViewport().setMinY(seriesH.getLowestValueY() * .9);
+                }
+                else{
+                    graph.getViewport().setMinY(seriesH.getLowestValueY() * 1.1);
+                }
+                if(seriesP.getHighestValueY()>0) {
+                    graph.getViewport().setMaxY(seriesH.getHighestValueY() * 1.1);
+                }
+                else{
+                    graph.getViewport().setMaxY(seriesH.getHighestValueY() * 0.9);
+                }
+                graph.getLegendRenderer().setVisible(true);
+                graph.getLegendRenderer().setTextSize(40f);
+                graph.getLegendRenderer().setSpacing(30);
+                graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+                graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
+
+                graph.addSeries(seriesH);
+                graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                    @Override
+                    public String formatLabel(double value, boolean isValueX) {
+                        if (isValueX) {
+                            return super.formatLabel(value, isValueX)+" h";
+                        } else {
+                            return super.formatLabel(value, isValueX) + " %";
+                        }
+                    }
+                });
+            }
+            else if (viewSel=="rainPlot"){
+
+                text.setVisibility(View.GONE);
+                graph.setVisibility(View.VISIBLE);
+
+                graph.removeAllSeries();
+
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(0);
+                graph.getViewport().setMaxX(seriesR.getHighestValueX());
+                graph.getViewport().setYAxisBoundsManual(true);
+                if(seriesP.getLowestValueY()>0) {
+                    graph.getViewport().setMinY(seriesR.getLowestValueY() * .9);
+                }
+                else{
+                    graph.getViewport().setMinY(seriesR.getLowestValueY() * 1.1);
+                }
+                if(seriesP.getHighestValueY()>0) {
+                    graph.getViewport().setMaxY(seriesR.getHighestValueY() * 1.1);
+                }
+                else{
+                    graph.getViewport().setMaxY(seriesR.getHighestValueY() * 0.9);
+                }
+                graph.getLegendRenderer().setVisible(true);
+                graph.getLegendRenderer().setTextSize(40f);
+                graph.getLegendRenderer().setSpacing(30);
+                graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+                graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
+
+                graph.addSeries(seriesR);
+                graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                    @Override
+                    public String formatLabel(double value, boolean isValueX) {
+                        if (isValueX) {
+                            return super.formatLabel(value, isValueX)+" h";
+                        } else {
+                            if(units==0) {
+                                return super.formatLabel(value, isValueX) + " in";
+                            }
+                            else{
+                                return super.formatLabel(value, isValueX) + " mm";
+                            }
+                        }
+                    }
+                });
+            }
 
             String[] fields= fieldString.split(",");
             String[] fieldsD= fieldStringD.split(",");
@@ -804,6 +1082,7 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+        new datagrab().execute("");
         super.onConfigurationChanged(newConfig);
     }
 }
