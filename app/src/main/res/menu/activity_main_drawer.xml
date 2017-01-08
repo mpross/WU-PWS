@@ -11,6 +11,18 @@
         <item
             android:id="@+id/nav_dailyPlot"
             android:title="Temperature/Dewpoint Plot" />
+        <item
+            android:id="@+id/nav_pressPlot"
+            android:title="Pressure Plot" />
+        <item
+            android:id="@+id/nav_windPlot"
+            android:title="Wind Plot" />
+        <item
+            android:id="@+id/nav_humPlot"
+            android:title="Humidity Plot" />
+        <item
+            android:id="@+id/nav_rainPlot"
+            android:title="Rain Plot" />
 
 
     </group>
