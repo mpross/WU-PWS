@@ -134,6 +134,10 @@ public class MainActivity extends AppCompatActivity
                 float[] precip = new float[lines.length];
 
                 float tempAvg = 0;
+                float tempHigh=-1000;
+                float tempLow=1000;
+                float dewHigh=-1000;
+                float dewLow=1000;
                 float dewAvg = 0;
                 float pressAvg = 0;
                 String windDir="";
@@ -155,14 +159,28 @@ public class MainActivity extends AppCompatActivity
                             else{
                                 temp[j] = (Float.parseFloat(col[1])-32.0f)*5.0f/9.0f;
                             }
+                            if(temp[j]<tempLow){
+                                tempLow=temp[j];
+                            }
+                            if(temp[j]>tempHigh){
+                                tempHigh=temp[j];
+                            }
                         }
                         if (Float.parseFloat(col[2]) > 0) {
                             if(units==0) {
                                 dew[j] = Float.parseFloat(col[2]);
+
                             }
                             else{
                                 dew[j] = (Float.parseFloat(col[2])-32.0f)*5.0f/9.0f;
                             }
+                            if(dew[j]<dewLow){
+                                dewLow=dew[j];
+                            }
+                            if(dew[j]>dewHigh){
+                                dewHigh=dew[j];
+                            }
+                            System.out.println(dew[j]>dewHigh);
                         }
                         if (Float.parseFloat(col[3]) > 0) {
                             if(units==0) {
@@ -259,7 +277,15 @@ public class MainActivity extends AppCompatActivity
                 //outBuild.append(String.valueOf(tempAvg));
                 outBuild.append(String.valueOf(Math.round(tempAvg * 100.0) / 100.0));
                 outBuild.append(",");
+                outBuild.append(String.valueOf(Math.round(tempHigh * 100.0) / 100.0));
+                outBuild.append(",");
+                outBuild.append(String.valueOf(Math.round(tempLow * 100.0) / 100.0));
+                outBuild.append(",");
                 outBuild.append(String.valueOf(Math.round(dewAvg * 100.0) / 100.0));
+                outBuild.append(",");
+                outBuild.append(String.valueOf(Math.round(dewHigh * 100.0) / 100.0));
+                outBuild.append(",");
+                outBuild.append(String.valueOf(Math.round(dewLow * 100.0) / 100.0));
                 outBuild.append(",");
                 outBuild.append(String.valueOf(Math.round(pressAvg * 100.0) / 100.0));
                 outBuild.append(",");
@@ -289,19 +315,21 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(String result)
         {
-            String fieldString="Date & Time,Temperature,Dewpoint,Pressure,Wind Direction,Wind Direction,Wind Speed," +
-                    "Wind Gust,Humidity,Hourly Precip,Conditions,Clouds,Daily Rain,SoftwareType,DateUTC";
-            String fieldStringD="Average Temperature,Average Dewpoint,Average Pressure,Average Wind Direction," +
+            String fieldString="Date & Time,Temperature,Dewpoint,Pressure,Wind: \n" +
+                    "     Direction,     Direction,     Speed," +
+                    "     Gust,Humidity,Hourly Precip,Conditions,Clouds,Daily Rain,SoftwareType,DateUTC";
+            String fieldStringD="Temperature: \n     Average,     High,     Low,Dewpoint: \n" +
+                    "     Average,     High,     Low,Average Pressure,Average Wind Direction," +
                     "Average Wind Speed,Maximum Wind Gust,Average Humidity,Daily Rain";
             String endString = "";
             String endStringD = "";
             if(units==0) {
                 endString = ", °F, °F, inHg,, °, mph, mph, %, in,,, in,,";
-                endStringD = " °F, °F, inHg, °, mph, mph, %, in";
+                endStringD = " °F, °F, °F, °F, °F, °F, inHg, °, mph, mph, %, in";
             }
             else{
                 endString = ", °C, °C, kPa,, °, m/s, m/s, %, mm,,, mm,,";
-                endStringD = " °C, °C, kPa, °, m/s, m/s, %, mm";
+                endStringD = " °C, °C, °C, °C, °C, °C, kPa, °, m/s, m/s, %, mm";
             }
             String exString="Conditions,Clouds,SoftwareType,DateUTC,Daily Rain";
             String[] split=result.split(";");
