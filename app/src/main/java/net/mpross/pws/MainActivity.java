@@ -2,6 +2,7 @@ package net.mpross.pws;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.NetworkOnMainThreadException;
@@ -16,6 +17,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -35,10 +40,21 @@ public class MainActivity extends AppCompatActivity
     String station="";
     String viewSel="current";
     int units=0;
+    LineGraphSeries<DataPoint> seriesT = new LineGraphSeries<>();
+    LineGraphSeries<DataPoint> seriesD = new LineGraphSeries<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+
+        graph.getViewport().setScalable(true);
+        graph.getViewport().setScrollable(true);
+        graph.getViewport().setScalableY(true);
+        graph.getViewport().setScrollableY(true);
+
+        
+        graph.setVisibility(View.GONE);
 
         byte[] byU=new byte[1];
 
@@ -98,7 +114,7 @@ public class MainActivity extends AppCompatActivity
             catch (IOException e){
                 System.out.println(e);
             }
-
+            GraphView graph = (GraphView) findViewById(R.id.graph);
             String day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
             String month = new SimpleDateFormat("MM").format(Calendar.getInstance().getTime());
             String year = new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime());
@@ -124,7 +140,7 @@ public class MainActivity extends AppCompatActivity
 
                 String[] lines = build.toString().split("\r");
 
-                float[] temp = new float[lines.length];
+                float[] temp = new float[(int)lines.length/2-1];
                 float[] dew = new float[lines.length];
                 float[] press = new float[lines.length];
                 float[] windDeg = new float[lines.length];
@@ -132,6 +148,8 @@ public class MainActivity extends AppCompatActivity
                 float[] windGust = new float[lines.length];
                 float[] hum = new float[lines.length];
                 float[] precip = new float[lines.length];
+
+                int m=0;
 
                 float tempAvg = 0;
                 float tempHigh=-1000;
@@ -147,40 +165,39 @@ public class MainActivity extends AppCompatActivity
                 float humAvg = 0;
                 float precipMax = 0;
                 String tim="";
-                int j = 0;
+                int j = 1;
                 for (String line : lines) {
                     String[] col = line.split(",");
-                    if (col.length > 1 && j > 1) {
+                    if (col.length > 1 && j > 2) {
                         tim=col[0];
                         if (Float.parseFloat(col[1]) > 0) {
                             if(units==0) {
-                                temp[j] = Float.parseFloat(col[1]);
+                                temp[(int)j/2-1] = Float.parseFloat(col[1]);
                             }
                             else{
-                                temp[j] = (Float.parseFloat(col[1])-32.0f)*5.0f/9.0f;
+                                temp[(int)j/2-1] = (Float.parseFloat(col[1])-32.0f)*5.0f/9.0f;
                             }
-                            if(temp[j]<tempLow){
-                                tempLow=temp[j];
+                            if(temp[(int)j/2-1]<tempLow){
+                                tempLow=temp[(int)j/2-1];
                             }
-                            if(temp[j]>tempHigh){
-                                tempHigh=temp[j];
+                            if(temp[(int)j/2-1]>tempHigh){
+                                tempHigh=temp[(int)j/2-1];
                             }
                         }
                         if (Float.parseFloat(col[2]) > 0) {
                             if(units==0) {
-                                dew[j] = Float.parseFloat(col[2]);
+                                dew[(int)j/2-1] = Float.parseFloat(col[2]);
 
                             }
                             else{
-                                dew[j] = (Float.parseFloat(col[2])-32.0f)*5.0f/9.0f;
+                                dew[(int)j/2-1] = (Float.parseFloat(col[2])-32.0f)*5.0f/9.0f;
                             }
-                            if(dew[j]<dewLow){
-                                dewLow=dew[j];
+                            if(dew[(int)j/2-1]<dewLow){
+                                dewLow=dew[(int)j/2-1];
                             }
-                            if(dew[j]>dewHigh){
-                                dewHigh=dew[j];
+                            if(dew[(int)j/2-1]>dewHigh){
+                                dewHigh=dew[(int)j/2-1];
                             }
-                            System.out.println(dew[j]>dewHigh);
                         }
                         if (Float.parseFloat(col[3]) > 0) {
                             if(units==0) {
@@ -222,8 +239,8 @@ public class MainActivity extends AppCompatActivity
                             }
                         }
 
-                        tempAvg += temp[j];
-                        dewAvg += dew[j];
+                        tempAvg += temp[(int)j/2-1];
+                        dewAvg += dew[(int)j/2-1];
                         pressAvg += press[j];
                         windDAvg += windDeg[j];
                         windSAvg += windSpeed[j];
@@ -241,6 +258,16 @@ public class MainActivity extends AppCompatActivity
                     }
                     j++;
                 }
+                DataPoint[] tempData=new DataPoint[temp.length];
+                DataPoint[] dewData=new DataPoint[temp.length];
+                m=0;
+                for(float t:temp){
+                        tempData[m] = new DataPoint(m, t);
+                        dewData[m] = new DataPoint(m, dew[m]);
+                        m++;
+                }
+                seriesT = new LineGraphSeries<>(tempData);
+                seriesD = new LineGraphSeries<>(dewData);
                 tempAvg /= j / 2;
                 dewAvg /= j / 2;
                 pressAvg /= j / 2;
@@ -353,6 +380,34 @@ public class MainActivity extends AppCompatActivity
             TextView text2 =(TextView) findViewById(R.id.textView2);
             text2.setText(station);
 
+            GraphView graph = (GraphView) findViewById(R.id.graph);
+
+            graph.getViewport().setXAxisBoundsManual(true);
+            graph.getViewport().setMinX(0);
+            graph.getViewport().setMaxX(seriesT.getHighestValueX());
+
+            graph.getViewport().setYAxisBoundsManual(true);
+            if (seriesT.getLowestValueY()<seriesD.getLowestValueY()) {
+                graph.getViewport().setMinY(seriesT.getLowestValueY() * .9);
+            }
+            else{
+                graph.getViewport().setMinY(seriesD.getLowestValueY() * .9);
+            }
+            if (seriesT.getHighestValueY()>seriesD.getHighestValueY()) {
+                graph.getViewport().setMaxY(seriesT.getHighestValueY() * 1.1);
+            }
+            else{
+                graph.getViewport().setMaxY(seriesD.getHighestValueY() * 1.1);
+            }
+            graph.getViewport().setScalable(true);
+            graph.getViewport().setScalableY(true);
+
+            graph.getLegendRenderer().setVisible(true);
+
+            graph.addSeries(seriesT);
+            graph.addSeries(seriesD);
+
+            seriesD.setColor(Color.GRAY);
 
             String[] fields= fieldString.split(",");
             String[] fieldsD= fieldStringD.split(",");
@@ -456,12 +511,21 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         TextView text =(TextView) findViewById(R.id.text1);
+        GraphView graph = (GraphView) findViewById(R.id.graph);
         if (id == R.id.nav_current) {
             viewSel="current";
+            text.setVisibility(View.VISIBLE);
+            graph.setVisibility(View.GONE);
             text.setText(currentString.toString());
         } else if (id == R.id.nav_daily) {
             viewSel="daily";
+            text.setVisibility(View.VISIBLE);
+            graph.setVisibility(View.GONE);
             text.setText(dailyString.toString());
+        }
+        else if (id==R.id.nav_dailyPlot){
+            text.setVisibility(View.GONE);
+            graph.setVisibility(View.VISIBLE);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

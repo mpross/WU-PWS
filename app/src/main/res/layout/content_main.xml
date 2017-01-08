@@ -12,9 +12,18 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="net.mpross.pws.MainActivity"
     tools:showIn="@layout/app_bar_main">
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/graph" />
+
     <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
 
         <TextView
