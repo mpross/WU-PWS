@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity
         protected String doInBackground(String[] p1)
         {
             //String station="KWABAINB47";
-            byte[] by=new byte[10];
+            byte[] by=new byte[11];
             try {
                 FileInputStream fis = openFileInput("station_file");
                 int n= fis.read(by);
@@ -396,7 +396,7 @@ public class MainActivity extends AppCompatActivity
             StringBuilder outDay=new StringBuilder();
             TextView text =(TextView) findViewById(R.id.text1);
             String station="";
-            byte[] by=new byte[10];
+            byte[] by=new byte[11];
             try {
                 FileInputStream fis = openFileInput("station_file");
                 int n= fis.read(by);

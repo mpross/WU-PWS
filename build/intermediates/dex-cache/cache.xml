@@ -7,7 +7,7 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="f35520c98b27ad2913d0042d1a33372a846bd48c">
+        sha1="8a8ae143611151db88b993ee39f3a35ead2cbc0f">
         <dex dex="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_ea05dec3073efffe2a8caa1b7d7e5dfabec06e1b\classes.dex" />
     </item>
     <item
@@ -27,6 +27,15 @@
         revision="25.0.2"
         sha1="548f06de403a9409f00554b3ee12a9fdea0e236c">
         <dex dex="C:\Users\Michael\AndroidStudioProjects\PWS\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-23.4.0_5a1214a1fb2cb20f4eacfc4ec7a17ecd79b1a4d9\classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\exploded-aar\com.jjoe64\graphview\4.2.1\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="987adec819c9a98faf215814f41195da48fc724e">
+        <dex dex="C:\Users\Michael\AndroidStudioProjects\WU-PWS\app\build\intermediates\pre-dexed\release\com.jjoe64-graphview-4.2.1_0d68aee00382ec3de21b9efb64941bce13aae24e.jar" />
     </item>
     <item
         is-multidex="true"
