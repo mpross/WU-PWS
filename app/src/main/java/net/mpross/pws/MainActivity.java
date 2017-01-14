@@ -20,8 +20,6 @@ package net.mpross.pws;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -46,7 +44,6 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -400,6 +397,10 @@ public class MainActivity extends AppCompatActivity
             }
             catch(NetworkOnMainThreadException b){
                 System.out.println(b);
+                return "";
+            }
+            catch (NumberFormatException n){
+                System.out.println(n);
                 return "";
             }
         }
