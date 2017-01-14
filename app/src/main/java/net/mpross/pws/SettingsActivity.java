@@ -1,3 +1,20 @@
+/*
+Personal Weather Station Data Viewer by M.P.Ross
+Copyright (C) 2017  M.P.Ross
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package net.mpross.pws;
 
 import android.app.Activity;
@@ -30,7 +47,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         spinner.setOnItemSelectedListener(this);
         spinner.setSelection(getIntent().getExtras().getInt("unit"));
 
-        TextView errText =(TextView) findViewById(R.id.errorText);
+        TextView errText =(TextView) findViewById(R.id.errText);
 
 
         if(getIntent().getExtras().getBoolean("error")==true){
@@ -68,7 +85,6 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                         string=build.toString();
                     }
                     fos.write(string.toUpperCase().getBytes());
-                    //fos.write("KWABAINB47".getBytes());
                     fos.close();
                     InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -100,7 +116,6 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                             string=build.toString();
                         }
                         fos.write(string.toUpperCase().getBytes());
-                        //fos.write("KWABAINB47".getBytes());
                         fos.close();
                         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -119,12 +134,9 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     }
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
-        // An item was selected. You can retrieve the selected item using
-        // parent.getItemAtPosition(pos)
         units=pos;
     }
 
     public void onNothingSelected(AdapterView<?> parent) {
-        // Another interface callback
     }
 }

@@ -1,7 +1,27 @@
+/*
+Personal Weather Station Data Viewer by M.P.Ross
+Copyright (C) 2017  M.P.Ross
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 package net.mpross.pws;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -26,6 +46,7 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -50,6 +71,7 @@ public class MainActivity extends AppCompatActivity
     LineGraphSeries<DataPoint> seriesWG = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesH = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesR = new LineGraphSeries<>();
+    LineGraphSeries<DataPoint> seriesRD = new LineGraphSeries<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,9 +93,8 @@ public class MainActivity extends AppCompatActivity
             FileInputStream fis = openFileInput("unit_file");
             fis.read(byU);
             fis.close();
-            units=(int)byU[0];
-        }
-        catch (IOException e){
+            units = (int) byU[0];
+        } catch (IOException e) {
             System.out.println(e);
         }
 
@@ -108,7 +129,6 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected String doInBackground(String[] p1)
         {
-            //String station="KWABAINB47";
             byte[] by=new byte[11];
             try {
                 FileInputStream fis = openFileInput("station_file");
@@ -132,7 +152,7 @@ public class MainActivity extends AppCompatActivity
             url.append("&graphspan=day&format=1");
 
             try {
-                URL site = new URL(url.toString());
+                URL site = new URL(url.toString().replaceAll("\\P{Print}", ""));
 
                 BufferedReader data = new BufferedReader(
                         new InputStreamReader(site.openStream()));
@@ -153,6 +173,7 @@ public class MainActivity extends AppCompatActivity
                 float[] windGust = new float[lines.length/2-1];
                 float[] hum = new float[lines.length/2-1];
                 float[] precip = new float[lines.length/2-1];
+                float[] precipDay = new float[lines.length/2-1];
                 float[] tim=new float[lines.length/2-1];
 
                 int m=0;
@@ -245,6 +266,14 @@ public class MainActivity extends AppCompatActivity
                                 precip[(int)j/2-1] = Float.parseFloat(col[9])*25.4f;
                             }
                         }
+                        if (Float.parseFloat(col[12]) > 0) {
+                            if(units==1) {
+                                precipDay[(int)j/2-1] = Float.parseFloat(col[12]);
+                            }
+                            else{
+                                precipDay[(int)j/2-1] = Float.parseFloat(col[12])*25.4f;
+                            }
+                        }
 
                         tempAvg += temp[(int)j/2-1];
                         dewAvg += dew[(int)j/2-1];
@@ -272,6 +301,7 @@ public class MainActivity extends AppCompatActivity
                 DataPoint[] windGData=new DataPoint[windGust.length];
                 DataPoint[] humData=new DataPoint[hum.length];
                 DataPoint[] rainData=new DataPoint[precip.length];
+                DataPoint[] rainDayData=new DataPoint[precip.length];
                 m=0;
                 for(float t:temp){
                     tempData[m] = new DataPoint(tim[m], t);
@@ -281,6 +311,7 @@ public class MainActivity extends AppCompatActivity
                     windGData[m]=new DataPoint(tim[m],windGust[m]);
                     humData[m]=new DataPoint(tim[m],hum[m]);
                     rainData[m]=new DataPoint(tim[m],precip[m]);
+                    rainDayData[m]=new DataPoint(tim[m],precip[m]);
                     m++;
                 }
                 seriesT = new LineGraphSeries<>(tempData);
@@ -290,6 +321,7 @@ public class MainActivity extends AppCompatActivity
                 seriesWG = new LineGraphSeries<>(windGData);
                 seriesH = new LineGraphSeries<>(humData);
                 seriesR = new LineGraphSeries<>(rainData);
+                seriesRD = new LineGraphSeries<>(rainDayData);
 
                 seriesD.setTitle("Dew Point");
                 seriesT.setTitle("Temperature");
@@ -298,6 +330,7 @@ public class MainActivity extends AppCompatActivity
                 seriesH.setTitle("Humidity");
                 seriesP.setTitle("Pressure");
                 seriesR.setTitle("Hourly Precipitation");
+                seriesRD.setTitle("Daily Precipitation");
 
                 tempAvg /= j / 2;
                 dewAvg /= j / 2;
@@ -362,10 +395,12 @@ public class MainActivity extends AppCompatActivity
             }
 
             catch(IOException e){
-                return e.toString();
+                System.out.println(e);
+                return "";
             }
             catch(NetworkOnMainThreadException b){
-                return b.toString();
+                System.out.println(b);
+                return "";
             }
         }
 
@@ -390,12 +425,19 @@ public class MainActivity extends AppCompatActivity
             }
             String exString="Conditions,Clouds,SoftwareType,DateUTC,Daily Rain";
             String[] split=result.split(";");
-            String[] dataCur=split[0].split(",");
-            String[] dataDay=split[1].split(",");
+            String[] dataCur=new String[1];
+            String[] dataDay= new String[1];
+            try {
+                dataCur = split[0].split(",");
+                dataDay = split[1].split(",");
+            }
+            catch(ArrayIndexOutOfBoundsException a){
+                System.out.println(a);
+            }
             StringBuilder outCur=new StringBuilder();
             StringBuilder outDay=new StringBuilder();
             TextView text =(TextView) findViewById(R.id.text1);
-            String station="";
+            String station="0";
             byte[] by=new byte[11];
             try {
                 FileInputStream fis = openFileInput("station_file");
@@ -405,6 +447,7 @@ public class MainActivity extends AppCompatActivity
             }
             catch (IOException e){
                 System.out.println(e);
+                System.out.println(e.getCause());
             }
             TextView text2 =(TextView) findViewById(R.id.textView2);
             text2.setText(station);
@@ -501,16 +544,16 @@ public class MainActivity extends AppCompatActivity
                 graph.getViewport().setMaxX(seriesP.getHighestValueX());
                 graph.getViewport().setYAxisBoundsManual(true);
                 if(seriesP.getLowestValueY()>0) {
-                    graph.getViewport().setMinY(seriesP.getLowestValueY() * .9);
+                    graph.getViewport().setMinY(seriesP.getLowestValueY() * .99);
                 }
                 else{
-                    graph.getViewport().setMinY(seriesP.getLowestValueY() * 1.1);
+                    graph.getViewport().setMinY(seriesP.getLowestValueY() * 1.01);
                 }
                 if(seriesP.getHighestValueY()>0) {
-                    graph.getViewport().setMaxY(seriesP.getHighestValueY() * 1.1);
+                    graph.getViewport().setMaxY(seriesP.getHighestValueY() * 1.01);
                 }
                 else{
-                    graph.getViewport().setMaxY(seriesP.getHighestValueY() * 0.9);
+                    graph.getViewport().setMaxY(seriesP.getHighestValueY() * 0.99);
                 }
                 graph.getLegendRenderer().setVisible(true);
                 graph.getLegendRenderer().setTextSize(40f);
@@ -518,7 +561,7 @@ public class MainActivity extends AppCompatActivity
                 graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
                 graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
 
-                graph.addSeries(seriesP);
+                graph.addSeries(seriesP);;
                 graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
                     @Override
                     public String formatLabel(double value, boolean isValueX) {
@@ -655,17 +698,37 @@ public class MainActivity extends AppCompatActivity
                 graph.getViewport().setMinX(0);
                 graph.getViewport().setMaxX(seriesR.getHighestValueX());
                 graph.getViewport().setYAxisBoundsManual(true);
-                if(seriesP.getLowestValueY()>0) {
-                    graph.getViewport().setMinY(seriesR.getLowestValueY() * .9);
+                if (seriesR.getLowestValueY()<seriesRD.getLowestValueY()) {
+                    if(seriesR.getLowestValueY()>0) {
+                        graph.getViewport().setMinY(seriesR.getLowestValueY() * .9);
+                    }
+                    else{
+                        graph.getViewport().setMinY(seriesR.getLowestValueY() * 1.1);
+                    }
                 }
                 else{
-                    graph.getViewport().setMinY(seriesR.getLowestValueY() * 1.1);
+                    if(seriesRD.getLowestValueY()>0) {
+                        graph.getViewport().setMinY(seriesRD.getLowestValueY() * .9);
+                    }
+                    else{
+                        graph.getViewport().setMinY(seriesRD.getLowestValueY() * 1.1);
+                    }
                 }
-                if(seriesP.getHighestValueY()>0) {
-                    graph.getViewport().setMaxY(seriesR.getHighestValueY() * 1.1);
+                if (seriesR.getHighestValueY()>seriesRD.getHighestValueY()) {
+                    if(seriesR.getHighestValueY()>0) {
+                        graph.getViewport().setMaxY(seriesR.getHighestValueY() * 1.1);
+                    }
+                    else{
+                        graph.getViewport().setMaxY(seriesR.getHighestValueY() * 0.9);
+                    }
                 }
                 else{
-                    graph.getViewport().setMaxY(seriesR.getHighestValueY() * 0.9);
+                    if(seriesD.getHighestValueY()>0) {
+                        graph.getViewport().setMaxY(seriesRD.getHighestValueY() * 1.1);
+                    }
+                    else{
+                        graph.getViewport().setMaxY(seriesRD.getHighestValueY() * 0.9);
+                    }
                 }
                 graph.getLegendRenderer().setVisible(true);
                 graph.getLegendRenderer().setTextSize(40f);
@@ -674,6 +737,7 @@ public class MainActivity extends AppCompatActivity
                 graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
 
                 graph.addSeries(seriesR);
+                graph.addSeries(seriesRD);
                 graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
                     @Override
                     public String formatLabel(double value, boolean isValueX) {
@@ -689,6 +753,7 @@ public class MainActivity extends AppCompatActivity
                         }
                     }
                 });
+                seriesRD.setColor(Color.GRAY);
             }
 
             String[] fields= fieldString.split(",");
@@ -884,16 +949,16 @@ public class MainActivity extends AppCompatActivity
             graph.getViewport().setMaxX(seriesP.getHighestValueX());
             graph.getViewport().setYAxisBoundsManual(true);
             if(seriesP.getLowestValueY()>0) {
-                graph.getViewport().setMinY(seriesP.getLowestValueY() * .9);
+                graph.getViewport().setMinY(seriesP.getLowestValueY() * .99);
             }
             else{
-                graph.getViewport().setMinY(seriesP.getLowestValueY() * 1.1);
+                graph.getViewport().setMinY(seriesP.getLowestValueY() * 1.01);
             }
             if(seriesP.getHighestValueY()>0) {
-                graph.getViewport().setMaxY(seriesP.getHighestValueY() * 1.1);
+                graph.getViewport().setMaxY(seriesP.getHighestValueY() * 1.01);
             }
             else{
-                graph.getViewport().setMaxY(seriesP.getHighestValueY() * 0.9);
+                graph.getViewport().setMaxY(seriesP.getHighestValueY() * 0.99);
             }
             graph.getLegendRenderer().setVisible(true);
             graph.getLegendRenderer().setTextSize(40f);
@@ -1029,7 +1094,6 @@ public class MainActivity extends AppCompatActivity
             });
         }
         else if (id==R.id.nav_rainPlot){
-            viewSel="rainPlot";
             text.setVisibility(View.GONE);
             graph.setVisibility(View.VISIBLE);
 
@@ -1039,17 +1103,37 @@ public class MainActivity extends AppCompatActivity
             graph.getViewport().setMinX(0);
             graph.getViewport().setMaxX(seriesR.getHighestValueX());
             graph.getViewport().setYAxisBoundsManual(true);
-            if(seriesP.getLowestValueY()>0) {
-                graph.getViewport().setMinY(seriesR.getLowestValueY() * .9);
+            if (seriesR.getLowestValueY()<seriesRD.getLowestValueY()) {
+                if(seriesR.getLowestValueY()>0) {
+                    graph.getViewport().setMinY(seriesR.getLowestValueY() * .9);
+                }
+                else{
+                    graph.getViewport().setMinY(seriesR.getLowestValueY() * 1.1);
+                }
             }
             else{
-                graph.getViewport().setMinY(seriesR.getLowestValueY() * 1.1);
+                if(seriesRD.getLowestValueY()>0) {
+                    graph.getViewport().setMinY(seriesRD.getLowestValueY() * .9);
+                }
+                else{
+                    graph.getViewport().setMinY(seriesRD.getLowestValueY() * 1.1);
+                }
             }
-            if(seriesP.getHighestValueY()>0) {
-                graph.getViewport().setMaxY(seriesR.getHighestValueY() * 1.1);
+            if (seriesR.getHighestValueY()>seriesRD.getHighestValueY()) {
+                if(seriesR.getHighestValueY()>0) {
+                    graph.getViewport().setMaxY(seriesR.getHighestValueY() * 1.1);
+                }
+                else{
+                    graph.getViewport().setMaxY(seriesR.getHighestValueY() * 0.9);
+                }
             }
             else{
-                graph.getViewport().setMaxY(seriesR.getHighestValueY() * 0.9);
+                if(seriesD.getHighestValueY()>0) {
+                    graph.getViewport().setMaxY(seriesRD.getHighestValueY() * 1.1);
+                }
+                else{
+                    graph.getViewport().setMaxY(seriesRD.getHighestValueY() * 0.9);
+                }
             }
             graph.getLegendRenderer().setVisible(true);
             graph.getLegendRenderer().setTextSize(40f);
@@ -1058,6 +1142,7 @@ public class MainActivity extends AppCompatActivity
             graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
 
             graph.addSeries(seriesR);
+            graph.addSeries(seriesRD);
             graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
                 @Override
                 public String formatLabel(double value, boolean isValueX) {
@@ -1073,6 +1158,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
             });
+            seriesRD.setColor(Color.GRAY);
         }
 
 
