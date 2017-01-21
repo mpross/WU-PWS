@@ -35,6 +35,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CalendarView;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
@@ -69,10 +70,19 @@ public class MainActivity extends AppCompatActivity
     LineGraphSeries<DataPoint> seriesH = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesR = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesRD = new LineGraphSeries<>();
+    String day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
+    String month = new SimpleDateFormat("MM").format(Calendar.getInstance().getTime());
+    String year = new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime());
+    String calDate=day+","+month+","+year;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
+        month = new SimpleDateFormat("MM").format(Calendar.getInstance().getTime());
+        year = new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime());
+        calDate=day+","+month+","+year;
 
         TextView text =(TextView) findViewById(R.id.text1);
         GraphView graph = (GraphView) findViewById(R.id.graph);
@@ -137,9 +147,6 @@ public class MainActivity extends AppCompatActivity
                 System.out.println(e);
             }
             GraphView graph = (GraphView) findViewById(R.id.graph);
-            String day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
-            String month = new SimpleDateFormat("MM").format(Calendar.getInstance().getTime());
-            String year = new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime());
             StringBuilder url =new StringBuilder();
             url.append("https://www.wunderground.com/weatherstation/WXDailyHistory.asp?");
             url.append("ID="+station);
@@ -256,7 +263,7 @@ public class MainActivity extends AppCompatActivity
                             hum[(int)j/2-1] = Float.parseFloat(col[8]);
                         }
                         if (Float.parseFloat(col[9]) > 0) {
-                            if(units==1) {
+                            if(units==0) {
                                 precip[(int)j/2-1] = Float.parseFloat(col[9]);
                             }
                             else{
@@ -264,7 +271,7 @@ public class MainActivity extends AppCompatActivity
                             }
                         }
                         if (Float.parseFloat(col[12]) > 0) {
-                            if(units==1) {
+                            if(units==0) {
                                 precipDay[(int)j/2-1] = Float.parseFloat(col[12]);
                             }
                             else{
@@ -298,7 +305,7 @@ public class MainActivity extends AppCompatActivity
                 DataPoint[] windGData=new DataPoint[windGust.length];
                 DataPoint[] humData=new DataPoint[hum.length];
                 DataPoint[] rainData=new DataPoint[precip.length];
-                DataPoint[] rainDayData=new DataPoint[precip.length];
+                DataPoint[] rainDayData=new DataPoint[precipDay.length];
                 m=0;
                 for(float t:temp){
                     tempData[m] = new DataPoint(tim[m], t);
@@ -308,7 +315,7 @@ public class MainActivity extends AppCompatActivity
                     windGData[m]=new DataPoint(tim[m],windGust[m]);
                     humData[m]=new DataPoint(tim[m],hum[m]);
                     rainData[m]=new DataPoint(tim[m],precip[m]);
-                    rainDayData[m]=new DataPoint(tim[m],precip[m]);
+                    rainDayData[m]=new DataPoint(tim[m],precipDay[m]);
                     m++;
                 }
                 seriesT = new LineGraphSeries<>(tempData);
@@ -816,24 +823,20 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         Intent intent = new Intent(this, SettingsActivity.class);
         int result=0;
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             intent.putExtra("error",false);
             intent.putExtra("unit",units);
+            intent.putExtra("calDate",calDate);
             startActivityForResult(intent,result);
             return true;
         }
@@ -843,6 +846,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         units=resultCode;
+        try{
+            calDate=data.getStringExtra("calDate");
+        }
+        catch(NullPointerException n){
+            System.out.println(n);
+        }
+        day = calDate.split(",")[0];
+        month = calDate.split(",")[1];
+        year = calDate.split(",")[2];
         try {
             FileOutputStream fos = openFileOutput("unit_file", Context.MODE_PRIVATE);
             fos.write(units);
@@ -1095,6 +1107,7 @@ public class MainActivity extends AppCompatActivity
             });
         }
         else if (id==R.id.nav_rainPlot){
+            viewSel="rainPlot";
             text.setVisibility(View.GONE);
             graph.setVisibility(View.VISIBLE);
 

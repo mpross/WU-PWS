@@ -19,12 +19,14 @@ package net.mpross.pws;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Button;
@@ -34,20 +36,39 @@ import android.view.View;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     int units=0;
+    Bundle b=new Bundle();
+    Intent i=new Intent();
+    String calDate="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        b=getIntent().getExtras();
+
+        calDate=b.getString("calDate");
+
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);
         spinner.setSelection(getIntent().getExtras().getInt("unit"));
 
         TextView errText =(TextView) findViewById(R.id.errText);
+
+        CalendarView calendar = (CalendarView) findViewById(R.id.calendarView);
+        calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+
+            @Override
+            public void onSelectedDayChange(CalendarView view, int year, int month,
+                                            int dayOfMonth) {
+                calDate =String.valueOf(dayOfMonth)+","+String.valueOf(month+1)+","+String.valueOf(year);
+            }
+        });
+
 
 
         if(getIntent().getExtras().getBoolean("error")==true){
@@ -88,7 +109,10 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                     fos.close();
                     InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                    setResult(units);
+
+                    i.putExtra("calDate",calDate);
+                    setResult(units,i);
+
                     finish();
                 }
                 catch (IOException e){
@@ -119,7 +143,10 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                         fos.close();
                         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                        setResult(units);
+
+                        i.putExtra("calDate",calDate);
+                        setResult(units,i);
+
                         finish();
                     }
                     catch (IOException e){
