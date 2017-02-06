@@ -35,7 +35,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CalendarView;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
@@ -65,6 +64,7 @@ public class MainActivity extends AppCompatActivity
     LineGraphSeries<DataPoint> seriesT = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesD = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesP = new LineGraphSeries<>();
+    LineGraphSeries<DataPoint> seriesPB = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesWS = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesWG = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesH = new LineGraphSeries<>();
@@ -301,6 +301,7 @@ public class MainActivity extends AppCompatActivity
                 DataPoint[] tempData=new DataPoint[temp.length];
                 DataPoint[] dewData=new DataPoint[dew.length];
                 DataPoint[] pressData=new DataPoint[press.length];
+                DataPoint[] pressBLData=new DataPoint[press.length];
                 DataPoint[] windSData=new DataPoint[windSpeed.length];
                 DataPoint[] windGData=new DataPoint[windGust.length];
                 DataPoint[] humData=new DataPoint[hum.length];
@@ -311,6 +312,12 @@ public class MainActivity extends AppCompatActivity
                     tempData[m] = new DataPoint(tim[m], t);
                     dewData[m] = new DataPoint(tim[m], dew[m]);
                     pressData[m]=new DataPoint(tim[m],press[m]);
+                    if (units==0) {
+                        pressBLData[m] = new DataPoint(tim[m], 29.921f);
+                    }
+                    else{
+                        pressBLData[m] = new DataPoint(tim[m], 101.325f);
+                    }
                     windSData[m]=new DataPoint(tim[m],windSpeed[m]);
                     windGData[m]=new DataPoint(tim[m],windGust[m]);
                     humData[m]=new DataPoint(tim[m],hum[m]);
@@ -321,6 +328,7 @@ public class MainActivity extends AppCompatActivity
                 seriesT = new LineGraphSeries<>(tempData);
                 seriesD = new LineGraphSeries<>(dewData);
                 seriesP = new LineGraphSeries<>(pressData);
+                seriesPB = new LineGraphSeries<>(pressBLData);
                 seriesWS = new LineGraphSeries<>(windSData);
                 seriesWG = new LineGraphSeries<>(windGData);
                 seriesH = new LineGraphSeries<>(humData);
@@ -333,6 +341,7 @@ public class MainActivity extends AppCompatActivity
                 seriesWG.setTitle("Wind Gust");
                 seriesH.setTitle("Humidity");
                 seriesP.setTitle("Pressure");
+                seriesPB.setTitle("Mean Sea Level Pressure");
                 seriesR.setTitle("Hourly Precipitation");
                 seriesRD.setTitle("Daily Precipitation");
 
@@ -551,17 +560,14 @@ public class MainActivity extends AppCompatActivity
                 graph.getViewport().setMinX(0);
                 graph.getViewport().setMaxX(seriesP.getHighestValueX());
                 graph.getViewport().setYAxisBoundsManual(true);
-                if(seriesP.getLowestValueY()>0) {
-                    graph.getViewport().setMinY(seriesP.getLowestValueY() * .99);
+                //World record lows and highs for plot limits.
+                if (units==0) {
+                    graph.getViewport().setMinY(26);
+                    graph.getViewport().setMaxY(32);
                 }
-                else{
-                    graph.getViewport().setMinY(seriesP.getLowestValueY() * 1.01);
-                }
-                if(seriesP.getHighestValueY()>0) {
-                    graph.getViewport().setMaxY(seriesP.getHighestValueY() * 1.01);
-                }
-                else{
-                    graph.getViewport().setMaxY(seriesP.getHighestValueY() * 0.99);
+                else {
+                    graph.getViewport().setMinY(87);
+                    graph.getViewport().setMaxY(108.5);
                 }
                 graph.getLegendRenderer().setVisible(true);
                 graph.getLegendRenderer().setTextSize(40f);
@@ -569,7 +575,8 @@ public class MainActivity extends AppCompatActivity
                 graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
                 graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
 
-                graph.addSeries(seriesP);;
+                graph.addSeries(seriesP);
+                graph.addSeries(seriesPB);
                 graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
                     @Override
                     public String formatLabel(double value, boolean isValueX) {
@@ -585,6 +592,7 @@ public class MainActivity extends AppCompatActivity
                         }
                     }
                 });
+                seriesPB.setColor(Color.GRAY);
             }
             else if (viewSel=="windPlot"){
                 text.setVisibility(View.GONE);
@@ -665,17 +673,17 @@ public class MainActivity extends AppCompatActivity
                 graph.getViewport().setMinX(0);
                 graph.getViewport().setMaxX(seriesH.getHighestValueX());
                 graph.getViewport().setYAxisBoundsManual(true);
-                if(seriesP.getLowestValueY()>0) {
-                    graph.getViewport().setMinY(seriesH.getLowestValueY() * .9);
+                if(seriesH.getLowestValueY()>50) {
+                    graph.getViewport().setMinY(50);
                 }
                 else{
-                    graph.getViewport().setMinY(seriesH.getLowestValueY() * 1.1);
+                    graph.getViewport().setMinY(0);
                 }
-                if(seriesP.getHighestValueY()>0) {
-                    graph.getViewport().setMaxY(seriesH.getHighestValueY() * 1.1);
+                if(seriesH.getHighestValueY()<50) {
+                    graph.getViewport().setMaxY(50);
                 }
                 else{
-                    graph.getViewport().setMaxY(seriesH.getHighestValueY() * 0.9);
+                    graph.getViewport().setMaxY(105);
                 }
                 graph.getLegendRenderer().setVisible(true);
                 graph.getLegendRenderer().setTextSize(40f);
@@ -852,9 +860,16 @@ public class MainActivity extends AppCompatActivity
         catch(NullPointerException n){
             System.out.println(n);
         }
-        day = calDate.split(",")[0];
-        month = calDate.split(",")[1];
-        year = calDate.split(",")[2];
+        try {
+            day = calDate.split(",")[0];
+            month = calDate.split(",")[1];
+            year = calDate.split(",")[2];
+        }
+        catch(NullPointerException n) {
+            day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
+            month = new SimpleDateFormat("MM").format(Calendar.getInstance().getTime());
+            year = new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime());
+        }
         try {
             FileOutputStream fos = openFileOutput("unit_file", Context.MODE_PRIVATE);
             fos.write(units);
@@ -961,17 +976,13 @@ public class MainActivity extends AppCompatActivity
             graph.getViewport().setMinX(0);
             graph.getViewport().setMaxX(seriesP.getHighestValueX());
             graph.getViewport().setYAxisBoundsManual(true);
-            if(seriesP.getLowestValueY()>0) {
-                graph.getViewport().setMinY(seriesP.getLowestValueY() * .99);
+            if (units==0) {
+                graph.getViewport().setMinY(26);
+                graph.getViewport().setMaxY(32);
             }
-            else{
-                graph.getViewport().setMinY(seriesP.getLowestValueY() * 1.01);
-            }
-            if(seriesP.getHighestValueY()>0) {
-                graph.getViewport().setMaxY(seriesP.getHighestValueY() * 1.01);
-            }
-            else{
-                graph.getViewport().setMaxY(seriesP.getHighestValueY() * 0.99);
+            else {
+                graph.getViewport().setMinY(87);
+                graph.getViewport().setMaxY(108.5);
             }
             graph.getLegendRenderer().setVisible(true);
             graph.getLegendRenderer().setTextSize(40f);
@@ -980,6 +991,7 @@ public class MainActivity extends AppCompatActivity
             graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
 
             graph.addSeries(seriesP);
+            graph.addSeries(seriesPB);
             graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
                 @Override
                 public String formatLabel(double value, boolean isValueX) {
@@ -995,6 +1007,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
             });
+            seriesPB.setColor(Color.GRAY);
         }
         else if (id==R.id.nav_windPlot){
             viewSel="windPlot";
@@ -1076,17 +1089,17 @@ public class MainActivity extends AppCompatActivity
             graph.getViewport().setMinX(0);
             graph.getViewport().setMaxX(seriesH.getHighestValueX());
             graph.getViewport().setYAxisBoundsManual(true);
-            if(seriesP.getLowestValueY()>0) {
-                graph.getViewport().setMinY(seriesH.getLowestValueY() * .9);
+            if(seriesH.getLowestValueY()>50) {
+                graph.getViewport().setMinY(50);
             }
             else{
-                graph.getViewport().setMinY(seriesH.getLowestValueY() * 1.1);
+                graph.getViewport().setMinY(0);
             }
-            if(seriesP.getHighestValueY()>0) {
-                graph.getViewport().setMaxY(seriesH.getHighestValueY() * 1.1);
+            if(seriesH.getHighestValueY()<50) {
+                graph.getViewport().setMaxY(50);
             }
             else{
-                graph.getViewport().setMaxY(seriesH.getHighestValueY() * 0.9);
+                graph.getViewport().setMaxY(105);
             }
             graph.getLegendRenderer().setVisible(true);
             graph.getLegendRenderer().setTextSize(40f);
@@ -1180,6 +1193,7 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    // Orientation change handling
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         new datagrab().execute("");

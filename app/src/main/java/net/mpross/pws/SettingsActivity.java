@@ -23,19 +23,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Button;
 import android.widget.Spinner;
-import android.view.View;
+import android.widget.TextView;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -52,6 +53,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         b=getIntent().getExtras();
 
         calDate=b.getString("calDate");
+        System.out.println(calDate);
 
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);
@@ -60,6 +62,11 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         TextView errText =(TextView) findViewById(R.id.errText);
 
         CalendarView calendar = (CalendarView) findViewById(R.id.calendarView);
+        try{
+            calendar.setDate(new SimpleDateFormat("dd,MM,yyyy").parse(calDate).getTime(), true, true);
+        }
+        catch (ParseException p){}
+        catch (RuntimeException r){}
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
 
             @Override
