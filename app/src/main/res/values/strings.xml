@@ -5,8 +5,9 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_date">Date Selection</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="settings_title">Personal Weather Station Data Viewer Version 1.7</string>
+    <string name="settings_title">Personal Weather Station Data Viewer Version 1.11</string>
 
     <string-array name="units">
         <item>Imperial</item>

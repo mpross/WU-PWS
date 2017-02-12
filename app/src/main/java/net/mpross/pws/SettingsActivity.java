@@ -28,7 +28,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -36,14 +35,11 @@ import android.widget.TextView;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     int units=0;
     Bundle b=new Bundle();
     Intent i=new Intent();
-    String calDate="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -52,29 +48,11 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
         b=getIntent().getExtras();
 
-        calDate=b.getString("calDate");
-        System.out.println(calDate);
-
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);
         spinner.setSelection(getIntent().getExtras().getInt("unit"));
 
         TextView errText =(TextView) findViewById(R.id.errText);
-
-        CalendarView calendar = (CalendarView) findViewById(R.id.calendarView);
-        try{
-            calendar.setDate(new SimpleDateFormat("dd,MM,yyyy").parse(calDate).getTime(), true, true);
-        }
-        catch (ParseException p){}
-        catch (RuntimeException r){}
-        calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-
-            @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month,
-                                            int dayOfMonth) {
-                calDate =String.valueOf(dayOfMonth)+","+String.valueOf(month+1)+","+String.valueOf(year);
-            }
-        });
 
 
 
@@ -95,7 +73,6 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             editText.setText(str);
         }
         catch (IOException e) {
-            System.out.println(e);
         }
         final Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -117,13 +94,11 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                     InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
-                    i.putExtra("calDate",calDate);
                     setResult(units,i);
 
                     finish();
                 }
                 catch (IOException e){
-                    System.out.println(e);
                 }
             }
         });
@@ -151,13 +126,11 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
-                        i.putExtra("calDate",calDate);
                         setResult(units,i);
 
                         finish();
                     }
                     catch (IOException e){
-                        System.out.println(e);
                     }
 
                     handled = true;

@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity
     String station="";
     static String viewSel="current";
     int units=0;
+    int errSrcId=0;
     LineGraphSeries<DataPoint> seriesT = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesD = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesP = new LineGraphSeries<>();
@@ -169,7 +170,7 @@ public class MainActivity extends AppCompatActivity
 
                 String[] lines = build.toString().split("\r");
 
-                float[] temp = new float[(int)lines.length/2-1];
+                float[] temp = new float[lines.length /2-1];
                 float[] dew = new float[lines.length/2-1];
                 float[] press = new float[lines.length/2-1];
                 float[] windDeg = new float[lines.length/2-1];
@@ -201,93 +202,93 @@ public class MainActivity extends AppCompatActivity
                     String[] col = line.split(",");
                     if (col.length > 1 && j > 2) {
                         timStamp=col[0];
-                        tim[(int)j/2-1]=Float.parseFloat(col[0].split(" ")[1].split(":")[0])+Float.parseFloat(col[0].split(" ")[1].split(":")[1])/60
+                        tim[j /2-1]=Float.parseFloat(col[0].split(" ")[1].split(":")[0])+Float.parseFloat(col[0].split(" ")[1].split(":")[1])/60
                                 +Float.parseFloat(col[0].split(" ")[1].split(":")[2])/3600;
                         if (Float.parseFloat(col[1]) > 0) {
                             if(units==0) {
-                                temp[(int)j/2-1] = Float.parseFloat(col[1]);
+                                temp[j /2-1] = Float.parseFloat(col[1]);
                             }
                             else{
-                                temp[(int)j/2-1] = (Float.parseFloat(col[1])-32.0f)*5.0f/9.0f;
+                                temp[j /2-1] = (Float.parseFloat(col[1])-32.0f)*5.0f/9.0f;
                             }
-                            if(temp[(int)j/2-1]<tempLow){
-                                tempLow=temp[(int)j/2-1];
+                            if(temp[j /2-1]<tempLow){
+                                tempLow=temp[j /2-1];
                             }
-                            if(temp[(int)j/2-1]>tempHigh){
-                                tempHigh=temp[(int)j/2-1];
+                            if(temp[j /2-1]>tempHigh){
+                                tempHigh=temp[j /2-1];
                             }
                         }
                         if (Float.parseFloat(col[2]) > 0) {
                             if(units==0) {
-                                dew[(int)j/2-1] = Float.parseFloat(col[2]);
+                                dew[j /2-1] = Float.parseFloat(col[2]);
                             }
                             else{
-                                dew[(int)j/2-1] = (Float.parseFloat(col[2])-32.0f)*5.0f/9.0f;
+                                dew[j /2-1] = (Float.parseFloat(col[2])-32.0f)*5.0f/9.0f;
                             }
-                            if(dew[(int)j/2-1]<dewLow){
-                                dewLow=dew[(int)j/2-1];
+                            if(dew[j /2-1]<dewLow){
+                                dewLow=dew[j /2-1];
                             }
-                            if(dew[(int)j/2-1]>dewHigh){
-                                dewHigh=dew[(int)j/2-1];
+                            if(dew[j /2-1]>dewHigh){
+                                dewHigh=dew[j /2-1];
                             }
                         }
                         if (Float.parseFloat(col[3]) > 0) {
                             if(units==0) {
-                                press[(int)j/2-1] = Float.parseFloat(col[3]);
+                                press[j /2-1] = Float.parseFloat(col[3]);
                             }
                             else {
-                                press[(int)j/2-1] = Float.parseFloat(col[3])*3.38639f;
+                                press[j /2-1] = Float.parseFloat(col[3])*3.38639f;
                             }
                         }
                         windDir=col[4];
                         if (Float.parseFloat(col[5]) > 0) {
-                            windDeg[(int)j/2-1] = Float.parseFloat(col[5]);
+                            windDeg[j /2-1] = Float.parseFloat(col[5]);
                         }
                         if (Float.parseFloat(col[6]) > 0) {
                             if(units==0) {
-                                windSpeed[(int)j/2-1] = Float.parseFloat(col[6]);
+                                windSpeed[j /2-1] = Float.parseFloat(col[6]);
                             }
                             else{
-                                windSpeed[(int)j/2-1] = Float.parseFloat(col[6])*0.44704f;
+                                windSpeed[j /2-1] = Float.parseFloat(col[6])*0.44704f;
                             }
                         }
                         if (Float.parseFloat(col[7]) > 0) {
                             if(units==0) {
-                                windGust[(int)j/2-1] = Float.parseFloat(col[7]);
+                                windGust[j /2-1] = Float.parseFloat(col[7]);
                             }
                             else{
-                                windGust[(int)j/2-1] = Float.parseFloat(col[7])*0.44704f;
+                                windGust[j /2-1] = Float.parseFloat(col[7])*0.44704f;
                             }
                         }
                         if (Float.parseFloat(col[8]) > 0) {
-                            hum[(int)j/2-1] = Float.parseFloat(col[8]);
+                            hum[j /2-1] = Float.parseFloat(col[8]);
                         }
                         if (Float.parseFloat(col[9]) > 0) {
                             if(units==0) {
-                                precip[(int)j/2-1] = Float.parseFloat(col[9]);
+                                precip[j /2-1] = Float.parseFloat(col[9]);
                             }
                             else{
-                                precip[(int)j/2-1] = Float.parseFloat(col[9])*25.4f;
+                                precip[j /2-1] = Float.parseFloat(col[9])*25.4f;
                             }
                         }
                         if (Float.parseFloat(col[12]) > 0) {
                             if(units==0) {
-                                precipDay[(int)j/2-1] = Float.parseFloat(col[12]);
+                                precipDay[j /2-1] = Float.parseFloat(col[12]);
                             }
                             else{
-                                precipDay[(int)j/2-1] = Float.parseFloat(col[12])*25.4f;
+                                precipDay[j /2-1] = Float.parseFloat(col[12])*25.4f;
                             }
                         }
 
-                        tempAvg += temp[(int)j/2-1];
-                        dewAvg += dew[(int)j/2-1];
-                        pressAvg += press[(int)j/2-1];
-                        windDAvg += windDeg[(int)j/2-1];
-                        windSAvg += windSpeed[(int)j/2-1];
-                        humAvg += hum[(int)j/2-1];
+                        tempAvg += temp[j /2-1];
+                        dewAvg += dew[j /2-1];
+                        pressAvg += press[j /2-1];
+                        windDAvg += windDeg[j /2-1];
+                        windSAvg += windSpeed[j /2-1];
+                        humAvg += hum[j /2-1];
 
-                        if (windGust[(int)j/2-1] > windG) {
-                            windG = windGust[(int)j/2-1];
+                        if (windGust[j /2-1] > windG) {
+                            windG = windGust[j /2-1];
                         }
 
                         if (Float.parseFloat(col[12]) > precipMax) {
@@ -351,31 +352,31 @@ public class MainActivity extends AppCompatActivity
                 windDAvg /= j / 2;
                 windSAvg /= j / 2;
                 humAvg /= j / 2;
-                if(units==0){
+                if (units == 0) {
                     outBuild.append(lines[lines.length - 2]);
-                }
-                else{
+                } else {
                     outBuild.append(timStamp);
                     outBuild.append(",");
-                    outBuild.append(String.valueOf(Math.round(temp[temp.length-2]* 100.0) / 100.0));
+                    outBuild.append(String.valueOf(Math.round(temp[temp.length - 2] * 100.0) / 100.0));
                     outBuild.append(",");
-                    outBuild.append(String.valueOf(Math.round(dew[dew.length-2]* 100.0) / 100.0));
+                    outBuild.append(String.valueOf(Math.round(dew[dew.length - 2] * 100.0) / 100.0));
                     outBuild.append(",");
-                    outBuild.append(String.valueOf(Math.round(press[press.length-2]* 100.0) / 100.0));
+                    outBuild.append(String.valueOf(Math.round(press[press.length - 2] * 100.0) / 100.0));
                     outBuild.append(",");
                     outBuild.append(String.valueOf(windDir));
                     outBuild.append(",");
-                    outBuild.append(String.valueOf(windDeg[windDeg.length-2]));
+                    outBuild.append(String.valueOf(windDeg[windDeg.length - 2]));
                     outBuild.append(",");
-                    outBuild.append(String.valueOf(Math.round(windSpeed[windSpeed.length-2]* 100.0) / 100.0));
+                    outBuild.append(String.valueOf(Math.round(windSpeed[windSpeed.length - 2] * 100.0) / 100.0));
                     outBuild.append(",");
-                    outBuild.append(String.valueOf(Math.round(windGust[windGust.length-2]* 100.0) / 100.0));
+                    outBuild.append(String.valueOf(Math.round(windGust[windGust.length - 2] * 100.0) / 100.0));
                     outBuild.append(",");
-                    outBuild.append(String.valueOf(hum[hum.length-2]));
+                    outBuild.append(String.valueOf(hum[hum.length - 2]));
                     outBuild.append(",");
-                    outBuild.append(String.valueOf(Math.round(precip[precip.length-2]* 100.0) / 100.0));
+                    outBuild.append(String.valueOf(Math.round(precip[precip.length - 2] * 100.0) / 100.0));
                     outBuild.append(",,,,,,");
                 }
+
 
                 outBuild.append(";");
                 outBuild.append(String.valueOf(Math.round(tempAvg * 100.0) / 100.0));
@@ -408,15 +409,15 @@ public class MainActivity extends AppCompatActivity
             }
 
             catch(IOException e){
-                System.out.println(e);
                 return "";
             }
             catch(NetworkOnMainThreadException b){
-                System.out.println(b);
                 return "";
             }
             catch (NumberFormatException n){
-                System.out.println(n);
+                return "";
+            }
+            catch (ArrayIndexOutOfBoundsException a){
                 return "";
             }
         }
@@ -464,7 +465,6 @@ public class MainActivity extends AppCompatActivity
             }
             catch (IOException e){
                 System.out.println(e);
-                System.out.println(e.getCause());
             }
             TextView text2 =(TextView) findViewById(R.id.textView2);
             text2.setText(station);
@@ -825,9 +825,17 @@ public class MainActivity extends AppCompatActivity
         }
     }
     public void stationError() {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        intent.putExtra("error",true);
-        startActivityForResult(intent,2);
+        if(errSrcId==0) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            intent.putExtra("error", true);
+            startActivityForResult(intent, 2);
+        }
+        else{
+            Intent intent = new Intent(this, DateActivity.class);
+            intent.putExtra("error", true);
+            intent.putExtra("calDate",calDate);
+            startActivityForResult(intent, 2);
+        }
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -838,14 +846,19 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        Intent intent = new Intent(this, SettingsActivity.class);
-        int result=0;
+        Intent setIntent = new Intent(this, SettingsActivity.class);
+        Intent dateIntent = new Intent(this, DateActivity.class);
 
         if (id == R.id.action_settings) {
-            intent.putExtra("error",false);
-            intent.putExtra("unit",units);
-            intent.putExtra("calDate",calDate);
-            startActivityForResult(intent,result);
+            setIntent.putExtra("error",false);
+            setIntent.putExtra("unit",units);
+            startActivityForResult(setIntent,0);
+            return true;
+        }
+        if (id == R.id.action_date) {
+            setIntent.putExtra("error",false);
+            dateIntent.putExtra("calDate",calDate);
+            startActivityForResult(dateIntent,1);
             return true;
         }
 
@@ -853,30 +866,31 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        units=resultCode;
-        try{
-            calDate=data.getStringExtra("calDate");
+        errSrcId=requestCode;
+        if(requestCode==0){
+            units=resultCode;
+            try {
+                FileOutputStream fos = openFileOutput("unit_file", Context.MODE_PRIVATE);
+                fos.write(units);
+                fos.close();
+            }
+            catch (IOException e){
+                System.out.println(e);
+            }
         }
-        catch(NullPointerException n){
-            System.out.println(n);
-        }
-        try {
-            day = calDate.split(",")[0];
-            month = calDate.split(",")[1];
-            year = calDate.split(",")[2];
-        }
-        catch(NullPointerException n) {
-            day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
-            month = new SimpleDateFormat("MM").format(Calendar.getInstance().getTime());
-            year = new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime());
-        }
-        try {
-            FileOutputStream fos = openFileOutput("unit_file", Context.MODE_PRIVATE);
-            fos.write(units);
-            fos.close();
-        }
-        catch (IOException e){
-            System.out.println(e);
+        else{
+            try{
+                System.out.println(data);
+                calDate=data.getStringExtra("calDate");
+                day = calDate.split(",")[0];
+                month = calDate.split(",")[1];
+                year = calDate.split(",")[2];
+            }
+            catch(NullPointerException n) {
+                day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
+                month = new SimpleDateFormat("MM").format(Calendar.getInstance().getTime());
+                year = new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime());
+            }
         }
         new datagrab().execute("");
     }
