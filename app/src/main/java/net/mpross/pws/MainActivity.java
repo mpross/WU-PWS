@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity
     static String viewSel="current";
     int units=0;
     int errSrcId=0;
+    boolean errBool=false;
     LineGraphSeries<DataPoint> seriesT = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesD = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesP = new LineGraphSeries<>();
@@ -830,10 +831,17 @@ public class MainActivity extends AppCompatActivity
             intent.putExtra("error", true);
             startActivityForResult(intent, 2);
         }
-        else{
+        else if(errSrcId==1 && errBool==false){
             Intent intent = new Intent(this, DateActivity.class);
             intent.putExtra("error", true);
             intent.putExtra("calDate",calDate);
+            startActivityForResult(intent, 2);
+            errBool=true;
+        }
+        else{
+            errBool=false;
+            Intent intent = new Intent(this, SettingsActivity.class);
+            intent.putExtra("error", true);
             startActivityForResult(intent, 2);
         }
     }

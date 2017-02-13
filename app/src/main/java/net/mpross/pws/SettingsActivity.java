@@ -85,7 +85,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                     if(string.length()<10){
                         build.append(string);
                         for(int i=0; i<(10-string.length());i++) {
-                            build.append("0");
+                            build.append("");
                         }
                         string=build.toString();
                     }
@@ -117,7 +117,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                         if(string.length()<10){
                             build.append(string);
                             for(int i=0; i<(10-string.length());i++) {
-                                build.append("0");
+                                build.append("");
                             }
                             string=build.toString();
                         }
