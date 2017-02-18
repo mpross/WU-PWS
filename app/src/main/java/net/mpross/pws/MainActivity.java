@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity
     String dailyString=new String();
     String station="";
     static String viewSel="current";
-    int units=0;
+    int units=0; // User unit choice
+    int nativeUnits=0; // Units the data is in
     int errSrcId=0;
     boolean errBool=false;
     LineGraphSeries<DataPoint> seriesT = new LineGraphSeries<>();
@@ -198,19 +199,35 @@ public class MainActivity extends AppCompatActivity
                 float humAvg = 0;
                 float precipMax = 0;
                 String timStamp="";
-                int j = 1;
+                int j = 0;
                 for (String line : lines) {
                     String[] col = line.split(",");
+                    if (j==1) {
+                        if(col[1].equals("TemperatureF")){
+                            nativeUnits=0;
+                        }
+                        else{
+                            nativeUnits=1;
+                        }
+                    }
                     if (col.length > 1 && j > 2) {
                         timStamp=col[0];
                         tim[j /2-1]=Float.parseFloat(col[0].split(" ")[1].split(":")[0])+Float.parseFloat(col[0].split(" ")[1].split(":")[1])/60
                                 +Float.parseFloat(col[0].split(" ")[1].split(":")[2])/3600;
                         if (Float.parseFloat(col[1]) > 0) {
-                            if(units==0) {
-                                temp[j /2-1] = Float.parseFloat(col[1]);
+                            if(nativeUnits==0) {
+                                if (units == 0) {
+                                    temp[j / 2 - 1] = Float.parseFloat(col[1]);
+                                } else {
+                                    temp[j / 2 - 1] = (Float.parseFloat(col[1]) - 32.0f) * 5.0f / 9.0f;
+                                }
                             }
                             else{
-                                temp[j /2-1] = (Float.parseFloat(col[1])-32.0f)*5.0f/9.0f;
+                                if (units == 0) {
+                                    temp[j / 2 - 1] = (Float.parseFloat(col[1])*9.0f/5.0f+32.0f);
+                                } else {
+                                    temp[j / 2 - 1] = Float.parseFloat(col[1]);
+                                }
                             }
                             if(temp[j /2-1]<tempLow){
                                 tempLow=temp[j /2-1];
@@ -220,11 +237,19 @@ public class MainActivity extends AppCompatActivity
                             }
                         }
                         if (Float.parseFloat(col[2]) > 0) {
-                            if(units==0) {
-                                dew[j /2-1] = Float.parseFloat(col[2]);
+                            if(nativeUnits==0) {
+                                if (units == 0) {
+                                    dew[j / 2 - 1] = Float.parseFloat(col[2]);
+                                } else {
+                                    dew[j / 2 - 1] = (Float.parseFloat(col[2]) - 32.0f) * 5.0f / 9.0f;
+                                }
                             }
                             else{
-                                dew[j /2-1] = (Float.parseFloat(col[2])-32.0f)*5.0f/9.0f;
+                                if (units == 0) {
+                                    dew[j / 2 - 1] = (Float.parseFloat(col[2])*9.0f/5.0f+32.0f);
+                                } else {
+                                    dew[j / 2 - 1] = Float.parseFloat(col[2]);
+                                }
                             }
                             if(dew[j /2-1]<dewLow){
                                 dewLow=dew[j /2-1];
@@ -234,11 +259,19 @@ public class MainActivity extends AppCompatActivity
                             }
                         }
                         if (Float.parseFloat(col[3]) > 0) {
-                            if(units==0) {
-                                press[j /2-1] = Float.parseFloat(col[3]);
+                            if(nativeUnits==0) {
+                                if (units == 0) {
+                                    press[j / 2 - 1] = Float.parseFloat(col[3]);
+                                } else {
+                                    press[j / 2 - 1] = Float.parseFloat(col[3]) * 33.8639f;
+                                }
                             }
-                            else {
-                                press[j /2-1] = Float.parseFloat(col[3])*3.38639f;
+                            else{
+                                if (units == 0) {
+                                    press[j / 2 - 1] = Float.parseFloat(col[3])/33.8639f;
+                                } else {
+                                    press[j / 2 - 1] = Float.parseFloat(col[3]);
+                                }
                             }
                         }
                         windDir=col[4];
@@ -246,38 +279,70 @@ public class MainActivity extends AppCompatActivity
                             windDeg[j /2-1] = Float.parseFloat(col[5]);
                         }
                         if (Float.parseFloat(col[6]) > 0) {
-                            if(units==0) {
-                                windSpeed[j /2-1] = Float.parseFloat(col[6]);
+                            if(nativeUnits==0) {
+                                if (units == 0) {
+                                    windSpeed[j / 2 - 1] = Float.parseFloat(col[6]);
+                                } else {
+                                    windSpeed[j / 2 - 1] = Float.parseFloat(col[6]) * 1.60934f;
+                                }
                             }
                             else{
-                                windSpeed[j /2-1] = Float.parseFloat(col[6])*0.44704f;
+                                if (units == 0) {
+                                    windSpeed[j / 2 - 1] = Float.parseFloat(col[6])/1.60934f;
+                                } else {
+                                    windSpeed[j / 2 - 1] = Float.parseFloat(col[6]);
+                                }
                             }
                         }
                         if (Float.parseFloat(col[7]) > 0) {
-                            if(units==0) {
-                                windGust[j /2-1] = Float.parseFloat(col[7]);
+                            if (nativeUnits == 0){
+                                if (units == 0) {
+                                    windGust[j / 2 - 1] = Float.parseFloat(col[7]);
+                                } else {
+                                    windGust[j / 2 - 1] = Float.parseFloat(col[7]) * 1.60934f;
+                                }
                             }
-                            else{
-                                windGust[j /2-1] = Float.parseFloat(col[7])*0.44704f;
+                            else {
+                                if (units == 0) {
+                                    windGust[j / 2 - 1] = Float.parseFloat(col[7])/ 1.60934f;
+                                } else {
+                                    windGust[j / 2 - 1] = Float.parseFloat(col[7]);
+                                }
                             }
                         }
                         if (Float.parseFloat(col[8]) > 0) {
                             hum[j /2-1] = Float.parseFloat(col[8]);
                         }
                         if (Float.parseFloat(col[9]) > 0) {
-                            if(units==0) {
-                                precip[j /2-1] = Float.parseFloat(col[9]);
+                            if(nativeUnits==0) {
+                                if (units == 0) {
+                                    precip[j / 2 - 1] = Float.parseFloat(col[9]);
+                                } else {
+                                    precip[j / 2 - 1] = Float.parseFloat(col[9]) * 25.4f;
+                                }
                             }
                             else{
-                                precip[j /2-1] = Float.parseFloat(col[9])*25.4f;
+                                if (units == 0) {
+                                    precip[j / 2 - 1] = Float.parseFloat(col[9])/ 25.4f;
+                                } else {
+                                    precip[j / 2 - 1] = Float.parseFloat(col[9]);
+                                }
                             }
                         }
                         if (Float.parseFloat(col[12]) > 0) {
-                            if(units==0) {
-                                precipDay[j /2-1] = Float.parseFloat(col[12]);
+                            if (nativeUnits == 0){
+                                if (units == 0) {
+                                    precipDay[j / 2 - 1] = Float.parseFloat(col[12]);
+                                } else {
+                                    precipDay[j / 2 - 1] = Float.parseFloat(col[12]) * 25.4f;
+                                }
                             }
                             else{
-                                precipDay[j /2-1] = Float.parseFloat(col[12])*25.4f;
+                                if (units == 0) {
+                                    precipDay[j / 2 - 1] = Float.parseFloat(col[12])/25.4f;
+                                } else {
+                                    precipDay[j / 2 - 1] = Float.parseFloat(col[12]);
+                                }
                             }
                         }
 
@@ -292,11 +357,9 @@ public class MainActivity extends AppCompatActivity
                             windG = windGust[j /2-1];
                         }
 
-                        if (Float.parseFloat(col[12]) > precipMax) {
-                            precipMax = Float.parseFloat(col[12]);
+                        if (precipDay[j / 2 - 1] > precipMax) {
+                            precipMax = precipDay[j / 2 - 1];
                         }
-
-
                     }
                     j++;
                 }
@@ -318,7 +381,7 @@ public class MainActivity extends AppCompatActivity
                         pressBLData[m] = new DataPoint(tim[m], 29.921f);
                     }
                     else{
-                        pressBLData[m] = new DataPoint(tim[m], 101.325f);
+                        pressBLData[m] = new DataPoint(tim[m], 1013.25f);
                     }
                     windSData[m]=new DataPoint(tim[m],windSpeed[m]);
                     windGData[m]=new DataPoint(tim[m],windGust[m]);
@@ -353,29 +416,59 @@ public class MainActivity extends AppCompatActivity
                 windDAvg /= j / 2;
                 windSAvg /= j / 2;
                 humAvg /= j / 2;
-                if (units == 0) {
-                    outBuild.append(lines[lines.length - 2]);
-                } else {
-                    outBuild.append(timStamp);
-                    outBuild.append(",");
-                    outBuild.append(String.valueOf(Math.round(temp[temp.length - 2] * 100.0) / 100.0));
-                    outBuild.append(",");
-                    outBuild.append(String.valueOf(Math.round(dew[dew.length - 2] * 100.0) / 100.0));
-                    outBuild.append(",");
-                    outBuild.append(String.valueOf(Math.round(press[press.length - 2] * 100.0) / 100.0));
-                    outBuild.append(",");
-                    outBuild.append(String.valueOf(windDir));
-                    outBuild.append(",");
-                    outBuild.append(String.valueOf(windDeg[windDeg.length - 2]));
-                    outBuild.append(",");
-                    outBuild.append(String.valueOf(Math.round(windSpeed[windSpeed.length - 2] * 100.0) / 100.0));
-                    outBuild.append(",");
-                    outBuild.append(String.valueOf(Math.round(windGust[windGust.length - 2] * 100.0) / 100.0));
-                    outBuild.append(",");
-                    outBuild.append(String.valueOf(hum[hum.length - 2]));
-                    outBuild.append(",");
-                    outBuild.append(String.valueOf(Math.round(precip[precip.length - 2] * 100.0) / 100.0));
-                    outBuild.append(",,,,,,");
+                if (nativeUnits == 0) {
+                    if (units == 0) {
+                        outBuild.append(lines[lines.length - 2]);
+                    }
+                    else {
+                        outBuild.append(timStamp);
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(Math.round(temp[temp.length - 2] * 100.0) / 100.0));
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(Math.round(dew[dew.length - 2] * 100.0) / 100.0));
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(Math.round(press[press.length - 2] * 100.0) / 100.0));
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(windDir));
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(windDeg[windDeg.length - 2]));
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(Math.round(windSpeed[windSpeed.length - 2] * 100.0) / 100.0));
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(Math.round(windGust[windGust.length - 2] * 100.0) / 100.0));
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(hum[hum.length - 2]));
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(Math.round(precip[precip.length - 2] * 100.0) / 100.0));
+                        outBuild.append(",,,,,,");
+                    }
+                }
+                else{
+                    if (units == 0) {
+                        outBuild.append(timStamp);
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(Math.round(temp[temp.length - 2] * 100.0) / 100.0));
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(Math.round(dew[dew.length - 2] * 100.0) / 100.0));
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(Math.round(press[press.length - 2] * 100.0) / 100.0));
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(windDir));
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(windDeg[windDeg.length - 2]));
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(Math.round(windSpeed[windSpeed.length - 2] * 100.0) / 100.0));
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(Math.round(windGust[windGust.length - 2] * 100.0) / 100.0));
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(hum[hum.length - 2]));
+                        outBuild.append(",");
+                        outBuild.append(String.valueOf(Math.round(precip[precip.length - 2] * 100.0) / 100.0));
+                        outBuild.append(",,,,,,");
+                    }
+                    else {
+                        outBuild.append(lines[lines.length - 2]);
+                    }
                 }
 
 
@@ -402,7 +495,7 @@ public class MainActivity extends AppCompatActivity
                 outBuild.append(",");
                 outBuild.append(String.valueOf(Math.round(humAvg * 100.0) / 100.0));
                 outBuild.append(",");
-                outBuild.append(String.valueOf(precipMax));
+                outBuild.append(String.valueOf(Math.round(precipMax* 100.0) / 100.0));
 
                 return outBuild.toString();
 
@@ -439,8 +532,8 @@ public class MainActivity extends AppCompatActivity
                 endStringD = " °F, °F, °F, °F, °F, °F, inHg, °, mph, mph, %, in";
             }
             else{
-                endString = ", °C, °C, kPa,, °, m/s, m/s, %, mm,,, mm,,";
-                endStringD = " °C, °C, °C, °C, °C, °C, kPa, °, m/s, m/s, %, mm";
+                endString = ", °C, °C, hPa,, °, km/h, km/h, %, mm,,, mm,,";
+                endStringD = " °C, °C, °C, °C, °C, °C, hPa, °, km/h, km/h, %, mm";
             }
             String exString="Conditions,Clouds,SoftwareType,DateUTC,Daily Rain";
             String[] split=result.split(";");
@@ -567,8 +660,8 @@ public class MainActivity extends AppCompatActivity
                     graph.getViewport().setMaxY(32);
                 }
                 else {
-                    graph.getViewport().setMinY(87);
-                    graph.getViewport().setMaxY(108.5);
+                    graph.getViewport().setMinY(870);
+                    graph.getViewport().setMaxY(1085);
                 }
                 graph.getLegendRenderer().setVisible(true);
                 graph.getLegendRenderer().setTextSize(40f);
@@ -588,7 +681,7 @@ public class MainActivity extends AppCompatActivity
                                 return super.formatLabel(value, isValueX) + " inHg";
                             }
                             else{
-                                return super.formatLabel(value, isValueX) + " kPa";
+                                return super.formatLabel(value, isValueX) + " hPa";
                             }
                         }
                     }
@@ -655,7 +748,7 @@ public class MainActivity extends AppCompatActivity
                                 return super.formatLabel(value, isValueX) + " mph";
                             }
                             else{
-                                return super.formatLabel(value, isValueX) + " m/s";
+                                return super.formatLabel(value, isValueX) + " km/h";
                             }
                         }
                     }
@@ -1003,8 +1096,8 @@ public class MainActivity extends AppCompatActivity
                 graph.getViewport().setMaxY(32);
             }
             else {
-                graph.getViewport().setMinY(87);
-                graph.getViewport().setMaxY(108.5);
+                graph.getViewport().setMinY(870);
+                graph.getViewport().setMaxY(1085);
             }
             graph.getLegendRenderer().setVisible(true);
             graph.getLegendRenderer().setTextSize(40f);
@@ -1024,7 +1117,7 @@ public class MainActivity extends AppCompatActivity
                             return super.formatLabel(value, isValueX) + " inHg";
                         }
                         else{
-                            return super.formatLabel(value, isValueX) + " kPa";
+                            return super.formatLabel(value, isValueX) + " hPa";
                         }
                     }
                 }
@@ -1092,7 +1185,7 @@ public class MainActivity extends AppCompatActivity
                             return super.formatLabel(value, isValueX) + " mph";
                         }
                         else{
-                            return super.formatLabel(value, isValueX) + " m/s";
+                            return super.formatLabel(value, isValueX) + " km/h";
                         }
                     }
                 }
