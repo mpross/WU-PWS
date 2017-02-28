@@ -44,14 +44,14 @@ public class DateActivity extends AppCompatActivity implements AdapterView.OnIte
         b=getIntent().getExtras();
 
         calDate=b.getString("calDate");
-
+        //Tells user if they selected wrong date
         if(getIntent().getExtras().getBoolean("error")==true){
             errText.setText("No data available for that date.");
         }
         else{
             errText.setText("");
         }
-
+        //Calendar
         CalendarView calendar = (CalendarView) findViewById(R.id.calendarView);
         try{
             calendar.setDate(new SimpleDateFormat("dd,MM,yyyy").parse(calDate).getTime(), true, true);

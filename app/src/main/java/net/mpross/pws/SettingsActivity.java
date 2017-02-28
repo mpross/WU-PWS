@@ -47,15 +47,13 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         setContentView(R.layout.activity_settings);
 
         b=getIntent().getExtras();
-
+        //Units selection
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);
         spinner.setSelection(getIntent().getExtras().getInt("unit"));
 
         TextView errText =(TextView) findViewById(R.id.errText);
-
-
-
+        //Tells user if they selected an invalid weather station
         if(getIntent().getExtras().getBoolean("error")==true){
             errText.setText("Input a valid weather station ID");
         }
@@ -65,6 +63,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
         final EditText editText = (EditText) findViewById(R.id.station);
         byte[] by=new byte[11];
+        //Writes station to file
         try {
             FileInputStream fis = openFileInput("station_file");
             int n= fis.read(by);
@@ -74,6 +73,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         }
         catch (IOException e) {
         }
+        //"Apply" button action
         final Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -102,7 +102,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                 }
             }
         });
-
+        //Return key action
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {

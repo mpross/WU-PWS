@@ -56,14 +56,16 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    String currentString=new String();
-    String dailyString=new String();
-    String station="";
+    String currentString=new String(); //String for current stats
+    String dailyString=new String(); //String for daily stats
+    String station=""; //Weather station name
     static String viewSel="current";
     int units=0; // User unit choice
     int nativeUnits=0; // Units the data is in
-    int errSrcId=0;
-    boolean errBool=false;
+    int errSrcId=0; //0=originated from settings, 1=originated from date
+    boolean errBool=false; //Error status
+
+    //LineGraph time series
     LineGraphSeries<DataPoint> seriesT = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesD = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesP = new LineGraphSeries<>();
@@ -73,15 +75,18 @@ public class MainActivity extends AppCompatActivity
     LineGraphSeries<DataPoint> seriesH = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesR = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesRD = new LineGraphSeries<>();
-    String day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
+
+        String day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
     String month = new SimpleDateFormat("MM").format(Calendar.getInstance().getTime());
     String year = new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime());
     String calDate=day+","+month+","+year;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Sets starting date to today
         day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
         month = new SimpleDateFormat("MM").format(Calendar.getInstance().getTime());
         year = new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime());
@@ -97,8 +102,9 @@ public class MainActivity extends AppCompatActivity
         
         graph.setVisibility(View.GONE);
 
-        byte[] byU=new byte[1];
+        byte[] byU=new byte[1]; //Unit selection 0=imperial, 1=metric
 
+        // Writes unit selection to file
         try {
             FileInputStream fis = openFileInput("unit_file");
             fis.read(byU);
@@ -108,11 +114,14 @@ public class MainActivity extends AppCompatActivity
             System.out.println(e);
         }
 
+        //Initiated data grab from WeatherUnderground
         new datagrab().execute("");
 
+        //Settings menu
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Refresh button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +132,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
+        //Navigation drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -133,6 +142,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+    //Date grab from WeatherUnderground
     public class datagrab extends AsyncTask<String, Void,String>
     {
 
@@ -140,6 +151,7 @@ public class MainActivity extends AppCompatActivity
         protected String doInBackground(String[] p1)
         {
             byte[] by=new byte[11];
+            //Reads station id from station file
             try {
                 FileInputStream fis = openFileInput("station_file");
                 int n= fis.read(by);
@@ -149,7 +161,11 @@ public class MainActivity extends AppCompatActivity
             catch (IOException e){
                 System.out.println(e);
             }
+
+
             GraphView graph = (GraphView) findViewById(R.id.graph);
+
+            //Builds URL for data file
             StringBuilder url =new StringBuilder();
             url.append("https://www.wunderground.com/weatherstation/WXDailyHistory.asp?");
             url.append("ID="+station);
@@ -159,19 +175,21 @@ public class MainActivity extends AppCompatActivity
             url.append("&graphspan=day&format=1");
 
             try {
-                URL site = new URL(url.toString().replaceAll("\\P{Print}", ""));
 
+                //Removes non ASCII character from URL
+                URL site = new URL(url.toString().replaceAll("\\P{Print}", ""));
+                //Reads file
                 BufferedReader data = new BufferedReader(
                         new InputStreamReader(site.openStream()));
-
+                //Puts return character at end of every line
                 String in;
                 StringBuilder build = new StringBuilder();
                 StringBuilder outBuild = new StringBuilder();
                 while ((in = data.readLine()) != null)
                     build.append(in + "\r");
-
+                //Splits lines
                 String[] lines = build.toString().split("\r");
-
+                //Data vector initialization
                 float[] temp = new float[lines.length /2-1];
                 float[] dew = new float[lines.length/2-1];
                 float[] press = new float[lines.length/2-1];
@@ -198,10 +216,18 @@ public class MainActivity extends AppCompatActivity
                 float windG = 0;
                 float humAvg = 0;
                 float precipMax = 0;
+
+                float lastHum=0;
+                float lastTemp=0;
+                float lastDew=0;
+                float lastPress=0;
+
                 String timStamp="";
                 int j = 0;
                 for (String line : lines) {
+                    //Splits lines into columns
                     String[] col = line.split(",");
+                    //Reads data units from first line
                     if (j==1) {
                         if(col[1].equals("TemperatureF")){
                             nativeUnits=0;
@@ -210,11 +236,14 @@ public class MainActivity extends AppCompatActivity
                             nativeUnits=1;
                         }
                     }
-                    if (col.length > 1 && j > 2) {
+                    if (col.length > 1 && j > 1) {
                         timStamp=col[0];
+                        //Time stamp to hours conversion
                         tim[j /2-1]=Float.parseFloat(col[0].split(" ")[1].split(":")[0])+Float.parseFloat(col[0].split(" ")[1].split(":")[1])/60
                                 +Float.parseFloat(col[0].split(" ")[1].split(":")[2])/3600;
-                        if (Float.parseFloat(col[1]) > 0) {
+                        //Drop out handling
+                        if (Float.parseFloat(col[1])>-50) {
+                            //If data is in imperial
                             if(nativeUnits==0) {
                                 if (units == 0) {
                                     temp[j / 2 - 1] = Float.parseFloat(col[1]);
@@ -222,6 +251,7 @@ public class MainActivity extends AppCompatActivity
                                     temp[j / 2 - 1] = (Float.parseFloat(col[1]) - 32.0f) * 5.0f / 9.0f;
                                 }
                             }
+                            //If data is in metric
                             else{
                                 if (units == 0) {
                                     temp[j / 2 - 1] = (Float.parseFloat(col[1])*9.0f/5.0f+32.0f);
@@ -235,8 +265,13 @@ public class MainActivity extends AppCompatActivity
                             if(temp[j /2-1]>tempHigh){
                                 tempHigh=temp[j /2-1];
                             }
+                            lastTemp=temp[j/2-1];
                         }
-                        if (Float.parseFloat(col[2]) > 0) {
+                        //Drop outs just retain last value
+                        else{
+                            temp[j/2-1]=lastTemp;
+                        }
+                        if (Float.parseFloat(col[2]) >-50) {
                             if(nativeUnits==0) {
                                 if (units == 0) {
                                     dew[j / 2 - 1] = Float.parseFloat(col[2]);
@@ -257,8 +292,12 @@ public class MainActivity extends AppCompatActivity
                             if(dew[j /2-1]>dewHigh){
                                 dewHigh=dew[j /2-1];
                             }
+                            lastDew=dew[j/2-1];
                         }
-                        if (Float.parseFloat(col[3]) > 0) {
+                        else{
+                            dew[j/2-1]=lastDew;
+                        }
+                        if (Float.parseFloat(col[3]) > 0){
                             if(nativeUnits==0) {
                                 if (units == 0) {
                                     press[j / 2 - 1] = Float.parseFloat(col[3]);
@@ -273,6 +312,10 @@ public class MainActivity extends AppCompatActivity
                                     press[j / 2 - 1] = Float.parseFloat(col[3]);
                                 }
                             }
+                            lastPress=press[j / 2 - 1];
+                        }
+                        else{
+                            press[j/2-1]=lastPress;
                         }
                         windDir=col[4];
                         if (Float.parseFloat(col[5]) > 0) {
@@ -310,8 +353,12 @@ public class MainActivity extends AppCompatActivity
                                 }
                             }
                         }
-                        if (Float.parseFloat(col[8]) > 0) {
+                        if (Float.parseFloat(col[8])>0){
                             hum[j /2-1] = Float.parseFloat(col[8]);
+                            lastHum=hum[j /2-1];
+                        }
+                        else{
+                            hum[j /2-1]=lastHum;
                         }
                         if (Float.parseFloat(col[9]) > 0) {
                             if(nativeUnits==0) {
@@ -363,6 +410,7 @@ public class MainActivity extends AppCompatActivity
                     }
                     j++;
                 }
+                //Plot data vector creation
                 DataPoint[] tempData=new DataPoint[temp.length];
                 DataPoint[] dewData=new DataPoint[dew.length];
                 DataPoint[] pressData=new DataPoint[press.length];
@@ -372,11 +420,13 @@ public class MainActivity extends AppCompatActivity
                 DataPoint[] humData=new DataPoint[hum.length];
                 DataPoint[] rainData=new DataPoint[precip.length];
                 DataPoint[] rainDayData=new DataPoint[precipDay.length];
+
                 m=0;
                 for(float t:temp){
                     tempData[m] = new DataPoint(tim[m], t);
                     dewData[m] = new DataPoint(tim[m], dew[m]);
                     pressData[m]=new DataPoint(tim[m],press[m]);
+                    //Mean sea level pressure as reference line
                     if (units==0) {
                         pressBLData[m] = new DataPoint(tim[m], 29.921f);
                     }
@@ -416,10 +466,13 @@ public class MainActivity extends AppCompatActivity
                 windDAvg /= j / 2;
                 windSAvg /= j / 2;
                 humAvg /= j / 2;
+                //If native units are imperial
                 if (nativeUnits == 0) {
+                    //Last line of data file is already the correct format for displaying
                     if (units == 0) {
                         outBuild.append(lines[lines.length - 2]);
                     }
+                    //If units are different from file then create correctly formatted string
                     else {
                         outBuild.append(timStamp);
                         outBuild.append(",");
@@ -443,6 +496,7 @@ public class MainActivity extends AppCompatActivity
                         outBuild.append(",,,,,,");
                     }
                 }
+                //If native units are metric
                 else{
                     if (units == 0) {
                         outBuild.append(timStamp);
@@ -471,7 +525,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
 
-
+                //Build average string
                 outBuild.append(";");
                 outBuild.append(String.valueOf(Math.round(tempAvg * 100.0) / 100.0));
                 outBuild.append(",");
@@ -496,7 +550,7 @@ public class MainActivity extends AppCompatActivity
                 outBuild.append(String.valueOf(Math.round(humAvg * 100.0) / 100.0));
                 outBuild.append(",");
                 outBuild.append(String.valueOf(Math.round(precipMax* 100.0) / 100.0));
-
+                //Return current status; average values
                 return outBuild.toString();
 
 
@@ -519,6 +573,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(String result)
         {
+            //Label creation
             String fieldString="Date & Time,Temperature,Dewpoint,Pressure,Wind: \n" +
                     "     Direction,     Direction,     Speed," +
                     "     Gust,Humidity,Hourly Precip,Conditions,Clouds,Daily Rain,SoftwareType,DateUTC";
@@ -535,6 +590,7 @@ public class MainActivity extends AppCompatActivity
                 endString = ", °C, °C, hPa,, °, km/h, km/h, %, mm,,, mm,,";
                 endStringD = " °C, °C, °C, °C, °C, °C, hPa, °, km/h, km/h, %, mm";
             }
+            //Excluded labels that are included in data file
             String exString="Conditions,Clouds,SoftwareType,DateUTC,Daily Rain";
             String[] split=result.split(";");
             String[] dataCur=new String[1];
@@ -550,6 +606,7 @@ public class MainActivity extends AppCompatActivity
             StringBuilder outDay=new StringBuilder();
             TextView text =(TextView) findViewById(R.id.text1);
             String station="0";
+            //Reads station from file
             byte[] by=new byte[11];
             try {
                 FileInputStream fis = openFileInput("station_file");
@@ -564,7 +621,7 @@ public class MainActivity extends AppCompatActivity
             text2.setText(station);
 
             GraphView graph = (GraphView) findViewById(R.id.graph);
-
+            //Veiw changing. Hides unused elements and makes visible selected elements
             if (viewSel=="current") {
 
                 text.setVisibility(View.VISIBLE);
@@ -586,6 +643,7 @@ public class MainActivity extends AppCompatActivity
                 graph.getViewport().setMinX(0);
                 graph.getViewport().setMaxX(seriesT.getHighestValueX());
                 graph.getViewport().setYAxisBoundsManual(true);
+                //Plot range settings
                 if (seriesT.getLowestValueY()<seriesD.getLowestValueY()) {
                     if(seriesT.getLowestValueY()>0) {
                         graph.getViewport().setMinY(seriesT.getLowestValueY() * .9);
@@ -902,7 +960,7 @@ public class MainActivity extends AppCompatActivity
                 }
             }
             catch(ArrayIndexOutOfBoundsException a) {
-                stationError();
+                error();
             }
         }
 
@@ -918,7 +976,9 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-    public void stationError() {
+    //Error handling that sends the user back to either settings or date selection.
+    // If error is throw on date selection more than once the user will be sent to settings
+    public void error() {
         if(errSrcId==0) {
             Intent intent = new Intent(this, SettingsActivity.class);
             intent.putExtra("error", true);
@@ -943,7 +1003,7 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
+    //Menu item selection
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -970,6 +1030,7 @@ public class MainActivity extends AppCompatActivity
         errSrcId=requestCode;
         if(requestCode==0){
             units=resultCode;
+            //Write unit code to file
             try {
                 FileOutputStream fos = openFileOutput("unit_file", Context.MODE_PRIVATE);
                 fos.write(units);
@@ -980,25 +1041,27 @@ public class MainActivity extends AppCompatActivity
             }
         }
         else{
+            //Sets current date to selected date
             try{
-                System.out.println(data);
                 calDate=data.getStringExtra("calDate");
                 day = calDate.split(",")[0];
                 month = calDate.split(",")[1];
                 year = calDate.split(",")[2];
             }
+            //If error default to today
             catch(NullPointerException n) {
                 day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
                 month = new SimpleDateFormat("MM").format(Calendar.getInstance().getTime());
                 year = new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime());
             }
         }
+        //Regrabs data
         new datagrab().execute("");
     }
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        //Navigation bar selection same as similar section in datagrab()
         int id = item.getItemId();
         TextView text =(TextView) findViewById(R.id.text1);
         GraphView graph = (GraphView) findViewById(R.id.graph);
