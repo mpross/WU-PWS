@@ -23,16 +23,4 @@
 
     <include layout="@layout/content_main" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="72dp"
-        android:layout_height="75dp"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:rippleColor="@android:color/transparent"
-        app:elevation="0dp"
-        app:srcCompat="@mipmap/refresh"
-        app:backgroundTint="@android:color/transparent"
-        app:fabSize="mini" />
-
 </android.support.design.widget.CoordinatorLayout>
