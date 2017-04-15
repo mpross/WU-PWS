@@ -16,8 +16,8 @@
 
     <TextView
         android:text="Loading..."
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:id="@+id/text1"
         android:textSize="30sp" />
 
@@ -184,7 +184,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/windLabel"
-                    android:textSize="32sp" />
+                    android:textSize="32sp"
+                    android:text="Wind:"
+                    android:visibility="invisible" />
 
                 <LinearLayout
                     android:orientation="horizontal"
