@@ -612,6 +612,7 @@ public class MainActivity extends AppCompatActivity
             ImageView statusIcon=(ImageView) findViewById(R.id.statusIcon);
             ImageView windIcon=(ImageView) findViewById(R.id.windIcon);
             ImageView windDirIcon=(ImageView) findViewById(R.id.windDirIcon);
+            ImageView snowIcon=(ImageView) findViewById(R.id.snowIcon);
 
             String[] fields = fieldString.split(",");
             String[] fieldsD = fieldStringD.split(",");
@@ -689,6 +690,7 @@ public class MainActivity extends AppCompatActivity
                     graph.setVisibility(View.GONE);
                     windIcon.setVisibility(View.VISIBLE);
                     statusIcon.setVisibility(View.VISIBLE);
+                    windDirIcon.setVisibility(View.VISIBLE);
 
                     time.setText(currentString.split("\n")[0].split(": ")[1]);
                     temp.setText(currentString.split("\n")[1].split(": ")[1]);
@@ -712,11 +714,20 @@ public class MainActivity extends AppCompatActivity
                     else{
                         statusIcon.setImageResource(R.mipmap.cloud_icon);
                     }
-                    if((Float.parseFloat(currentString.split("\n")[7].split(": ")[1].split(" ")[0]))>4){
+                    if((Float.parseFloat(currentString.split("\n")[8].split(": ")[1].split(" ")[0]))>4){
                         windIcon.setVisibility(View.VISIBLE);
                     }
                     else{
                         windIcon.setVisibility(View.INVISIBLE);
+                    }
+                    if((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0]))<32 && units==0){
+                        snowIcon.setVisibility(View.VISIBLE);
+                    }
+                    else if((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0]))>0 && units==1){
+                        snowIcon.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        snowIcon.setVisibility(View.INVISIBLE);
                     }
                     windDirIcon.setRotation((Float.parseFloat(currentString.split("\n")[6].split(": ")[1].split(" ")[0])));
                 } else if (viewSel == "daily") {
@@ -740,6 +751,7 @@ public class MainActivity extends AppCompatActivity
                     graph.setVisibility(View.GONE);
                     windIcon.setVisibility(View.VISIBLE);
                     statusIcon.setVisibility(View.VISIBLE);
+                    windDirIcon.setVisibility(View.VISIBLE);
 
                     temp.setText(dailyString.split("\n")[1].split(": ")[1]);
                     tempHigh.setText(dailyString.split("\n")[2].split(": ")[1]);
@@ -766,11 +778,20 @@ public class MainActivity extends AppCompatActivity
                     else{
                         statusIcon.setImageResource(R.mipmap.cloud_icon);
                     }
-                    if((Float.parseFloat(dailyString.split("\n")[10].split(": ")[1].split(" ")[0]))>4){
+                    if((Float.parseFloat(dailyString.split("\n")[11].split(": ")[1].split(" ")[0]))>4){
                         windIcon.setVisibility(View.VISIBLE);
                     }
                     else{
                         windIcon.setVisibility(View.INVISIBLE);
+                    }
+                    if((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0]))<32 && units==0){
+                        snowIcon.setVisibility(View.VISIBLE);
+                    }
+                    else if((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0]))>0 && units==1){
+                        snowIcon.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        snowIcon.setVisibility(View.INVISIBLE);
                     }
                     windDirIcon.setRotation((Float.parseFloat(dailyString.split("\n")[9].split(": ")[1].split(" ")[0])));
                 } else if (viewSel == "tempPlot") {
@@ -794,6 +815,8 @@ public class MainActivity extends AppCompatActivity
                     graph.setVisibility(View.VISIBLE);
                     windIcon.setVisibility(View.INVISIBLE);
                     statusIcon.setVisibility(View.INVISIBLE);
+                    windDirIcon.setVisibility(View.INVISIBLE);
+                    snowIcon.setVisibility(View.INVISIBLE);
                     graph.removeAllSeries();
 
                     graph.getViewport().setXAxisBoundsManual(true);
@@ -871,6 +894,8 @@ public class MainActivity extends AppCompatActivity
                     graph.setVisibility(View.VISIBLE);
                     windIcon.setVisibility(View.INVISIBLE);
                     statusIcon.setVisibility(View.INVISIBLE);
+                    windDirIcon.setVisibility(View.INVISIBLE);
+                    snowIcon.setVisibility(View.INVISIBLE);
 
                     graph.removeAllSeries();
 
@@ -929,6 +954,8 @@ public class MainActivity extends AppCompatActivity
                     graph.setVisibility(View.VISIBLE);
                     windIcon.setVisibility(View.INVISIBLE);
                     statusIcon.setVisibility(View.INVISIBLE);
+                    windDirIcon.setVisibility(View.INVISIBLE);
+                    snowIcon.setVisibility(View.INVISIBLE);
 
                     graph.removeAllSeries();
 
@@ -1007,6 +1034,8 @@ public class MainActivity extends AppCompatActivity
                     graph.setVisibility(View.VISIBLE);
                     windIcon.setVisibility(View.INVISIBLE);
                     statusIcon.setVisibility(View.INVISIBLE);
+                    windDirIcon.setVisibility(View.INVISIBLE);
+                    snowIcon.setVisibility(View.INVISIBLE);
 
                     graph.removeAllSeries();
 
@@ -1062,6 +1091,8 @@ public class MainActivity extends AppCompatActivity
                     graph.setVisibility(View.VISIBLE);
                     windIcon.setVisibility(View.INVISIBLE);
                     statusIcon.setVisibility(View.INVISIBLE);
+                    windDirIcon.setVisibility(View.INVISIBLE);
+                    snowIcon.setVisibility(View.INVISIBLE);
 
                     graph.removeAllSeries();
 
@@ -1245,6 +1276,7 @@ public class MainActivity extends AppCompatActivity
         ImageView statusIcon=(ImageView) findViewById(R.id.statusIcon);
         ImageView windIcon=(ImageView) findViewById(R.id.windIcon);
         ImageView windDirIcon=(ImageView) findViewById(R.id.windDirIcon);
+        ImageView snowIcon=(ImageView) findViewById(R.id.snowIcon);
 
         if (id == R.id.nav_current) {
             viewSel="current";
@@ -1267,6 +1299,7 @@ public class MainActivity extends AppCompatActivity
             graph.setVisibility(View.GONE);
             windIcon.setVisibility(View.VISIBLE);
             statusIcon.setVisibility(View.VISIBLE);
+            windDirIcon.setVisibility(View.VISIBLE);
 
             time.setText(currentString.split("\n")[0].split(": ")[1]);
             temp.setText(currentString.split("\n")[1].split(": ")[1]);
@@ -1290,11 +1323,21 @@ public class MainActivity extends AppCompatActivity
             else{
                 statusIcon.setImageResource(R.mipmap.cloud_icon);
             }
-            if((Float.parseFloat(currentString.split("\n")[7].split(": ")[1].split(" ")[0]))>4){
+            if((Float.parseFloat(currentString.split("\n")[8].split(": ")[1].split(" ")[0]))>4){
                 windIcon.setVisibility(View.VISIBLE);
             }
             else{
                 windIcon.setVisibility(View.INVISIBLE);
+            }
+
+            if((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0]))<32 && units==0){
+                snowIcon.setVisibility(View.VISIBLE);
+            }
+            else if((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0]))>0 && units==1){
+                snowIcon.setVisibility(View.VISIBLE);
+            }
+            else{
+                snowIcon.setVisibility(View.INVISIBLE);
             }
             windDirIcon.setRotation((Float.parseFloat(currentString.split("\n")[6].split(": ")[1].split(" ")[0])));
 
@@ -1319,6 +1362,7 @@ public class MainActivity extends AppCompatActivity
             graph.setVisibility(View.GONE);
             windIcon.setVisibility(View.VISIBLE);
             statusIcon.setVisibility(View.VISIBLE);
+            windDirIcon.setVisibility(View.VISIBLE);
 
             temp.setText(dailyString.split("\n")[1].split(": ")[1]);
             tempHigh.setText(dailyString.split("\n")[2].split(": ")[1]);
@@ -1345,11 +1389,20 @@ public class MainActivity extends AppCompatActivity
             else{
                 statusIcon.setImageResource(R.mipmap.cloud_icon);
             }
-            if((Float.parseFloat(dailyString.split("\n")[10].split(": ")[1].split(" ")[0]))>4){
+            if((Float.parseFloat(dailyString.split("\n")[11].split(": ")[1].split(" ")[0]))>4){
                 windIcon.setVisibility(View.VISIBLE);
             }
             else{
                 windIcon.setVisibility(View.INVISIBLE);
+            }
+            if((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0]))<32 && units==0){
+                snowIcon.setVisibility(View.VISIBLE);
+            }
+            else if((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0]))>0 && units==1){
+                snowIcon.setVisibility(View.VISIBLE);
+            }
+            else{
+                snowIcon.setVisibility(View.INVISIBLE);
             }
             windDirIcon.setRotation((Float.parseFloat(dailyString.split("\n")[9].split(": ")[1].split(" ")[0])));
         }
@@ -1374,6 +1427,8 @@ public class MainActivity extends AppCompatActivity
             graph.setVisibility(View.VISIBLE);
             windIcon.setVisibility(View.INVISIBLE);
             statusIcon.setVisibility(View.INVISIBLE);
+            windDirIcon.setVisibility(View.INVISIBLE);
+            snowIcon.setVisibility(View.INVISIBLE);
             graph.removeAllSeries();
 
             graph.getViewport().setXAxisBoundsManual(true);
@@ -1458,6 +1513,8 @@ public class MainActivity extends AppCompatActivity
             graph.setVisibility(View.VISIBLE);
             windIcon.setVisibility(View.INVISIBLE);
             statusIcon.setVisibility(View.INVISIBLE);
+            windDirIcon.setVisibility(View.INVISIBLE);
+            snowIcon.setVisibility(View.INVISIBLE);
 
             graph.removeAllSeries();
 
@@ -1519,6 +1576,8 @@ public class MainActivity extends AppCompatActivity
             graph.setVisibility(View.VISIBLE);
             windIcon.setVisibility(View.INVISIBLE);
             statusIcon.setVisibility(View.INVISIBLE);
+            windDirIcon.setVisibility(View.INVISIBLE);
+            snowIcon.setVisibility(View.INVISIBLE);
 
             graph.removeAllSeries();
 
@@ -1605,6 +1664,8 @@ public class MainActivity extends AppCompatActivity
             graph.setVisibility(View.VISIBLE);
             windIcon.setVisibility(View.INVISIBLE);
             statusIcon.setVisibility(View.INVISIBLE);
+            windDirIcon.setVisibility(View.INVISIBLE);
+            snowIcon.setVisibility(View.INVISIBLE);
 
             graph.removeAllSeries();
 
@@ -1663,6 +1724,8 @@ public class MainActivity extends AppCompatActivity
             graph.setVisibility(View.VISIBLE);
             windIcon.setVisibility(View.INVISIBLE);
             statusIcon.setVisibility(View.INVISIBLE);
+            windDirIcon.setVisibility(View.INVISIBLE);
+            snowIcon.setVisibility(View.INVISIBLE);
 
             graph.removeAllSeries();
 
