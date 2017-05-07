@@ -26,7 +26,8 @@
         android:id="@+id/graph"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_width="match_parent" />
+        android:layout_width="match_parent"
+        android:visibility="invisible" />
 
     <ScrollView
         android:clipToPadding="false"
@@ -86,7 +87,8 @@
                         tools:layout_editor_absoluteY="0dp"
                         tools:layout_editor_absoluteX="0dp"
                         android:textSize="50sp"
-                        android:layout_marginBottom="8dp" />
+                        android:layout_marginBottom="8dp"
+                        android:visibility="invisible" />
 
                     <LinearLayout
                         android:orientation="vertical"
@@ -105,7 +107,8 @@
                             android:layout_marginTop="8dp"
                             android:layout_marginStart="8dp"
                             android:layout_marginLeft="8dp"
-                            android:textColor="#A35B5B" />
+                            android:textColor="#A35B5B"
+                            android:visibility="invisible" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -116,7 +119,8 @@
                             app:layout_constraintLeft_toRightOf="@+id/temp"
                             android:layout_marginStart="8dp"
                             android:layout_marginLeft="8dp"
-                            android:textColor="#5B7DA3" />
+                            android:textColor="#5B7DA3"
+                            android:visibility="invisible" />
 
                     </LinearLayout>
 
@@ -135,7 +139,8 @@
                         tools:layout_editor_absoluteX="0dp"
                         android:layout_marginTop="8dp"
                         app:layout_constraintTop_toBottomOf="@+id/temp"
-                        android:layout_marginRight="8dp" />
+                        android:layout_marginRight="8dp"
+                        android:visibility="invisible" />
 
                     <LinearLayout
                         android:orientation="vertical"
@@ -153,7 +158,8 @@
                             android:layout_marginStart="0dp"
                             android:layout_marginLeft="0dp"
                             android:textColor="#A35B5B"
-                            android:layout_marginTop="8dp" />
+                            android:layout_marginTop="8dp"
+                            android:visibility="invisible" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -165,20 +171,36 @@
                             android:layout_marginStart="8dp"
                             android:layout_marginLeft="8dp"
                             android:textColor="#5B7DA3"
-                            android:layout_margin="0dp" />
+                            android:layout_margin="0dp"
+                            android:visibility="invisible" />
 
                     </LinearLayout>
                 </LinearLayout>
 
-                <TextView
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:layout_editor_absoluteX="0dp"
-                    android:id="@+id/press"
-                    android:textSize="30sp"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintTop_toBottomOf="@+id/dew"
-                    android:layout_marginBottom="16dp" />
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:layout_editor_absoluteX="0dp"
+                        android:id="@+id/press"
+                        android:textSize="30sp"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintTop_toBottomOf="@+id/dew"
+                        android:layout_marginBottom="16dp"
+                        android:visibility="invisible" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        ads:srcCompat="@mipmap/press_change"
+                        android:id="@+id/pressChange"
+                        android:visibility="invisible" />
+
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -197,7 +219,8 @@
                     <TextView
                         android:layout_height="wrap_content"
                         android:id="@+id/textView22"
-                        android:layout_width="50dp" />
+                        android:layout_width="50dp"
+                        android:visibility="invisible" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -205,7 +228,8 @@
                         android:id="@+id/windSpeed"
                         tools:layout_editor_absoluteX="0dp"
                         android:textSize="30sp"
-                        tools:layout_editor_absoluteY="187dp" />
+                        tools:layout_editor_absoluteY="187dp"
+                        android:visibility="invisible" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -216,7 +240,8 @@
                         android:layout_marginStart="16dp"
                         app:layout_constraintLeft_toRightOf="@+id/windGust"
                         android:layout_marginLeft="16dp"
-                        android:layout_weight="0.30" />
+                        android:layout_weight="0.30"
+                        android:visibility="invisible" />
 
                     <ImageView
                         ads:srcCompat="@mipmap/wind_dir"
@@ -246,7 +271,8 @@
                     <TextView
                         android:layout_width="49dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textView23" />
+                        android:id="@+id/textView23"
+                        android:visibility="invisible" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -255,7 +281,8 @@
                         android:textSize="24sp"
                         tools:layout_editor_absoluteX="0dp"
                         app:layout_constraintTop_toBottomOf="@+id/windSpeed"
-                        android:layout_weight="0.05" />
+                        android:layout_weight="0.05"
+                        android:visibility="invisible" />
 
                 </LinearLayout>
 
@@ -267,7 +294,8 @@
                     android:textSize="22sp"
                     android:layout_marginTop="32dp"
                     app:layout_constraintTop_toBottomOf="@+id/windGust"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:visibility="invisible" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -276,7 +304,8 @@
                     tools:layout_editor_absoluteX="0dp"
                     android:textSize="24sp"
                     android:layout_marginTop="16dp"
-                    app:layout_constraintTop_toBottomOf="@+id/rain" />
+                    app:layout_constraintTop_toBottomOf="@+id/rain"
+                    android:visibility="invisible" />
 
                 <ProgressBar
                     style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
@@ -298,13 +327,8 @@
                     tools:layout_editor_absoluteX="0dp"
                     android:textSize="20sp"
                     android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/humBar" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                </RelativeLayout>
+                    app:layout_constraintTop_toBottomOf="@+id/humBar"
+                    android:visibility="invisible" />
 
             </LinearLayout>
 

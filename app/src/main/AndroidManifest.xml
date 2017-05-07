@@ -10,7 +10,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -21,8 +20,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SettingsActivity"></activity>
-        <activity android:name=".DateActivity"></activity>
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".DateActivity" />
+
+        <receiver android:name=".PWSWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/pwswidget_info" />
+        </receiver>
     </application>
 
 </manifest>
