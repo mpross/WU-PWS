@@ -23,14 +23,14 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".DateActivity" />
 
-        <receiver android:name=".PWSWidget">
+        <receiver android:name=".Widget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/pwswidget_info" />
+                android:resource="@xml/widget_info" />
         </receiver>
     </application>
 

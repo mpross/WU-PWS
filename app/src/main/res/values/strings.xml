@@ -13,7 +13,7 @@
         <item>Imperial</item>
         <item>Metric</item>
     </string-array>
-    <string name="appwidget_text">EXAMPLE</string>
+    <string name="appwidget_text"></string>
     <string name="add_widget">Add widget</string>
 
 </resources>
