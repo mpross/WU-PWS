@@ -37,6 +37,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
@@ -665,7 +666,12 @@ public class MainActivity extends AppCompatActivity
                 System.out.println(e);
             }
             TextView text2 = (TextView) findViewById(R.id.textView2);
-            text2.setText(station);
+            try {
+                text2.setText(station);
+            }
+            catch(NullPointerException n){
+
+            }
             try {
                 GraphView graph = (GraphView) findViewById(R.id.graph);
                 //Veiw changing. Hides unused elements and makes visible selected elements
@@ -706,10 +712,10 @@ public class MainActivity extends AppCompatActivity
                     rain.setText("Hourly Rain: " + currentString.split("\n")[10].split(": ")[1]);
 
                     //Pressure derivative icon. If press-mean>10% mean then positive, < then negative, else null
-                    if(Float.parseFloat(currentString.split("\n")[3].split(": ")[1].split(" ")[0])-Float.parseFloat(dailyString.split("\n")[8].split(": ")[1].split(" ")[0])>0.1*Float.parseFloat(dailyString.split("\n")[8].split(": ")[1].split(" ")[0])){
+                    if(Float.parseFloat(currentString.split("\n")[3].split(": ")[1].split(" ")[0])-Float.parseFloat(dailyString.split("\n")[8].split(": ")[1].split(" ")[0])>0.01*Float.parseFloat(dailyString.split("\n")[8].split(": ")[1].split(" ")[0])){
                         pressChange.setImageResource(R.mipmap.press_change);
                     }
-                    else if(Float.parseFloat(currentString.split("\n")[3].split(": ")[1].split(" ")[0])-Float.parseFloat(dailyString.split("\n")[8].split(": ")[1].split(" ")[0])<-0.1*Float.parseFloat(dailyString.split("\n")[8].split(": ")[1].split(" ")[0])){
+                    else if(Float.parseFloat(currentString.split("\n")[3].split(": ")[1].split(" ")[0])-Float.parseFloat(dailyString.split("\n")[8].split(": ")[1].split(" ")[0])<-0.01*Float.parseFloat(dailyString.split("\n")[8].split(": ")[1].split(" ")[0])){
                         pressChange.setImageResource(R.mipmap.press_change_n);
                     }
                     else{
@@ -787,10 +793,10 @@ public class MainActivity extends AppCompatActivity
                     if((Float.parseFloat(dailyString.split("\n")[13].split(": ")[1].split(" ")[0]))>0){
                         statusIcon.setImageResource(R.mipmap.rain_icon);
                     }
-                    else if((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0]))>70 && units==0){
+                    else if((Float.parseFloat(dailyString.split("\n")[2].split(": ")[1].split(" ")[0]))>70 && units==0){
                         statusIcon.setImageResource(R.mipmap.sun_icon);
                     }
-                    else if((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0]))>20 && units==1){
+                    else if((Float.parseFloat(dailyString.split("\n")[2].split(": ")[1].split(" ")[0]))>20 && units==1){
                         statusIcon.setImageResource(R.mipmap.sun_icon);
                     }
                     else{
@@ -1174,6 +1180,12 @@ public class MainActivity extends AppCompatActivity
                     seriesRD.setColor(Color.GRAY);
                 }
             } catch (ArrayIndexOutOfBoundsException a) {
+                Context context = getApplicationContext();
+                CharSequence toastText = "Connection Error";
+                int duration = Toast.LENGTH_LONG;
+
+                Toast toast = Toast.makeText(context, toastText, duration);
+                toast.show();
                 error();
             }
         }
@@ -1301,545 +1313,505 @@ public class MainActivity extends AppCompatActivity
         ImageView windDirIcon=(ImageView) findViewById(R.id.windDirIcon);
         ImageView snowIcon=(ImageView) findViewById(R.id.snowIcon);
         ImageView pressChange=(ImageView) findViewById(R.id.pressChange);
-
-        if (id == R.id.nav_current) {
-            viewSel="current";
-            text.setVisibility(View.INVISIBLE);
-            temp.setVisibility(View.VISIBLE);
-            tempHigh.setVisibility(View.INVISIBLE);
-            tempLow.setVisibility(View.INVISIBLE);
-            dew.setVisibility(View.VISIBLE);
-            dewHigh.setVisibility(View.INVISIBLE);
-            dewLow.setVisibility(View.INVISIBLE);
-            press.setVisibility(View.VISIBLE);
-            windSpeed.setVisibility(View.VISIBLE);
-            windGust.setVisibility(View.VISIBLE);
-            windDir.setVisibility(View.VISIBLE);
-            rain.setVisibility(View.VISIBLE);
-            hum.setVisibility(View.VISIBLE);
-            time.setVisibility(View.VISIBLE);
-            humBar.setVisibility(View.VISIBLE);
-            windLabel.setVisibility(View.VISIBLE);
-            graph.setVisibility(View.GONE);
-            windIcon.setVisibility(View.VISIBLE);
-            statusIcon.setVisibility(View.VISIBLE);
-            windDirIcon.setVisibility(View.VISIBLE);
-            pressChange.setVisibility(View.VISIBLE);
-
-            time.setText(currentString.split("\n")[0].split(": ")[1]);
-            temp.setText(currentString.split("\n")[1].split(": ")[1]);
-            dew.setText("Dewpoint: "+currentString.split("\n")[2].split(": ")[1]);
-            press.setText("Press: "+currentString.split("\n")[3].split(": ")[1]);
-            windDir.setText(currentString.split("\n")[5].split(": ")[1]);
-            windSpeed.setText(currentString.split("\n")[7].split(": ")[1]);
-            windGust.setText("Gust: "+currentString.split("\n")[8].split(": ")[1]);
-            hum.setText("Humidity: "+currentString.split("\n")[9].split(": ")[1]);
-            humBar.setProgress((int)Float.parseFloat(currentString.split("\n")[9].split(": ")[1].split(" %")[0]));
-            rain.setText("Hourly Rain: "+currentString.split("\n")[10].split(": ")[1]);
-
-            //Pressure derivative icon. If press-mean>10% mean then positive, < then negative, else null
-            if(Float.parseFloat(currentString.split("\n")[3].split(": ")[1].split(" ")[0])-Float.parseFloat(dailyString.split("\n")[8].split(": ")[1].split(" ")[0])>0.1*Float.parseFloat(dailyString.split("\n")[8].split(": ")[1].split(" ")[0])){
-                pressChange.setImageResource(R.mipmap.press_change);
-            }
-            else if(Float.parseFloat(currentString.split("\n")[3].split(": ")[1].split(" ")[0])-Float.parseFloat(dailyString.split("\n")[8].split(": ")[1].split(" ")[0])<-0.1*Float.parseFloat(dailyString.split("\n")[8].split(": ")[1].split(" ")[0])){
-                pressChange.setImageResource(R.mipmap.press_change_n);
-            }
-            else{
-                pressChange.setImageResource(R.mipmap.press_null);
-            }
-
-            if((Float.parseFloat(currentString.split("\n")[10].split(": ")[1].split(" ")[0]))>0){
-                statusIcon.setImageResource(R.mipmap.rain_icon);
-            }
-            else if((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0]))>70 && units==0){
-                statusIcon.setImageResource(R.mipmap.sun_icon);
-            }
-            else if((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0]))>20 && units==1){
-                statusIcon.setImageResource(R.mipmap.sun_icon);
-            }
-            else{
-                statusIcon.setImageResource(R.mipmap.cloud_icon);
-            }
-
-            if((Float.parseFloat(currentString.split("\n")[8].split(": ")[1].split(" ")[0]))>4){
+        try {
+            if (id == R.id.nav_current) {
+                viewSel = "current";
+                text.setVisibility(View.INVISIBLE);
+                temp.setVisibility(View.VISIBLE);
+                tempHigh.setVisibility(View.INVISIBLE);
+                tempLow.setVisibility(View.INVISIBLE);
+                dew.setVisibility(View.VISIBLE);
+                dewHigh.setVisibility(View.INVISIBLE);
+                dewLow.setVisibility(View.INVISIBLE);
+                press.setVisibility(View.VISIBLE);
+                windSpeed.setVisibility(View.VISIBLE);
+                windGust.setVisibility(View.VISIBLE);
+                windDir.setVisibility(View.VISIBLE);
+                rain.setVisibility(View.VISIBLE);
+                hum.setVisibility(View.VISIBLE);
+                time.setVisibility(View.VISIBLE);
+                humBar.setVisibility(View.VISIBLE);
+                windLabel.setVisibility(View.VISIBLE);
+                graph.setVisibility(View.GONE);
                 windIcon.setVisibility(View.VISIBLE);
-            }
-            else{
-                windIcon.setVisibility(View.INVISIBLE);
-            }
+                statusIcon.setVisibility(View.VISIBLE);
+                windDirIcon.setVisibility(View.VISIBLE);
+                pressChange.setVisibility(View.VISIBLE);
 
-            if((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0]))<32 && units==0){
-                snowIcon.setVisibility(View.VISIBLE);
-            }
-            else if((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0]))>0 && units==1){
-                snowIcon.setVisibility(View.VISIBLE);
-            }
-            else{
-                snowIcon.setVisibility(View.INVISIBLE);
-            }
+                time.setText(currentString.split("\n")[0].split(": ")[1]);
+                temp.setText(currentString.split("\n")[1].split(": ")[1]);
+                dew.setText("Dewpoint: " + currentString.split("\n")[2].split(": ")[1]);
+                press.setText("Press: " + currentString.split("\n")[3].split(": ")[1]);
+                windDir.setText(currentString.split("\n")[5].split(": ")[1]);
+                windSpeed.setText(currentString.split("\n")[7].split(": ")[1]);
+                windGust.setText("Gust: " + currentString.split("\n")[8].split(": ")[1]);
+                hum.setText("Humidity: " + currentString.split("\n")[9].split(": ")[1]);
+                humBar.setProgress((int) Float.parseFloat(currentString.split("\n")[9].split(": ")[1].split(" %")[0]));
+                rain.setText("Hourly Rain: " + currentString.split("\n")[10].split(": ")[1]);
 
-            windDirIcon.setRotation((Float.parseFloat(currentString.split("\n")[6].split(": ")[1].split(" ")[0])));
+                //Pressure derivative icon. If press-mean>10% mean then positive, < then negative, else null
+                if (Float.parseFloat(currentString.split("\n")[3].split(": ")[1].split(" ")[0]) - Float.parseFloat(dailyString.split("\n")[8].split(": ")[1].split(" ")[0]) > 0.01 * Float.parseFloat(dailyString.split("\n")[8].split(": ")[1].split(" ")[0])) {
+                    pressChange.setImageResource(R.mipmap.press_change);
+                } else if (Float.parseFloat(currentString.split("\n")[3].split(": ")[1].split(" ")[0]) - Float.parseFloat(dailyString.split("\n")[8].split(": ")[1].split(" ")[0]) < -0.01 * Float.parseFloat(dailyString.split("\n")[8].split(": ")[1].split(" ")[0])) {
+                    pressChange.setImageResource(R.mipmap.press_change_n);
+                } else {
+                    pressChange.setImageResource(R.mipmap.press_null);
+                }
 
-        } else if (id == R.id.nav_daily) {
-            viewSel="daily";
-            text.setVisibility(View.INVISIBLE);
-            temp.setVisibility(View.VISIBLE);
-            tempHigh.setVisibility(View.VISIBLE);
-            tempLow.setVisibility(View.VISIBLE);
-            dew.setVisibility(View.VISIBLE);
-            dewHigh.setVisibility(View.VISIBLE);
-            dewLow.setVisibility(View.VISIBLE);
-            press.setVisibility(View.VISIBLE);
-            windSpeed.setVisibility(View.VISIBLE);
-            windGust.setVisibility(View.VISIBLE);
-            windDir.setVisibility(View.VISIBLE);
-            rain.setVisibility(View.VISIBLE);
-            hum.setVisibility(View.VISIBLE);
-            time.setVisibility(View.INVISIBLE);
-            humBar.setVisibility(View.VISIBLE);
-            windLabel.setVisibility(View.VISIBLE);
-            graph.setVisibility(View.GONE);
-            windIcon.setVisibility(View.VISIBLE);
-            statusIcon.setVisibility(View.VISIBLE);
-            windDirIcon.setVisibility(View.VISIBLE);
-            pressChange.setVisibility(View.INVISIBLE);
+                if ((Float.parseFloat(currentString.split("\n")[10].split(": ")[1].split(" ")[0])) > 0) {
+                    statusIcon.setImageResource(R.mipmap.rain_icon);
+                } else if ((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0])) > 70 && units == 0) {
+                    statusIcon.setImageResource(R.mipmap.sun_icon);
+                } else if ((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0])) > 20 && units == 1) {
+                    statusIcon.setImageResource(R.mipmap.sun_icon);
+                } else {
+                    statusIcon.setImageResource(R.mipmap.cloud_icon);
+                }
 
-            temp.setText(dailyString.split("\n")[1].split(": ")[1]);
-            tempHigh.setText(dailyString.split("\n")[2].split(": ")[1]);
-            tempLow.setText(dailyString.split("\n")[3].split(": ")[1]);
-            dew.setText("Dewpoint: "+dailyString.split("\n")[5].split(": ")[1]);
-            dewHigh.setText(dailyString.split("\n")[6].split(": ")[1]);
-            dewLow.setText(dailyString.split("\n")[7].split(": ")[1]);
-            press.setText("Press: "+dailyString.split("\n")[8].split(": ")[1]);
-            windDir.setText(dailyString.split("\n")[9].split(": ")[1]);
-            windSpeed.setText(dailyString.split("\n")[10].split(": ")[1]);
-            windGust.setText("Gust: "+dailyString.split("\n")[11].split(": ")[1]);
-            hum.setText("Humidity: "+dailyString.split("\n")[12].split(": ")[1]);
-            humBar.setProgress((int)Float.parseFloat(dailyString.split("\n")[12].split(": ")[1].split(" %")[0]));
-            rain.setText("Daily Rain: " +dailyString.split("\n")[13].split(": ")[1]);
-            if((Float.parseFloat(dailyString.split("\n")[13].split(": ")[1].split(" ")[0]))>0){
-                statusIcon.setImageResource(R.mipmap.rain_icon);
-            }
-            else if((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0]))>70 && units==0){
-                statusIcon.setImageResource(R.mipmap.sun_icon);
-            }
-            else if((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0]))>20 && units==1){
-                statusIcon.setImageResource(R.mipmap.sun_icon);
-            }
-            else{
-                statusIcon.setImageResource(R.mipmap.cloud_icon);
-            }
-            if((Float.parseFloat(dailyString.split("\n")[11].split(": ")[1].split(" ")[0]))>4){
+                if ((Float.parseFloat(currentString.split("\n")[8].split(": ")[1].split(" ")[0])) > 4) {
+                    windIcon.setVisibility(View.VISIBLE);
+                } else {
+                    windIcon.setVisibility(View.INVISIBLE);
+                }
+
+                if ((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0])) < 32 && units == 0) {
+                    snowIcon.setVisibility(View.VISIBLE);
+                } else if ((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0])) > 0 && units == 1) {
+                    snowIcon.setVisibility(View.VISIBLE);
+                } else {
+                    snowIcon.setVisibility(View.INVISIBLE);
+                }
+
+                windDirIcon.setRotation((Float.parseFloat(currentString.split("\n")[6].split(": ")[1].split(" ")[0])));
+
+            } else if (id == R.id.nav_daily) {
+                viewSel = "daily";
+                text.setVisibility(View.INVISIBLE);
+                temp.setVisibility(View.VISIBLE);
+                tempHigh.setVisibility(View.VISIBLE);
+                tempLow.setVisibility(View.VISIBLE);
+                dew.setVisibility(View.VISIBLE);
+                dewHigh.setVisibility(View.VISIBLE);
+                dewLow.setVisibility(View.VISIBLE);
+                press.setVisibility(View.VISIBLE);
+                windSpeed.setVisibility(View.VISIBLE);
+                windGust.setVisibility(View.VISIBLE);
+                windDir.setVisibility(View.VISIBLE);
+                rain.setVisibility(View.VISIBLE);
+                hum.setVisibility(View.VISIBLE);
+                time.setVisibility(View.INVISIBLE);
+                humBar.setVisibility(View.VISIBLE);
+                windLabel.setVisibility(View.VISIBLE);
+                graph.setVisibility(View.GONE);
                 windIcon.setVisibility(View.VISIBLE);
-            }
-            else{
+                statusIcon.setVisibility(View.VISIBLE);
+                windDirIcon.setVisibility(View.VISIBLE);
+                pressChange.setVisibility(View.INVISIBLE);
+
+                temp.setText(dailyString.split("\n")[1].split(": ")[1]);
+                tempHigh.setText(dailyString.split("\n")[2].split(": ")[1]);
+                tempLow.setText(dailyString.split("\n")[3].split(": ")[1]);
+                dew.setText("Dewpoint: " + dailyString.split("\n")[5].split(": ")[1]);
+                dewHigh.setText(dailyString.split("\n")[6].split(": ")[1]);
+                dewLow.setText(dailyString.split("\n")[7].split(": ")[1]);
+                press.setText("Press: " + dailyString.split("\n")[8].split(": ")[1]);
+                windDir.setText(dailyString.split("\n")[9].split(": ")[1]);
+                windSpeed.setText(dailyString.split("\n")[10].split(": ")[1]);
+                windGust.setText("Gust: " + dailyString.split("\n")[11].split(": ")[1]);
+                hum.setText("Humidity: " + dailyString.split("\n")[12].split(": ")[1]);
+                humBar.setProgress((int) Float.parseFloat(dailyString.split("\n")[12].split(": ")[1].split(" %")[0]));
+                rain.setText("Daily Rain: " + dailyString.split("\n")[13].split(": ")[1]);
+                if ((Float.parseFloat(dailyString.split("\n")[13].split(": ")[1].split(" ")[0])) > 0) {
+                    statusIcon.setImageResource(R.mipmap.rain_icon);
+                } else if ((Float.parseFloat(dailyString.split("\n")[2].split(": ")[1].split(" ")[0])) > 70 && units == 0) {
+                    statusIcon.setImageResource(R.mipmap.sun_icon);
+                } else if ((Float.parseFloat(dailyString.split("\n")[2].split(": ")[1].split(" ")[0])) > 20 && units == 1) {
+                    statusIcon.setImageResource(R.mipmap.sun_icon);
+                } else {
+                    statusIcon.setImageResource(R.mipmap.cloud_icon);
+                }
+                if ((Float.parseFloat(dailyString.split("\n")[11].split(": ")[1].split(" ")[0])) > 4) {
+                    windIcon.setVisibility(View.VISIBLE);
+                } else {
+                    windIcon.setVisibility(View.INVISIBLE);
+                }
+                if ((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0])) < 32 && units == 0) {
+                    snowIcon.setVisibility(View.VISIBLE);
+                } else if ((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0])) > 0 && units == 1) {
+                    snowIcon.setVisibility(View.VISIBLE);
+                } else {
+                    snowIcon.setVisibility(View.INVISIBLE);
+                }
+                windDirIcon.setRotation((Float.parseFloat(dailyString.split("\n")[9].split(": ")[1].split(" ")[0])));
+            } else if (id == R.id.nav_dailyPlot) {
+                viewSel = "tempPlot";
+                text.setVisibility(View.GONE);
+                temp.setVisibility(View.GONE);
+                tempHigh.setVisibility(View.GONE);
+                tempLow.setVisibility(View.GONE);
+                dew.setVisibility(View.GONE);
+                dewHigh.setVisibility(View.GONE);
+                dewLow.setVisibility(View.GONE);
+                press.setVisibility(View.GONE);
+                windSpeed.setVisibility(View.GONE);
+                windGust.setVisibility(View.GONE);
+                windDir.setVisibility(View.GONE);
+                rain.setVisibility(View.GONE);
+                hum.setVisibility(View.GONE);
+                time.setVisibility(View.GONE);
+                humBar.setVisibility(View.GONE);
+                windLabel.setVisibility(View.GONE);
+                graph.setVisibility(View.VISIBLE);
                 windIcon.setVisibility(View.INVISIBLE);
-            }
-            if((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0]))<32 && units==0){
-                snowIcon.setVisibility(View.VISIBLE);
-            }
-            else if((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0]))>0 && units==1){
-                snowIcon.setVisibility(View.VISIBLE);
-            }
-            else{
+                statusIcon.setVisibility(View.INVISIBLE);
+                windDirIcon.setVisibility(View.INVISIBLE);
                 snowIcon.setVisibility(View.INVISIBLE);
-            }
-            windDirIcon.setRotation((Float.parseFloat(dailyString.split("\n")[9].split(": ")[1].split(" ")[0])));
-        }
-        else if (id==R.id.nav_dailyPlot){
-            viewSel="tempPlot";
-            text.setVisibility(View.GONE);
-            temp.setVisibility(View.GONE);
-            tempHigh.setVisibility(View.GONE);
-            tempLow.setVisibility(View.GONE);
-            dew.setVisibility(View.GONE);
-            dewHigh.setVisibility(View.GONE);
-            dewLow.setVisibility(View.GONE);
-            press.setVisibility(View.GONE);
-            windSpeed.setVisibility(View.GONE);
-            windGust.setVisibility(View.GONE);
-            windDir.setVisibility(View.GONE);
-            rain.setVisibility(View.GONE);
-            hum.setVisibility(View.GONE);
-            time.setVisibility(View.GONE);
-            humBar.setVisibility(View.GONE);
-            windLabel.setVisibility(View.GONE);
-            graph.setVisibility(View.VISIBLE);
-            windIcon.setVisibility(View.INVISIBLE);
-            statusIcon.setVisibility(View.INVISIBLE);
-            windDirIcon.setVisibility(View.INVISIBLE);
-            snowIcon.setVisibility(View.INVISIBLE);
-            pressChange.setVisibility(View.INVISIBLE);
-            graph.removeAllSeries();
+                pressChange.setVisibility(View.INVISIBLE);
+                graph.removeAllSeries();
 
-            graph.getViewport().setXAxisBoundsManual(true);
-            graph.getViewport().setMinX(0);
-            graph.getViewport().setMaxX(seriesT.getHighestValueX());
-            graph.getViewport().setYAxisBoundsManual(true);
-            if (seriesT.getLowestValueY()<seriesD.getLowestValueY()) {
-                if(seriesT.getLowestValueY()>0) {
-                    graph.getViewport().setMinY(seriesT.getLowestValueY() * .9);
-                }
-                else{
-                    graph.getViewport().setMinY(seriesT.getLowestValueY() * 1.1);
-                }
-            }
-            else{
-                if(seriesD.getLowestValueY()>0) {
-                    graph.getViewport().setMinY(seriesD.getLowestValueY() * .9);
-                }
-                else{
-                    graph.getViewport().setMinY(seriesD.getLowestValueY() * 1.1);
-                }
-            }
-            if (seriesT.getHighestValueY()>seriesD.getHighestValueY()) {
-                if(seriesT.getHighestValueY()>0) {
-                    graph.getViewport().setMaxY(seriesT.getHighestValueY() * 1.1);
-                }
-                else{
-                    graph.getViewport().setMaxY(seriesT.getHighestValueY() * 0.9);
-                }
-            }
-            else{
-                if(seriesD.getHighestValueY()>0) {
-                    graph.getViewport().setMaxY(seriesD.getHighestValueY() * 1.1);
-                }
-                else{
-                    graph.getViewport().setMaxY(seriesD.getHighestValueY() * 0.9);
-                }
-            }
-            graph.getLegendRenderer().setVisible(true);
-            graph.getLegendRenderer().setTextSize(40f);
-            graph.getLegendRenderer().setSpacing(30);
-            graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
-            graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
-
-            graph.addSeries(seriesT);
-            graph.addSeries(seriesD);
-            graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
-                @Override
-                public String formatLabel(double value, boolean isValueX) {
-                    if (isValueX) {
-                        return super.formatLabel(value, isValueX)+" h";
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(0);
+                graph.getViewport().setMaxX(seriesT.getHighestValueX());
+                graph.getViewport().setYAxisBoundsManual(true);
+                if (seriesT.getLowestValueY() < seriesD.getLowestValueY()) {
+                    if (seriesT.getLowestValueY() > 0) {
+                        graph.getViewport().setMinY(seriesT.getLowestValueY() * .9);
                     } else {
-                        if(units==0) {
-                            return super.formatLabel(value, isValueX) + " °F";
-                        }
-                        else{
-                            return super.formatLabel(value, isValueX) + " °C";
-                        }
+                        graph.getViewport().setMinY(seriesT.getLowestValueY() * 1.1);
+                    }
+                } else {
+                    if (seriesD.getLowestValueY() > 0) {
+                        graph.getViewport().setMinY(seriesD.getLowestValueY() * .9);
+                    } else {
+                        graph.getViewport().setMinY(seriesD.getLowestValueY() * 1.1);
                     }
                 }
-            });
-            seriesD.setColor(Color.GRAY);
-        }
-        else if (id==R.id.nav_pressPlot){
-            viewSel="pressPlot";
-            text.setVisibility(View.GONE);
-            temp.setVisibility(View.GONE);
-            tempHigh.setVisibility(View.GONE);
-            tempLow.setVisibility(View.GONE);
-            dew.setVisibility(View.GONE);
-            dewHigh.setVisibility(View.GONE);
-            dewLow.setVisibility(View.GONE);
-            press.setVisibility(View.GONE);
-            windSpeed.setVisibility(View.GONE);
-            windGust.setVisibility(View.GONE);
-            windDir.setVisibility(View.GONE);
-            rain.setVisibility(View.GONE);
-            hum.setVisibility(View.GONE);
-            time.setVisibility(View.GONE);
-            humBar.setVisibility(View.GONE);
-            windLabel.setVisibility(View.GONE);
-            graph.setVisibility(View.VISIBLE);
-            windIcon.setVisibility(View.INVISIBLE);
-            statusIcon.setVisibility(View.INVISIBLE);
-            windDirIcon.setVisibility(View.INVISIBLE);
-            snowIcon.setVisibility(View.INVISIBLE);
-            pressChange.setVisibility(View.INVISIBLE);
-
-            graph.removeAllSeries();
-
-            graph.getViewport().setXAxisBoundsManual(true);
-            graph.getViewport().setMinX(0);
-            graph.getViewport().setMaxX(seriesP.getHighestValueX());
-            graph.getViewport().setYAxisBoundsManual(true);
-            if (units==0) {
-                graph.getViewport().setMinY(26);
-                graph.getViewport().setMaxY(32);
-            }
-            else {
-                graph.getViewport().setMinY(870);
-                graph.getViewport().setMaxY(1085);
-            }
-            graph.getLegendRenderer().setVisible(true);
-            graph.getLegendRenderer().setTextSize(40f);
-            graph.getLegendRenderer().setSpacing(30);
-            graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
-            graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
-
-            graph.addSeries(seriesP);
-            graph.addSeries(seriesPB);
-            graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
-                @Override
-                public String formatLabel(double value, boolean isValueX) {
-                    if (isValueX) {
-                        return super.formatLabel(value, isValueX)+" h";
+                if (seriesT.getHighestValueY() > seriesD.getHighestValueY()) {
+                    if (seriesT.getHighestValueY() > 0) {
+                        graph.getViewport().setMaxY(seriesT.getHighestValueY() * 1.1);
                     } else {
-                        if(units==0) {
-                            return super.formatLabel(value, isValueX) + " inHg";
-                        }
-                        else{
-                            return super.formatLabel(value, isValueX) + " hPa";
-                        }
+                        graph.getViewport().setMaxY(seriesT.getHighestValueY() * 0.9);
+                    }
+                } else {
+                    if (seriesD.getHighestValueY() > 0) {
+                        graph.getViewport().setMaxY(seriesD.getHighestValueY() * 1.1);
+                    } else {
+                        graph.getViewport().setMaxY(seriesD.getHighestValueY() * 0.9);
                     }
                 }
-            });
-            seriesPB.setColor(Color.GRAY);
-        }
-        else if (id==R.id.nav_windPlot){
-            viewSel="windPlot";
-            text.setVisibility(View.GONE);
-            temp.setVisibility(View.GONE);
-            tempHigh.setVisibility(View.GONE);
-            tempLow.setVisibility(View.GONE);
-            dew.setVisibility(View.GONE);
-            dewHigh.setVisibility(View.GONE);
-            dewLow.setVisibility(View.GONE);
-            press.setVisibility(View.GONE);
-            windSpeed.setVisibility(View.GONE);
-            windGust.setVisibility(View.GONE);
-            windDir.setVisibility(View.GONE);
-            rain.setVisibility(View.GONE);
-            hum.setVisibility(View.GONE);
-            time.setVisibility(View.GONE);
-            humBar.setVisibility(View.GONE);
-            windLabel.setVisibility(View.GONE);
-            graph.setVisibility(View.VISIBLE);
-            windIcon.setVisibility(View.INVISIBLE);
-            statusIcon.setVisibility(View.INVISIBLE);
-            windDirIcon.setVisibility(View.INVISIBLE);
-            snowIcon.setVisibility(View.INVISIBLE);
-            pressChange.setVisibility(View.INVISIBLE);
+                graph.getLegendRenderer().setVisible(true);
+                graph.getLegendRenderer().setTextSize(40f);
+                graph.getLegendRenderer().setSpacing(30);
+                graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+                graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
 
-            graph.removeAllSeries();
-
-            graph.getViewport().setXAxisBoundsManual(true);
-            graph.getViewport().setMinX(0);
-            graph.getViewport().setMaxX(seriesT.getHighestValueX());
-            graph.getViewport().setYAxisBoundsManual(true);
-            if (seriesWS.getLowestValueY()<seriesWG.getLowestValueY()) {
-                if(seriesWS.getLowestValueY()>0) {
-                    graph.getViewport().setMinY(seriesWS.getLowestValueY() * .9);
-                }
-                else{
-                    graph.getViewport().setMinY(seriesWS.getLowestValueY() * 1.1);
-                }
-            }
-            else{
-                if(seriesWG.getLowestValueY()>0) {
-                    graph.getViewport().setMinY(seriesWG.getLowestValueY() * .9);
-                }
-                else{
-                    graph.getViewport().setMinY(seriesWG.getLowestValueY() * 1.1);
-                }
-            }
-            if (seriesWS.getHighestValueY()>seriesWG.getHighestValueY()) {
-                if(seriesWS.getHighestValueY()>0) {
-                    graph.getViewport().setMaxY(seriesWS.getHighestValueY() * 1.1);
-                }
-                else{
-                    graph.getViewport().setMaxY(seriesWS.getHighestValueY() * 0.9);
-                }
-            }
-            else{
-                if(seriesWG.getHighestValueY()>0) {
-                    graph.getViewport().setMaxY(seriesWG.getHighestValueY() * 1.1);
-                }
-                else{
-                    graph.getViewport().setMaxY(seriesWG.getHighestValueY() * 0.9);
-                }
-            }
-            graph.getLegendRenderer().setVisible(true);
-            graph.getLegendRenderer().setTextSize(40f);
-            graph.getLegendRenderer().setSpacing(30);
-            graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
-            graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
-
-            graph.addSeries(seriesWS);
-            graph.addSeries(seriesWG);
-            graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
-                @Override
-                public String formatLabel(double value, boolean isValueX) {
-                    if (isValueX) {
-                        return super.formatLabel(value, isValueX)+" h";
-                    } else {
-                        if(units==0) {
-                            return super.formatLabel(value, isValueX) + " mph";
-                        }
-                        else{
-                            return super.formatLabel(value, isValueX) + " km/h";
+                graph.addSeries(seriesT);
+                graph.addSeries(seriesD);
+                graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                    @Override
+                    public String formatLabel(double value, boolean isValueX) {
+                        if (isValueX) {
+                            return super.formatLabel(value, isValueX) + " h";
+                        } else {
+                            if (units == 0) {
+                                return super.formatLabel(value, isValueX) + " °F";
+                            } else {
+                                return super.formatLabel(value, isValueX) + " °C";
+                            }
                         }
                     }
-                }
-            });
+                });
+                seriesD.setColor(Color.GRAY);
+            } else if (id == R.id.nav_pressPlot) {
+                viewSel = "pressPlot";
+                text.setVisibility(View.GONE);
+                temp.setVisibility(View.GONE);
+                tempHigh.setVisibility(View.GONE);
+                tempLow.setVisibility(View.GONE);
+                dew.setVisibility(View.GONE);
+                dewHigh.setVisibility(View.GONE);
+                dewLow.setVisibility(View.GONE);
+                press.setVisibility(View.GONE);
+                windSpeed.setVisibility(View.GONE);
+                windGust.setVisibility(View.GONE);
+                windDir.setVisibility(View.GONE);
+                rain.setVisibility(View.GONE);
+                hum.setVisibility(View.GONE);
+                time.setVisibility(View.GONE);
+                humBar.setVisibility(View.GONE);
+                windLabel.setVisibility(View.GONE);
+                graph.setVisibility(View.VISIBLE);
+                windIcon.setVisibility(View.INVISIBLE);
+                statusIcon.setVisibility(View.INVISIBLE);
+                windDirIcon.setVisibility(View.INVISIBLE);
+                snowIcon.setVisibility(View.INVISIBLE);
+                pressChange.setVisibility(View.INVISIBLE);
 
-            seriesWG.setColor(Color.GRAY);
-        }
-        else if (id==R.id.nav_humPlot){
-            viewSel="humPlot";
-            text.setVisibility(View.GONE);
-            temp.setVisibility(View.GONE);
-            tempHigh.setVisibility(View.GONE);
-            tempLow.setVisibility(View.GONE);
-            dew.setVisibility(View.GONE);
-            dewHigh.setVisibility(View.GONE);
-            dewLow.setVisibility(View.GONE);
-            press.setVisibility(View.GONE);
-            windSpeed.setVisibility(View.GONE);
-            windGust.setVisibility(View.GONE);
-            windDir.setVisibility(View.GONE);
-            rain.setVisibility(View.GONE);
-            hum.setVisibility(View.GONE);
-            time.setVisibility(View.GONE);
-            humBar.setVisibility(View.GONE);
-            windLabel.setVisibility(View.GONE);
-            graph.setVisibility(View.VISIBLE);
-            windIcon.setVisibility(View.INVISIBLE);
-            statusIcon.setVisibility(View.INVISIBLE);
-            windDirIcon.setVisibility(View.INVISIBLE);
-            snowIcon.setVisibility(View.INVISIBLE);
-            pressChange.setVisibility(View.INVISIBLE);
+                graph.removeAllSeries();
 
-            graph.removeAllSeries();
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(0);
+                graph.getViewport().setMaxX(seriesP.getHighestValueX());
+                graph.getViewport().setYAxisBoundsManual(true);
+                if (units == 0) {
+                    graph.getViewport().setMinY(26);
+                    graph.getViewport().setMaxY(32);
+                } else {
+                    graph.getViewport().setMinY(870);
+                    graph.getViewport().setMaxY(1085);
+                }
+                graph.getLegendRenderer().setVisible(true);
+                graph.getLegendRenderer().setTextSize(40f);
+                graph.getLegendRenderer().setSpacing(30);
+                graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+                graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
 
-            graph.getViewport().setXAxisBoundsManual(true);
-            graph.getViewport().setMinX(0);
-            graph.getViewport().setMaxX(seriesH.getHighestValueX());
-            graph.getViewport().setYAxisBoundsManual(true);
-            if(seriesH.getLowestValueY()>50) {
-                graph.getViewport().setMinY(50);
-            }
-            else{
-                graph.getViewport().setMinY(0);
-            }
-            if(seriesH.getHighestValueY()<50) {
-                graph.getViewport().setMaxY(50);
-            }
-            else{
-                graph.getViewport().setMaxY(105);
-            }
-            graph.getLegendRenderer().setVisible(true);
-            graph.getLegendRenderer().setTextSize(40f);
-            graph.getLegendRenderer().setSpacing(30);
-            graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
-            graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
-
-            graph.addSeries(seriesH);
-            graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
-                @Override
-                public String formatLabel(double value, boolean isValueX) {
-                    if (isValueX) {
-                        return super.formatLabel(value, isValueX)+" h";
-                    } else {
-                        return super.formatLabel(value, isValueX) + " %";
-                    }
-                }
-            });
-        }
-        else if (id==R.id.nav_rainPlot){
-            viewSel="rainPlot";
-            text.setVisibility(View.GONE);
-            temp.setVisibility(View.GONE);
-            tempHigh.setVisibility(View.GONE);
-            tempLow.setVisibility(View.GONE);
-            dew.setVisibility(View.GONE);
-            dewHigh.setVisibility(View.GONE);
-            dewLow.setVisibility(View.GONE);
-            press.setVisibility(View.GONE);
-            windSpeed.setVisibility(View.GONE);
-            windGust.setVisibility(View.GONE);
-            windDir.setVisibility(View.GONE);
-            rain.setVisibility(View.GONE);
-            hum.setVisibility(View.GONE);
-            time.setVisibility(View.GONE);
-            humBar.setVisibility(View.GONE);
-            windLabel.setVisibility(View.GONE);
-            graph.setVisibility(View.VISIBLE);
-            windIcon.setVisibility(View.INVISIBLE);
-            statusIcon.setVisibility(View.INVISIBLE);
-            windDirIcon.setVisibility(View.INVISIBLE);
-            snowIcon.setVisibility(View.INVISIBLE);
-            pressChange.setVisibility(View.INVISIBLE);
-
-            graph.removeAllSeries();
-
-            graph.getViewport().setXAxisBoundsManual(true);
-            graph.getViewport().setMinX(0);
-            graph.getViewport().setMaxX(seriesR.getHighestValueX());
-            graph.getViewport().setYAxisBoundsManual(true);
-            if (seriesR.getLowestValueY()<seriesRD.getLowestValueY()) {
-                if(seriesR.getLowestValueY()>0) {
-                    graph.getViewport().setMinY(seriesR.getLowestValueY() * .9);
-                }
-                else{
-                    graph.getViewport().setMinY(seriesR.getLowestValueY() * 1.1);
-                }
-            }
-            else{
-                if(seriesRD.getLowestValueY()>0) {
-                    graph.getViewport().setMinY(seriesRD.getLowestValueY() * .9);
-                }
-                else{
-                    graph.getViewport().setMinY(seriesRD.getLowestValueY() * 1.1);
-                }
-            }
-            if (seriesR.getHighestValueY()>seriesRD.getHighestValueY()) {
-                if(seriesR.getHighestValueY()>0) {
-                    graph.getViewport().setMaxY(seriesR.getHighestValueY() * 1.1);
-                }
-                else{
-                    graph.getViewport().setMaxY(seriesR.getHighestValueY() * 0.9);
-                }
-            }
-            else{
-                if(seriesD.getHighestValueY()>0) {
-                    graph.getViewport().setMaxY(seriesRD.getHighestValueY() * 1.1);
-                }
-                else{
-                    graph.getViewport().setMaxY(seriesRD.getHighestValueY() * 0.9);
-                }
-            }
-            graph.getLegendRenderer().setVisible(true);
-            graph.getLegendRenderer().setTextSize(40f);
-            graph.getLegendRenderer().setSpacing(30);
-            graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
-            graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
-
-            graph.addSeries(seriesR);
-            graph.addSeries(seriesRD);
-            graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
-                @Override
-                public String formatLabel(double value, boolean isValueX) {
-                    if (isValueX) {
-                        return super.formatLabel(value, isValueX)+" h";
-                    } else {
-                        if(units==0) {
-                            return super.formatLabel(value, isValueX) + " in";
-                        }
-                        else{
-                            return super.formatLabel(value, isValueX) + " mm";
+                graph.addSeries(seriesP);
+                graph.addSeries(seriesPB);
+                graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                    @Override
+                    public String formatLabel(double value, boolean isValueX) {
+                        if (isValueX) {
+                            return super.formatLabel(value, isValueX) + " h";
+                        } else {
+                            if (units == 0) {
+                                return super.formatLabel(value, isValueX) + " inHg";
+                            } else {
+                                return super.formatLabel(value, isValueX) + " hPa";
+                            }
                         }
                     }
+                });
+                seriesPB.setColor(Color.GRAY);
+            } else if (id == R.id.nav_windPlot) {
+                viewSel = "windPlot";
+                text.setVisibility(View.GONE);
+                temp.setVisibility(View.GONE);
+                tempHigh.setVisibility(View.GONE);
+                tempLow.setVisibility(View.GONE);
+                dew.setVisibility(View.GONE);
+                dewHigh.setVisibility(View.GONE);
+                dewLow.setVisibility(View.GONE);
+                press.setVisibility(View.GONE);
+                windSpeed.setVisibility(View.GONE);
+                windGust.setVisibility(View.GONE);
+                windDir.setVisibility(View.GONE);
+                rain.setVisibility(View.GONE);
+                hum.setVisibility(View.GONE);
+                time.setVisibility(View.GONE);
+                humBar.setVisibility(View.GONE);
+                windLabel.setVisibility(View.GONE);
+                graph.setVisibility(View.VISIBLE);
+                windIcon.setVisibility(View.INVISIBLE);
+                statusIcon.setVisibility(View.INVISIBLE);
+                windDirIcon.setVisibility(View.INVISIBLE);
+                snowIcon.setVisibility(View.INVISIBLE);
+                pressChange.setVisibility(View.INVISIBLE);
+
+                graph.removeAllSeries();
+
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(0);
+                graph.getViewport().setMaxX(seriesT.getHighestValueX());
+                graph.getViewport().setYAxisBoundsManual(true);
+                if (seriesWS.getLowestValueY() < seriesWG.getLowestValueY()) {
+                    if (seriesWS.getLowestValueY() > 0) {
+                        graph.getViewport().setMinY(seriesWS.getLowestValueY() * .9);
+                    } else {
+                        graph.getViewport().setMinY(seriesWS.getLowestValueY() * 1.1);
+                    }
+                } else {
+                    if (seriesWG.getLowestValueY() > 0) {
+                        graph.getViewport().setMinY(seriesWG.getLowestValueY() * .9);
+                    } else {
+                        graph.getViewport().setMinY(seriesWG.getLowestValueY() * 1.1);
+                    }
                 }
-            });
-            seriesRD.setColor(Color.GRAY);
+                if (seriesWS.getHighestValueY() > seriesWG.getHighestValueY()) {
+                    if (seriesWS.getHighestValueY() > 0) {
+                        graph.getViewport().setMaxY(seriesWS.getHighestValueY() * 1.1);
+                    } else {
+                        graph.getViewport().setMaxY(seriesWS.getHighestValueY() * 0.9);
+                    }
+                } else {
+                    if (seriesWG.getHighestValueY() > 0) {
+                        graph.getViewport().setMaxY(seriesWG.getHighestValueY() * 1.1);
+                    } else {
+                        graph.getViewport().setMaxY(seriesWG.getHighestValueY() * 0.9);
+                    }
+                }
+                graph.getLegendRenderer().setVisible(true);
+                graph.getLegendRenderer().setTextSize(40f);
+                graph.getLegendRenderer().setSpacing(30);
+                graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+                graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
+
+                graph.addSeries(seriesWS);
+                graph.addSeries(seriesWG);
+                graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                    @Override
+                    public String formatLabel(double value, boolean isValueX) {
+                        if (isValueX) {
+                            return super.formatLabel(value, isValueX) + " h";
+                        } else {
+                            if (units == 0) {
+                                return super.formatLabel(value, isValueX) + " mph";
+                            } else {
+                                return super.formatLabel(value, isValueX) + " km/h";
+                            }
+                        }
+                    }
+                });
+
+                seriesWG.setColor(Color.GRAY);
+            } else if (id == R.id.nav_humPlot) {
+                viewSel = "humPlot";
+                text.setVisibility(View.GONE);
+                temp.setVisibility(View.GONE);
+                tempHigh.setVisibility(View.GONE);
+                tempLow.setVisibility(View.GONE);
+                dew.setVisibility(View.GONE);
+                dewHigh.setVisibility(View.GONE);
+                dewLow.setVisibility(View.GONE);
+                press.setVisibility(View.GONE);
+                windSpeed.setVisibility(View.GONE);
+                windGust.setVisibility(View.GONE);
+                windDir.setVisibility(View.GONE);
+                rain.setVisibility(View.GONE);
+                hum.setVisibility(View.GONE);
+                time.setVisibility(View.GONE);
+                humBar.setVisibility(View.GONE);
+                windLabel.setVisibility(View.GONE);
+                graph.setVisibility(View.VISIBLE);
+                windIcon.setVisibility(View.INVISIBLE);
+                statusIcon.setVisibility(View.INVISIBLE);
+                windDirIcon.setVisibility(View.INVISIBLE);
+                snowIcon.setVisibility(View.INVISIBLE);
+                pressChange.setVisibility(View.INVISIBLE);
+
+                graph.removeAllSeries();
+
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(0);
+                graph.getViewport().setMaxX(seriesH.getHighestValueX());
+                graph.getViewport().setYAxisBoundsManual(true);
+                if (seriesH.getLowestValueY() > 50) {
+                    graph.getViewport().setMinY(50);
+                } else {
+                    graph.getViewport().setMinY(0);
+                }
+                if (seriesH.getHighestValueY() < 50) {
+                    graph.getViewport().setMaxY(50);
+                } else {
+                    graph.getViewport().setMaxY(105);
+                }
+                graph.getLegendRenderer().setVisible(true);
+                graph.getLegendRenderer().setTextSize(40f);
+                graph.getLegendRenderer().setSpacing(30);
+                graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+                graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
+
+                graph.addSeries(seriesH);
+                graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                    @Override
+                    public String formatLabel(double value, boolean isValueX) {
+                        if (isValueX) {
+                            return super.formatLabel(value, isValueX) + " h";
+                        } else {
+                            return super.formatLabel(value, isValueX) + " %";
+                        }
+                    }
+                });
+            } else if (id == R.id.nav_rainPlot) {
+                viewSel = "rainPlot";
+                text.setVisibility(View.GONE);
+                temp.setVisibility(View.GONE);
+                tempHigh.setVisibility(View.GONE);
+                tempLow.setVisibility(View.GONE);
+                dew.setVisibility(View.GONE);
+                dewHigh.setVisibility(View.GONE);
+                dewLow.setVisibility(View.GONE);
+                press.setVisibility(View.GONE);
+                windSpeed.setVisibility(View.GONE);
+                windGust.setVisibility(View.GONE);
+                windDir.setVisibility(View.GONE);
+                rain.setVisibility(View.GONE);
+                hum.setVisibility(View.GONE);
+                time.setVisibility(View.GONE);
+                humBar.setVisibility(View.GONE);
+                windLabel.setVisibility(View.GONE);
+                graph.setVisibility(View.VISIBLE);
+                windIcon.setVisibility(View.INVISIBLE);
+                statusIcon.setVisibility(View.INVISIBLE);
+                windDirIcon.setVisibility(View.INVISIBLE);
+                snowIcon.setVisibility(View.INVISIBLE);
+                pressChange.setVisibility(View.INVISIBLE);
+
+                graph.removeAllSeries();
+
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(0);
+                graph.getViewport().setMaxX(seriesR.getHighestValueX());
+                graph.getViewport().setYAxisBoundsManual(true);
+                if (seriesR.getLowestValueY() < seriesRD.getLowestValueY()) {
+                    if (seriesR.getLowestValueY() > 0) {
+                        graph.getViewport().setMinY(seriesR.getLowestValueY() * .9);
+                    } else {
+                        graph.getViewport().setMinY(seriesR.getLowestValueY() * 1.1);
+                    }
+                } else {
+                    if (seriesRD.getLowestValueY() > 0) {
+                        graph.getViewport().setMinY(seriesRD.getLowestValueY() * .9);
+                    } else {
+                        graph.getViewport().setMinY(seriesRD.getLowestValueY() * 1.1);
+                    }
+                }
+                if (seriesR.getHighestValueY() > seriesRD.getHighestValueY()) {
+                    if (seriesR.getHighestValueY() > 0) {
+                        graph.getViewport().setMaxY(seriesR.getHighestValueY() * 1.1);
+                    } else {
+                        graph.getViewport().setMaxY(seriesR.getHighestValueY() * 0.9);
+                    }
+                } else {
+                    if (seriesD.getHighestValueY() > 0) {
+                        graph.getViewport().setMaxY(seriesRD.getHighestValueY() * 1.1);
+                    } else {
+                        graph.getViewport().setMaxY(seriesRD.getHighestValueY() * 0.9);
+                    }
+                }
+                graph.getLegendRenderer().setVisible(true);
+                graph.getLegendRenderer().setTextSize(40f);
+                graph.getLegendRenderer().setSpacing(30);
+                graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+                graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
+
+                graph.addSeries(seriesR);
+                graph.addSeries(seriesRD);
+                graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                    @Override
+                    public String formatLabel(double value, boolean isValueX) {
+                        if (isValueX) {
+                            return super.formatLabel(value, isValueX) + " h";
+                        } else {
+                            if (units == 0) {
+                                return super.formatLabel(value, isValueX) + " in";
+                            } else {
+                                return super.formatLabel(value, isValueX) + " mm";
+                            }
+                        }
+                    }
+                });
+                seriesRD.setColor(Color.GRAY);
+            }
+
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
         }
-
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        catch(ArrayIndexOutOfBoundsException a) {
+            new datagrab().execute("");
+            return true;
+        }
     }
     // Orientation change handling
     @Override
