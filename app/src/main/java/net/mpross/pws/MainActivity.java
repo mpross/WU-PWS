@@ -80,21 +80,15 @@ public class MainActivity extends AppCompatActivity
     LineGraphSeries<DataPoint> seriesR = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesRD = new LineGraphSeries<>();
 
-    String day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
-    String month = new SimpleDateFormat("MM").format(Calendar.getInstance().getTime());
-    String year = new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime());
-    String calDate=day+","+month+","+year;
+    static String day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
+    static String month = new SimpleDateFormat("MM").format(Calendar.getInstance().getTime());
+    static String year = new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime());
+    static String calDate=day+","+month+","+year;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //Sets starting date to today
-        day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
-        month = new SimpleDateFormat("MM").format(Calendar.getInstance().getTime());
-        year = new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime());
-        calDate=day+","+month+","+year;
 
         TextView text =(TextView) findViewById(R.id.text1);
         GraphView graph = (GraphView) findViewById(R.id.graph);
@@ -1816,10 +1810,11 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
     }
+
     // Orientation change handling
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        new datagrab().execute("");
         super.onConfigurationChanged(newConfig);
+        new datagrab().execute("");
     }
 }
