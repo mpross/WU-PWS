@@ -41,6 +41,7 @@ import android.widget.Toast;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.*;
 import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -565,10 +566,10 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(String result) {
             //Label creation
-            String fieldString = "Date & Time,Temperature,Dewpoint,Pressure,Wind: \n" +
+            String fieldString = "Date & Time,Temperature,Dew,Pressure,Wind: \n" +
                     "     Direction,     Direction,     Speed," +
                     "     Gust,Humidity,Hourly Precip,Conditions,Clouds,Daily Rain,SoftwareType,DateUTC";
-            String fieldStringD = "Temperature: \n     Average,     High,     Low,Dewpoint: \n" +
+            String fieldStringD = "Temperature: \n     Average,     High,     Low,Dew: \n" +
                     "     Average,     High,     Low,Average Pressure,Average Wind Direction," +
                     "Average Wind Speed,Maximum Wind Gust,Average Humidity,Daily Rain";
             String endString = "";
@@ -674,6 +675,8 @@ public class MainActivity extends AppCompatActivity
             }
             try {
                 GraphView graph = (GraphView) findViewById(R.id.graph);
+                GridLabelRenderer glr = graph.getGridLabelRenderer();
+                glr.setPadding(32);
                 //Veiw changing. Hides unused elements and makes visible selected elements
                 if (viewSel == "current") {
 
@@ -702,7 +705,7 @@ public class MainActivity extends AppCompatActivity
 
                     time.setText(currentString.split("\n")[0].split(": ")[1]);
                     temp.setText(currentString.split("\n")[1].split(": ")[1]);
-                    dew.setText("Dewpoint: "+currentString.split("\n")[2].split(": ")[1]);
+                    dew.setText("Dew: "+currentString.split("\n")[2].split(": ")[1]);
                     press.setText("Press: "+currentString.split("\n")[3].split(": ")[1]);
                     windDir.setText(currentString.split("\n")[5].split(": ")[1]);
                     windSpeed.setText(currentString.split("\n")[7].split(": ")[1]);
@@ -780,7 +783,7 @@ public class MainActivity extends AppCompatActivity
                     temp.setText(dailyString.split("\n")[1].split(": ")[1]);
                     tempHigh.setText(dailyString.split("\n")[2].split(": ")[1]);
                     tempLow.setText(dailyString.split("\n")[3].split(": ")[1]);
-                    dew.setText("Dewpoint: "+dailyString.split("\n")[5].split(": ")[1]);
+                    dew.setText("Dew: "+dailyString.split("\n")[5].split(": ")[1]);
                     dewHigh.setText(dailyString.split("\n")[6].split(": ")[1]);
                     dewLow.setText(dailyString.split("\n")[7].split(": ")[1]);
                     press.setText("Press: "+dailyString.split("\n")[8].split(": ")[1]);
@@ -1340,7 +1343,7 @@ public class MainActivity extends AppCompatActivity
 
                 time.setText(currentString.split("\n")[0].split(": ")[1]);
                 temp.setText(currentString.split("\n")[1].split(": ")[1]);
-                dew.setText("Dewpoint: " + currentString.split("\n")[2].split(": ")[1]);
+                dew.setText("Dew: " + currentString.split("\n")[2].split(": ")[1]);
                 press.setText("Press: " + currentString.split("\n")[3].split(": ")[1]);
                 windDir.setText(currentString.split("\n")[5].split(": ")[1]);
                 windSpeed.setText(currentString.split("\n")[7].split(": ")[1]);
@@ -1411,7 +1414,7 @@ public class MainActivity extends AppCompatActivity
                 temp.setText(dailyString.split("\n")[1].split(": ")[1]);
                 tempHigh.setText(dailyString.split("\n")[2].split(": ")[1]);
                 tempLow.setText(dailyString.split("\n")[3].split(": ")[1]);
-                dew.setText("Dewpoint: " + dailyString.split("\n")[5].split(": ")[1]);
+                dew.setText("Dew: " + dailyString.split("\n")[5].split(": ")[1]);
                 dewHigh.setText(dailyString.split("\n")[6].split(": ")[1]);
                 dewLow.setText(dailyString.split("\n")[7].split(": ")[1]);
                 press.setText("Press: " + dailyString.split("\n")[8].split(": ")[1]);
