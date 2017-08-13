@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity
     LineGraphSeries<DataPoint> seriesPB = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesWS = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesWG = new LineGraphSeries<>();
+    LineGraphSeries<DataPoint> seriesWD = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesH = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesR = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesRD = new LineGraphSeries<>();
@@ -402,6 +403,7 @@ public class MainActivity extends AppCompatActivity
                 DataPoint[] dewData=new DataPoint[dew.length];
                 DataPoint[] pressData=new DataPoint[press.length];
                 DataPoint[] pressBLData=new DataPoint[press.length];
+                DataPoint[] windDData=new DataPoint[windDeg.length];
                 DataPoint[] windSData=new DataPoint[windSpeed.length];
                 DataPoint[] windGData=new DataPoint[windGust.length];
                 DataPoint[] humData=new DataPoint[hum.length];
@@ -422,6 +424,7 @@ public class MainActivity extends AppCompatActivity
                     }
                     windSData[m]=new DataPoint(tim[m],windSpeed[m]);
                     windGData[m]=new DataPoint(tim[m],windGust[m]);
+                    windDData[m]=new DataPoint(tim[m],windDeg[m]);
                     humData[m]=new DataPoint(tim[m],hum[m]);
                     rainData[m]=new DataPoint(tim[m],precip[m]);
                     rainDayData[m]=new DataPoint(tim[m],precipDay[m]);
@@ -433,6 +436,7 @@ public class MainActivity extends AppCompatActivity
                 seriesPB = new LineGraphSeries<>(pressBLData);
                 seriesWS = new LineGraphSeries<>(windSData);
                 seriesWG = new LineGraphSeries<>(windGData);
+                seriesWD = new LineGraphSeries<>(windDData);
                 seriesH = new LineGraphSeries<>(humData);
                 seriesR = new LineGraphSeries<>(rainData);
                 seriesRD = new LineGraphSeries<>(rainDayData);
@@ -441,6 +445,7 @@ public class MainActivity extends AppCompatActivity
                 seriesT.setTitle("Temperature");
                 seriesWS.setTitle("Wind Speed");
                 seriesWG.setTitle("Wind Gust");
+                seriesWD.setTitle("Wind Direction");
                 seriesH.setTitle("Humidity");
                 seriesP.setTitle("Pressure");
                 seriesPB.setTitle("Mean Sea Level Pressure");
@@ -956,6 +961,67 @@ public class MainActivity extends AppCompatActivity
                             }
                         }
                     });
+                    seriesPB.setColor(Color.GRAY);} else if (viewSel == "pressPlot") {
+
+                    text.setVisibility(View.GONE);
+                    temp.setVisibility(View.GONE);
+                    tempHigh.setVisibility(View.GONE);
+                    tempLow.setVisibility(View.GONE);
+                    dew.setVisibility(View.GONE);
+                    dewHigh.setVisibility(View.GONE);
+                    dewLow.setVisibility(View.GONE);
+                    press.setVisibility(View.GONE);
+                    windSpeed.setVisibility(View.GONE);
+                    windGust.setVisibility(View.GONE);
+                    windDir.setVisibility(View.GONE);
+                    rain.setVisibility(View.GONE);
+                    hum.setVisibility(View.GONE);
+                    time.setVisibility(View.GONE);
+                    humBar.setVisibility(View.GONE);
+                    windLabel.setVisibility(View.GONE);
+                    graph.setVisibility(View.VISIBLE);
+                    windIcon.setVisibility(View.INVISIBLE);
+                    statusIcon.setVisibility(View.INVISIBLE);
+                    windDirIcon.setVisibility(View.INVISIBLE);
+                    snowIcon.setVisibility(View.INVISIBLE);
+                    pressChange.setVisibility(View.INVISIBLE);
+
+                    graph.removeAllSeries();
+
+                    graph.getViewport().setXAxisBoundsManual(true);
+                    graph.getViewport().setMinX(0);
+                    graph.getViewport().setMaxX(seriesP.getHighestValueX());
+                    graph.getViewport().setYAxisBoundsManual(true);
+                    //World record lows and highs for plot limits.
+                    if (units == 0) {
+                        graph.getViewport().setMinY(26);
+                        graph.getViewport().setMaxY(32);
+                    } else {
+                        graph.getViewport().setMinY(870);
+                        graph.getViewport().setMaxY(1085);
+                    }
+                    graph.getLegendRenderer().setVisible(true);
+                    graph.getLegendRenderer().setTextSize(40f);
+                    graph.getLegendRenderer().setSpacing(30);
+                    graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+                    graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
+
+                    graph.addSeries(seriesP);
+                    graph.addSeries(seriesPB);
+                    graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                        @Override
+                        public String formatLabel(double value, boolean isValueX) {
+                            if (isValueX) {
+                                return super.formatLabel(value, isValueX) + " h";
+                            } else {
+                                if (units == 0) {
+                                    return super.formatLabel(value, isValueX) + " inHg";
+                                } else {
+                                    return super.formatLabel(value, isValueX) + " hPa";
+                                }
+                            }
+                        }
+                    });
                     seriesPB.setColor(Color.GRAY);
                 } else if (viewSel == "windPlot") {
                     text.setVisibility(View.GONE);
@@ -985,7 +1051,7 @@ public class MainActivity extends AppCompatActivity
 
                     graph.getViewport().setXAxisBoundsManual(true);
                     graph.getViewport().setMinX(0);
-                    graph.getViewport().setMaxX(seriesT.getHighestValueX());
+                    graph.getViewport().setMaxX(seriesWS.getHighestValueX());
                     graph.getViewport().setYAxisBoundsManual(true);
                     if (seriesWS.getLowestValueY() < seriesWG.getLowestValueY()) {
                         if (seriesWS.getLowestValueY() > 0) {
@@ -1092,6 +1158,58 @@ public class MainActivity extends AppCompatActivity
                                 return super.formatLabel(value, isValueX) + " h";
                             } else {
                                 return super.formatLabel(value, isValueX) + " %";
+                            }
+                        }
+                    });
+                } else if (viewSel == "windDPlot") {
+
+                    text.setVisibility(View.GONE);
+                    temp.setVisibility(View.GONE);
+                    tempHigh.setVisibility(View.GONE);
+                    tempLow.setVisibility(View.GONE);
+                    dew.setVisibility(View.GONE);
+                    dewHigh.setVisibility(View.GONE);
+                    dewLow.setVisibility(View.GONE);
+                    press.setVisibility(View.GONE);
+                    windSpeed.setVisibility(View.GONE);
+                    windGust.setVisibility(View.GONE);
+                    windDir.setVisibility(View.GONE);
+                    rain.setVisibility(View.GONE);
+                    hum.setVisibility(View.GONE);
+                    time.setVisibility(View.GONE);
+                    humBar.setVisibility(View.GONE);
+                    windLabel.setVisibility(View.GONE);
+                    graph.setVisibility(View.VISIBLE);
+                    windIcon.setVisibility(View.INVISIBLE);
+                    statusIcon.setVisibility(View.INVISIBLE);
+                    windDirIcon.setVisibility(View.INVISIBLE);
+                    snowIcon.setVisibility(View.INVISIBLE);
+                    pressChange.setVisibility(View.INVISIBLE);
+
+                    graph.removeAllSeries();
+
+                    graph.getViewport().setXAxisBoundsManual(true);
+                    graph.getViewport().setMinX(0);
+                    graph.getViewport().setMaxX(seriesWD.getHighestValueX());
+                    graph.getViewport().setYAxisBoundsManual(true);
+
+                    graph.getViewport().setMinY(0);
+                    graph.getViewport().setMaxY(360);
+
+                    graph.getLegendRenderer().setVisible(true);
+                    graph.getLegendRenderer().setTextSize(40f);
+                    graph.getLegendRenderer().setSpacing(30);
+                    graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+                    graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
+
+                    graph.addSeries(seriesWD);
+                    graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                        @Override
+                        public String formatLabel(double value, boolean isValueX) {
+                            if (isValueX) {
+                                return super.formatLabel(value, isValueX) + " h";
+                            } else {
+                                return super.formatLabel(value, isValueX) + " °";
                             }
                         }
                     });
@@ -1580,6 +1698,58 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
                 seriesPB.setColor(Color.GRAY);
+            } else if (id == R.id.nav_windDPlot) {
+                viewSel = "windDPlot";
+                text.setVisibility(View.GONE);
+                temp.setVisibility(View.GONE);
+                tempHigh.setVisibility(View.GONE);
+                tempLow.setVisibility(View.GONE);
+                dew.setVisibility(View.GONE);
+                dewHigh.setVisibility(View.GONE);
+                dewLow.setVisibility(View.GONE);
+                press.setVisibility(View.GONE);
+                windSpeed.setVisibility(View.GONE);
+                windGust.setVisibility(View.GONE);
+                windDir.setVisibility(View.GONE);
+                rain.setVisibility(View.GONE);
+                hum.setVisibility(View.GONE);
+                time.setVisibility(View.GONE);
+                humBar.setVisibility(View.GONE);
+                windLabel.setVisibility(View.GONE);
+                graph.setVisibility(View.VISIBLE);
+                windIcon.setVisibility(View.INVISIBLE);
+                statusIcon.setVisibility(View.INVISIBLE);
+                windDirIcon.setVisibility(View.INVISIBLE);
+                snowIcon.setVisibility(View.INVISIBLE);
+                pressChange.setVisibility(View.INVISIBLE);
+
+                graph.removeAllSeries();
+
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(0);
+                graph.getViewport().setMaxX(seriesWD.getHighestValueX());
+                graph.getViewport().setYAxisBoundsManual(true);
+
+                graph.getViewport().setMinY(0);
+                graph.getViewport().setMaxY(360);
+
+                graph.getLegendRenderer().setVisible(true);
+                graph.getLegendRenderer().setTextSize(40f);
+                graph.getLegendRenderer().setSpacing(30);
+                graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+                graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
+
+                graph.addSeries(seriesWD);
+                graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                    @Override
+                    public String formatLabel(double value, boolean isValueX) {
+                        if (isValueX) {
+                            return super.formatLabel(value, isValueX) + " h";
+                        } else {
+                            return super.formatLabel(value, isValueX) + " °";
+                        }
+                    }
+                });
             } else if (id == R.id.nav_windPlot) {
                 viewSel = "windPlot";
                 text.setVisibility(View.GONE);
@@ -1609,7 +1779,7 @@ public class MainActivity extends AppCompatActivity
 
                 graph.getViewport().setXAxisBoundsManual(true);
                 graph.getViewport().setMinX(0);
-                graph.getViewport().setMaxX(seriesT.getHighestValueX());
+                graph.getViewport().setMaxX(seriesWS.getHighestValueX());
                 graph.getViewport().setYAxisBoundsManual(true);
                 if (seriesWS.getLowestValueY() < seriesWG.getLowestValueY()) {
                     if (seriesWS.getLowestValueY() > 0) {
