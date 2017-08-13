@@ -38,6 +38,7 @@ import java.io.IOException;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     int units=0;
+    int nordic=0;
     Bundle b=new Bundle();
     Intent i=new Intent();
     @Override
@@ -51,6 +52,9 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);
         spinner.setSelection(getIntent().getExtras().getInt("unit"));
+
+        Spinner nordicSpinner = (Spinner) findViewById(R.id.nordicSpinner);
+        nordicSpinner.setOnItemSelectedListener(this);
 
         TextView errText =(TextView) findViewById(R.id.errText);
         //Tells user if they selected an invalid weather station
@@ -93,7 +97,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                     fos.close();
                     InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-
+                    i.putExtra("nordic",nordic);
                     setResult(units,i);
 
                     finish();
@@ -125,7 +129,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                         fos.close();
                         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-
+                        i.putExtra("nordic",nordic);
                         setResult(units,i);
 
                         finish();
@@ -139,9 +143,21 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             }
         });
     }
-    public void onItemSelected(AdapterView<?> parent, View view,
-                               int pos, long id) {
-        units=pos;
+    public void onItemSelected(AdapterView<?> parent, View view,int pos, long id) {
+        Spinner spin= (Spinner) parent;
+        if(spin.getId()==R.id.spinner) {
+            Spinner nordicSpinner = (Spinner) findViewById(R.id.nordicSpinner);
+            units = pos;
+            if (pos == 1) {
+                nordicSpinner.setVisibility(View.VISIBLE);
+            } else {
+                nordicSpinner.setVisibility(View.INVISIBLE);
+            }
+        }
+        if(spin.getId()==R.id.nordicSpinner) {
+            nordic=pos;
+        }
+
     }
 
     public void onNothingSelected(AdapterView<?> parent) {

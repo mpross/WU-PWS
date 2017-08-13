@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity
     String station=""; //Weather station name
     static String viewSel="current";
     int units=0; // User unit choice
+    int nordic=0; // Wind speed unit choice
     int nativeUnits=0; // Units the data is in
     int errSrcId=0; //0=originated from settings, 1=originated from date
     boolean errBool=false; //Error status
@@ -103,12 +104,21 @@ public class MainActivity extends AppCompatActivity
 
         byte[] byU=new byte[1]; //Unit selection 0=imperial, 1=metric
 
-        // Writes unit selection to file
+        // Reads unit selection to file
         try {
             FileInputStream fis = openFileInput("unit_file");
             fis.read(byU);
             fis.close();
             units = (int) byU[0];
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+        // Reads wind speed unit selection to file
+        try {
+            FileInputStream fis = openFileInput("nordic_file");
+            fis.read(byU);
+            fis.close();
+            nordic = (int) byU[0];
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -314,14 +324,24 @@ public class MainActivity extends AppCompatActivity
                                 if (units == 0) {
                                     windSpeed[j / 2 - 1] = Float.parseFloat(col[6]);
                                 } else {
-                                    windSpeed[j / 2 - 1] = Float.parseFloat(col[6]) * 1.60934f;
+                                    if(nordic==0) {
+                                        windSpeed[j / 2 - 1] = Float.parseFloat(col[6]) * 1.60934f;
+                                    }
+                                    else{
+                                        windSpeed[j / 2 - 1] = Float.parseFloat(col[6]) * 0.44704f;
+                                    }
                                 }
                             }
                             else{
                                 if (units == 0) {
                                     windSpeed[j / 2 - 1] = Float.parseFloat(col[6])/1.60934f;
                                 } else {
-                                    windSpeed[j / 2 - 1] = Float.parseFloat(col[6]);
+                                    if(nordic==0) {
+                                        windSpeed[j / 2 - 1] = Float.parseFloat(col[6]);
+                                    }
+                                    else {
+                                        windSpeed[j / 2 - 1] = Float.parseFloat(col[6])*0.277778f;
+                                    }
                                 }
                             }
                         }
@@ -330,14 +350,23 @@ public class MainActivity extends AppCompatActivity
                                 if (units == 0) {
                                     windGust[j / 2 - 1] = Float.parseFloat(col[7]);
                                 } else {
-                                    windGust[j / 2 - 1] = Float.parseFloat(col[7]) * 1.60934f;
+                                    if(nordic==0) {
+                                        windGust[j / 2 - 1] = Float.parseFloat(col[7]) * 1.60934f;
+                                    }
+                                    else{
+                                        windGust[j / 2 - 1] = Float.parseFloat(col[7]) * 0.44704f;
+                                    }
                                 }
                             }
                             else {
                                 if (units == 0) {
                                     windGust[j / 2 - 1] = Float.parseFloat(col[7])/ 1.60934f;
                                 } else {
-                                    windGust[j / 2 - 1] = Float.parseFloat(col[7]);
+                                    if(nordic==0){
+                                        windGust[j / 2 - 1] = Float.parseFloat(col[7]);}
+                                    else {
+                                        windGust[j / 2 - 1] = Float.parseFloat(col[7])*0.277778f;
+                                    }
                                 }
                             }
                         }
@@ -576,9 +605,13 @@ public class MainActivity extends AppCompatActivity
             if (units == 0) {
                 endString = ", °F, °F, inHg,, °, mph, mph, %, in,,, in,,";
                 endStringD = " °F, °F, °F, °F, °F, °F, inHg, °, mph, mph, %, in";
-            } else {
+            } else if(nordic==0) {
                 endString = ", °C, °C, hPa,, °, km/h, km/h, %, mm,,, mm,,";
                 endStringD = " °C, °C, °C, °C, °C, °C, hPa, °, km/h, km/h, %, mm";
+            }
+            else{
+                endString = ", °C, °C, hPa,, °, m/s, m/s, %, mm,,, mm,,";
+                endStringD = " °C, °C, °C, °C, °C, °C, hPa, °, m/s, m/s, %, mm";
             }
             //Excluded labels that are included in data file
             String exString = "Conditions,Clouds,SoftwareType,DateUTC,Daily Rain";
@@ -1095,8 +1128,13 @@ public class MainActivity extends AppCompatActivity
                             } else {
                                 if (units == 0) {
                                     return super.formatLabel(value, isValueX) + " mph";
-                                } else {
-                                    return super.formatLabel(value, isValueX) + " km/h";
+                                } else{
+                                    if(nordic==0){
+                                        return super.formatLabel(value, isValueX) + " km/h";
+                                    }
+                                    else {
+                                        return super.formatLabel(value, isValueX) + " m/s";
+                                    }
                                 }
                             }
                         }
@@ -1373,10 +1411,19 @@ public class MainActivity extends AppCompatActivity
         errSrcId=requestCode;
         if(requestCode==0){
             units=resultCode;
+            nordic=data.getIntExtra("nordic",0);
             //Write unit code to file
             try {
                 FileOutputStream fos = openFileOutput("unit_file", Context.MODE_PRIVATE);
                 fos.write(units);
+                fos.close();
+            }
+            catch (IOException e){
+                System.out.println(e);
+            }
+            try {
+                FileOutputStream fos = openFileOutput("nordic_file", Context.MODE_PRIVATE);
+                fos.write(nordic);
                 fos.close();
             }
             catch (IOException e){
@@ -1824,7 +1871,12 @@ public class MainActivity extends AppCompatActivity
                             if (units == 0) {
                                 return super.formatLabel(value, isValueX) + " mph";
                             } else {
-                                return super.formatLabel(value, isValueX) + " km/h";
+                                if(nordic==0) {
+                                    return super.formatLabel(value, isValueX) + " km/h";
+                                }
+                                else{
+                                    return super.formatLabel(value, isValueX) + " m/s";
+                                }
                             }
                         }
                     }

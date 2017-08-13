@@ -13,5 +13,9 @@
         <item>Imperial</item>
         <item>Metric</item>
     </string-array>
+    <string-array name="speeds">
+        <item>km/h</item>
+        <item>m/s</item>
+    </string-array>
 
 </resources>
