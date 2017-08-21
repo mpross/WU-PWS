@@ -490,8 +490,33 @@ public class MainActivity extends AppCompatActivity
                 //If native units are imperial
                 if (nativeUnits == 0) {
                     //Last line of data file is already the correct format for displaying
-                    if (units == 0) {
-                        outBuild.append(lines[lines.length - 2]);
+                    if (nordic==0) {
+                        if (units == 0) {
+                            outBuild.append(lines[lines.length - 2]);
+                        }
+                        //If units are different from file then create correctly formatted string
+                        else {
+                            outBuild.append(timStamp);
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(Math.round(temp[temp.length - 2] * 100.0) / 100.0));
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(Math.round(dew[dew.length - 2] * 100.0) / 100.0));
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(Math.round(press[press.length - 2] * 100.0) / 100.0));
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(windDir));
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(windDeg[windDeg.length - 2]));
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(Math.round(windSpeed[windSpeed.length - 2] * 100.0) / 100.0));
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(Math.round(windGust[windGust.length - 2] * 100.0) / 100.0));
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(hum[hum.length - 2]));
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(Math.round(precip[precip.length - 2] * 100.0) / 100.0));
+                            outBuild.append(",,,,,,");
+                        }
                     }
                     //If units are different from file then create correctly formatted string
                     else {
@@ -519,7 +544,33 @@ public class MainActivity extends AppCompatActivity
                 }
                 //If native units are metric
                 else{
-                    if (units == 0) {
+                    if (nordic == 0) {
+                        if (units == 0) {
+                            outBuild.append(timStamp);
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(Math.round(temp[temp.length - 2] * 100.0) / 100.0));
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(Math.round(dew[dew.length - 2] * 100.0) / 100.0));
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(Math.round(press[press.length - 2] * 100.0) / 100.0));
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(windDir));
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(windDeg[windDeg.length - 2]));
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(Math.round(windSpeed[windSpeed.length - 2] * 100.0) / 100.0));
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(Math.round(windGust[windGust.length - 2] * 100.0) / 100.0));
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(hum[hum.length - 2]));
+                            outBuild.append(",");
+                            outBuild.append(String.valueOf(Math.round(precip[precip.length - 2] * 100.0) / 100.0));
+                            outBuild.append(",,,,,,");
+                        } else {
+                            outBuild.append(lines[lines.length - 2]);
+                        }
+                    }
+                    else{
                         outBuild.append(timStamp);
                         outBuild.append(",");
                         outBuild.append(String.valueOf(Math.round(temp[temp.length - 2] * 100.0) / 100.0));
@@ -540,9 +591,6 @@ public class MainActivity extends AppCompatActivity
                         outBuild.append(",");
                         outBuild.append(String.valueOf(Math.round(precip[precip.length - 2] * 100.0) / 100.0));
                         outBuild.append(",,,,,,");
-                    }
-                    else {
-                        outBuild.append(lines[lines.length - 2]);
                     }
                 }
 
@@ -1411,23 +1459,28 @@ public class MainActivity extends AppCompatActivity
         errSrcId=requestCode;
         if(requestCode==0){
             units=resultCode;
-            nordic=data.getIntExtra("nordic",0);
-            //Write unit code to file
-            try {
-                FileOutputStream fos = openFileOutput("unit_file", Context.MODE_PRIVATE);
-                fos.write(units);
-                fos.close();
+            try{
+                nordic=data.getIntExtra("nordic",0);
+                //Write unit code to file
+                try {
+                    FileOutputStream fos = openFileOutput("unit_file", Context.MODE_PRIVATE);
+                    fos.write(units);
+                    fos.close();
+                }
+                catch (IOException e){
+                    System.out.println(e);
+                }
+                try {
+                    FileOutputStream fos = openFileOutput("nordic_file", Context.MODE_PRIVATE);
+                    fos.write(nordic);
+                    fos.close();
+                }
+                catch (IOException e) {
+                    System.out.println(e);
+                }
             }
-            catch (IOException e){
-                System.out.println(e);
-            }
-            try {
-                FileOutputStream fos = openFileOutput("nordic_file", Context.MODE_PRIVATE);
-                fos.write(nordic);
-                fos.close();
-            }
-            catch (IOException e){
-                System.out.println(e);
+            catch(NullPointerException n){
+                System.out.println(n);
             }
         }
         else{
