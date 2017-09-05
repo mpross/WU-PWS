@@ -20,8 +20,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".DateActivity" />
+        <activity android:name=".SettingsActivity" android:launchMode="singleInstance"/>
+        <activity android:name=".DateActivity" android:launchMode="singleInstance"/>
 
     </application>
 

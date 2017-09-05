@@ -73,7 +73,12 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             int n= fis.read(by);
             fis.close();
             String str = new String(by, "UTF-8");
-            editText.setText(str);
+            if(getIntent().getExtras().getBoolean("error")==true){
+                editText.setText("");
+            }
+            else {
+                editText.setText(str);
+            }
         }
         catch (IOException e) {
         }

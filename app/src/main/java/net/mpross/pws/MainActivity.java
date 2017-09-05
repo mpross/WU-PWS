@@ -1411,7 +1411,6 @@ public class MainActivity extends AppCompatActivity
         }
         else if(errSrcId==1 && errBool==false){
             Intent intent = new Intent(this, DateActivity.class);
-            intent.putExtra("error", true);
             intent.putExtra("calDate",calDate);
             startActivityForResult(intent, 2);
             errBool=true;
