@@ -101,8 +101,8 @@ public class MainActivity extends AppCompatActivity
         graph.getViewport().setScrollableY(true);
         
         graph.setVisibility(View.GONE);
-
-        byte[] byU=new byte[1]; //Unit selection 0=imperial, 1=metric
+        byte[] byU=new byte[1];
+         //Unit selection 0=imperial, 1=metric
 
         // Reads unit selection to file
         try {
