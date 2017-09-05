@@ -828,7 +828,7 @@ public class MainActivity extends AppCompatActivity
                     if((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0]))<32 && units==0){
                         snowIcon.setVisibility(View.VISIBLE);
                     }
-                    else if((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0]))>0 && units==1){
+                    else if((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0]))<0 && units==1){
                         snowIcon.setVisibility(View.VISIBLE);
                     }
                     else{
@@ -894,7 +894,7 @@ public class MainActivity extends AppCompatActivity
                     if((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0]))<32 && units==0){
                         snowIcon.setVisibility(View.VISIBLE);
                     }
-                    else if((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0]))>0 && units==1){
+                    else if((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0]))<0 && units==1){
                         snowIcon.setVisibility(View.VISIBLE);
                     }
                     else{
