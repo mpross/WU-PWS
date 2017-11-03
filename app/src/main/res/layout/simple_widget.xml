@@ -14,7 +14,7 @@
         android:background="@android:color/transparent"
         android:contentDescription="@string/appwidget_text"
         android:text="@string/appwidget_text"
-        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+        android:textColor="?attr/colorControlHighlight"
         android:textSize="24sp"
         android:textStyle="bold|italic" />
 
