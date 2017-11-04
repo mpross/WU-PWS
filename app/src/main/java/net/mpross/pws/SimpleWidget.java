@@ -2,6 +2,7 @@ package net.mpross.pws;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.NetworkOnMainThreadException;
@@ -23,7 +24,7 @@ public class SimpleWidget extends AppWidgetProvider {
     int units = 0; // User unit choice
     int nativeUnits = 0; // Units the data is in
     Context con;
-    String widText="Loading";
+    public String widText="Loading";
 
     public class datagrab extends AsyncTask<String, Void, String> {
 
@@ -40,7 +41,7 @@ public class SimpleWidget extends AppWidgetProvider {
                 fis.close();
                 station = new String(by, "UTF-8");
             } catch (IOException e) {
-                System.out.println(e);
+                widgetText = e.toString();
             }
 
             try {
@@ -49,7 +50,7 @@ public class SimpleWidget extends AppWidgetProvider {
                 fis.close();
                 units = (int) byU[0];
             } catch (IOException e) {
-                System.out.println(e);
+                widgetText = e.toString();
             }
 
             String day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
@@ -142,19 +143,21 @@ public class SimpleWidget extends AppWidgetProvider {
                     j++;
                 }
                 if (units == 0) {
+                    outBuild.append("PWS:\n");
                     outBuild.append(String.valueOf(Math.round(temp[temp.length - 2] * 100.0) / 100.0));
-                    outBuild.append(" °F\r\n");
+                    outBuild.append(" °F\n");
                     outBuild.append(String.valueOf(Math.round(dew[dew.length - 2] * 100.0) / 100.0));
-                    outBuild.append(" °F\r\n");
+                    outBuild.append(" °F\n");
                     outBuild.append(String.valueOf(Math.round(press[press.length - 2] * 100.0) / 100.0));
-                    outBuild.append(" inHg\r\n");
+                    outBuild.append(" inHg\n");
                 } else {
+                    outBuild.append("PWS:\n");
                     outBuild.append(String.valueOf(Math.round(temp[temp.length - 2] * 100.0) / 100.0));
-                    outBuild.append(" °C\r\n");
+                    outBuild.append(" °C\n");
                     outBuild.append(String.valueOf(Math.round(dew[dew.length - 2] * 100.0) / 100.0));
-                    outBuild.append(" °C\r\n");
+                    outBuild.append(" °C\n");
                     outBuild.append(String.valueOf(Math.round(press[press.length - 2] * 100.0) / 100.0));
-                    outBuild.append(" hPa\r\n");
+                    outBuild.append(" hPa\n");
                 }
                 widgetText = outBuild.toString();
             } catch (IOException e) {
@@ -170,11 +173,19 @@ public class SimpleWidget extends AppWidgetProvider {
                 widgetText = a.toString();
                 System.out.println(a);
             }
+            widText=widgetText.toString();
+            System.out.println(widgetText);
             return widgetText.toString();
         }
         @Override
         protected void onPostExecute(String result){
+            System.out.println(widText);
             widText=result;
+            RemoteViews remoteViews = new RemoteViews(con.getPackageName(), R.layout.simple_widget);
+            ComponentName thisWidget = new ComponentName( con, SimpleWidget.class );
+            remoteViews.setTextViewText(R.id.appwidget_text,widText);
+            AppWidgetManager.getInstance( con ).updateAppWidget( thisWidget, remoteViews );
+
         }
     }
 
@@ -193,6 +204,7 @@ public class SimpleWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
+        System.out.println(widText);
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }

@@ -640,7 +640,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
-    protected void onPostExecute(String result) {
+        protected void onPostExecute(String result) {
         //Label creation
         String fieldString = "Date & Time,Temperature,Dew,Pressure,Wind: \n" +
                 "     Direction,     Direction,     Speed," +
@@ -1390,7 +1390,7 @@ public class MainActivity extends AppCompatActivity
             error();
         }
     }
-    }
+        }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

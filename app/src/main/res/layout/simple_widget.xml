@@ -1,8 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
-    android:padding="@dimen/widget_margin">
+    android:background="@android:color/transparent">
 
     <TextView
         android:id="@+id/appwidget_text"
@@ -10,12 +9,10 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_margin="8dp"
         android:background="@android:color/transparent"
         android:contentDescription="@string/appwidget_text"
         android:text="@string/appwidget_text"
-        android:textColor="?attr/colorControlHighlight"
-        android:textSize="24sp"
-        android:textStyle="bold|italic" />
+        android:textColor="#dedede"
+        android:textSize="24sp" />
 
 </RelativeLayout>
