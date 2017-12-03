@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.NetworkOnMainThreadException;
 import android.widget.RemoteViews;
@@ -26,12 +27,14 @@ public class SimpleWidget extends AppWidgetProvider {
     Context con;
     public String widText="Loading";
 
+    public static final String ACTION_AUTO_UPDATE = "AUTO_UPDATE";
+
     public class datagrab extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String[] p1) {
 
-            byte[] by = new byte[11];
+            byte[] by = new byte[13];
             byte[] byU = new byte[1];
             CharSequence widgetText = "";
             //Reads station id from station file
@@ -121,6 +124,7 @@ public class SimpleWidget extends AppWidgetProvider {
                                 temp[j / 2 - 1] = Float.parseFloat(col[1]);
                                 dew[j / 2 - 1] = Float.parseFloat(col[2]);
                                 press[j / 2 - 1] = Float.parseFloat(col[3]);
+                                windSpeed[j / 2 - 1] = Float.parseFloat(col[6]);
                             } else {
                                 temp[j / 2 - 1] = (Float.parseFloat(col[1]) - 32.0f) * 5.0f / 9.0f;
                                 dew[j / 2 - 1] = (Float.parseFloat(col[2]) - 32.0f) * 5.0f / 9.0f;
@@ -144,19 +148,19 @@ public class SimpleWidget extends AppWidgetProvider {
                 }
                 if (units == 0) {
                     outBuild.append("PWS:\n");
-                    outBuild.append(String.valueOf(Math.round(temp[temp.length - 2] * 100.0) / 100.0));
+                    outBuild.append(String.valueOf(Math.round(temp[temp.length -1] * 100.0) / 100.0));
                     outBuild.append(" °F\n");
-                    outBuild.append(String.valueOf(Math.round(dew[dew.length - 2] * 100.0) / 100.0));
+                    outBuild.append(String.valueOf(Math.round(dew[dew.length - 1] * 100.0) / 100.0));
                     outBuild.append(" °F\n");
-                    outBuild.append(String.valueOf(Math.round(press[press.length - 2] * 100.0) / 100.0));
+                    outBuild.append(String.valueOf(Math.round(press[press.length - 1] * 100.0) / 100.0));
                     outBuild.append(" inHg\n");
                 } else {
                     outBuild.append("PWS:\n");
-                    outBuild.append(String.valueOf(Math.round(temp[temp.length - 2] * 100.0) / 100.0));
+                    outBuild.append(String.valueOf(Math.round(temp[temp.length - 1] * 100.0) / 100.0));
                     outBuild.append(" °C\n");
-                    outBuild.append(String.valueOf(Math.round(dew[dew.length - 2] * 100.0) / 100.0));
+                    outBuild.append(String.valueOf(Math.round(dew[dew.length - 1] * 100.0) / 100.0));
                     outBuild.append(" °C\n");
-                    outBuild.append(String.valueOf(Math.round(press[press.length - 2] * 100.0) / 100.0));
+                    outBuild.append(String.valueOf(Math.round(press[press.length - 1] * 100.0) / 100.0));
                     outBuild.append(" hPa\n");
                 }
                 widgetText = outBuild.toString();
@@ -174,12 +178,10 @@ public class SimpleWidget extends AppWidgetProvider {
                 System.out.println(a);
             }
             widText=widgetText.toString();
-            System.out.println(widgetText);
             return widgetText.toString();
         }
         @Override
         protected void onPostExecute(String result){
-            System.out.println(widText);
             widText=result;
             RemoteViews remoteViews = new RemoteViews(con.getPackageName(), R.layout.simple_widget);
             ComponentName thisWidget = new ComponentName( con, SimpleWidget.class );
@@ -193,30 +195,39 @@ public class SimpleWidget extends AppWidgetProvider {
                          int appWidgetId) {
         con=context;
         new datagrab().execute("");
-        // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(con.getPackageName(), R.layout.simple_widget);
         views.setTextViewText(R.id.appwidget_text, widText);
 
-        // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
-        System.out.println(widText);
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
     }
     @Override
     public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
+        AppWidgetAlarm appWidgetAlarm = new AppWidgetAlarm(context.getApplicationContext());
+        appWidgetAlarm.startAlarm();
     }
 
     @Override
     public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
+        AppWidgetAlarm appWidgetAlarm = new AppWidgetAlarm(context.getApplicationContext());
+        appWidgetAlarm.stopAlarm();
+    }
+    @Override
+    public void onReceive(Context context, Intent intent)
+    {
+        super.onReceive(context, intent);
+
+        if(intent.getAction().equals(ACTION_AUTO_UPDATE))
+        {
+            con=context;
+            new datagrab().execute("");
+        }
     }
 }
 

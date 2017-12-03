@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected String doInBackground(String[] p1)
         {
-            byte[] by=new byte[11];
+            byte[] by=new byte[13];
             //Reads station id from station file
             try {
                 FileInputStream fis = openFileInput("station_file");

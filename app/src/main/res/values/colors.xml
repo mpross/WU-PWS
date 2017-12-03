@@ -2,5 +2,6 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#eaeaea</color>
+    <color name="colorAccent">#454545</color>
+    <color name="widgetBackground">#665780a8</color>
 </resources>

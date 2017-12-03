@@ -66,7 +66,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         }
 
         final EditText editText = (EditText) findViewById(R.id.station);
-        byte[] by=new byte[11];
+        byte[] by=new byte[13];
         //Writes station to file
         try {
             FileInputStream fis = openFileInput("station_file");
