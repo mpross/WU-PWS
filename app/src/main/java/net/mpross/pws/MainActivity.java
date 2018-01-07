@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.NetworkOnMainThreadException;
@@ -31,6 +32,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -1302,6 +1305,7 @@ public class MainActivity extends AppCompatActivity
                 });
                 seriesRD.setColor(Color.GRAY);
             }
+
         } catch (ArrayIndexOutOfBoundsException a) {
             Context context = getApplicationContext();
             CharSequence toastText = "Connection Error";
@@ -1988,6 +1992,9 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
                 seriesRD.setColor(Color.GRAY);
+            } else if (id == R.id.nav_support) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.me/mpross"));
+                startActivity(browserIntent);
             }
 
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
