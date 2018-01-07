@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity
     LineGraphSeries<DataPoint> seriesT = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesD = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesP = new LineGraphSeries<>();
-    LineGraphSeries<DataPoint> seriesPB = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesWS = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesWG = new LineGraphSeries<>();
     LineGraphSeries<DataPoint> seriesWD = new LineGraphSeries<>();
@@ -444,13 +443,6 @@ public class MainActivity extends AppCompatActivity
                     tempData[m] = new DataPoint(tim[m], t);
                     dewData[m] = new DataPoint(tim[m], dew[m]);
                     pressData[m]=new DataPoint(tim[m],press[m]);
-                    //Mean sea level pressure as reference line
-                    if (units==0) {
-                        pressBLData[m] = new DataPoint(tim[m], 29.921f);
-                    }
-                    else{
-                        pressBLData[m] = new DataPoint(tim[m], 1013.25f);
-                    }
                     windSData[m]=new DataPoint(tim[m],windSpeed[m]);
                     windGData[m]=new DataPoint(tim[m],windGust[m]);
                     windDData[m]=new DataPoint(tim[m],windDeg[m]);
@@ -462,7 +454,6 @@ public class MainActivity extends AppCompatActivity
                 seriesT = new LineGraphSeries<>(tempData);
                 seriesD = new LineGraphSeries<>(dewData);
                 seriesP = new LineGraphSeries<>(pressData);
-                seriesPB = new LineGraphSeries<>(pressBLData);
                 seriesWS = new LineGraphSeries<>(windSData);
                 seriesWG = new LineGraphSeries<>(windGData);
                 seriesWD = new LineGraphSeries<>(windDData);
@@ -477,7 +468,6 @@ public class MainActivity extends AppCompatActivity
                 seriesWD.setTitle("Wind Direction");
                 seriesH.setTitle("Humidity");
                 seriesP.setTitle("Pressure");
-                seriesPB.setTitle("Mean Sea Level Pressure");
                 seriesR.setTitle("Hourly Precipitation");
                 seriesRD.setTitle("Daily Precipitation");
 
@@ -1012,14 +1002,8 @@ public class MainActivity extends AppCompatActivity
                 graph.getViewport().setMinX(0);
                 graph.getViewport().setMaxX(seriesP.getHighestValueX());
                 graph.getViewport().setYAxisBoundsManual(true);
-                //World record lows and highs for plot limits.
-                if (units == 0) {
-                    graph.getViewport().setMinY(26);
-                    graph.getViewport().setMaxY(32);
-                } else {
-                    graph.getViewport().setMinY(870);
-                    graph.getViewport().setMaxY(1085);
-                }
+                graph.getViewport().setMinY(seriesP.getLowestValueY()*0.95);
+                graph.getViewport().setMaxY(seriesP.getHighestValueY()*1.05);
                 graph.getLegendRenderer().setVisible(true);
                 graph.getLegendRenderer().setTextSize(40f);
                 graph.getLegendRenderer().setSpacing(30);
@@ -1027,7 +1011,6 @@ public class MainActivity extends AppCompatActivity
                 graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
 
                 graph.addSeries(seriesP);
-                graph.addSeries(seriesPB);
                 graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
                     @Override
                     public String formatLabel(double value, boolean isValueX) {
@@ -1042,68 +1025,7 @@ public class MainActivity extends AppCompatActivity
                         }
                     }
                 });
-                seriesPB.setColor(Color.GRAY);} else if (viewSel == "pressPlot") {
 
-                text.setVisibility(View.GONE);
-                temp.setVisibility(View.GONE);
-                tempHigh.setVisibility(View.GONE);
-                tempLow.setVisibility(View.GONE);
-                dew.setVisibility(View.GONE);
-                dewHigh.setVisibility(View.GONE);
-                dewLow.setVisibility(View.GONE);
-                press.setVisibility(View.GONE);
-                windSpeed.setVisibility(View.GONE);
-                windGust.setVisibility(View.GONE);
-                windDir.setVisibility(View.GONE);
-                rain.setVisibility(View.GONE);
-                hum.setVisibility(View.GONE);
-                time.setVisibility(View.GONE);
-                humBar.setVisibility(View.GONE);
-                windLabel.setVisibility(View.GONE);
-                graph.setVisibility(View.VISIBLE);
-                windIcon.setVisibility(View.INVISIBLE);
-                statusIcon.setVisibility(View.INVISIBLE);
-                windDirIcon.setVisibility(View.INVISIBLE);
-                snowIcon.setVisibility(View.INVISIBLE);
-                pressChange.setVisibility(View.INVISIBLE);
-
-                graph.removeAllSeries();
-
-                graph.getViewport().setXAxisBoundsManual(true);
-                graph.getViewport().setMinX(0);
-                graph.getViewport().setMaxX(seriesP.getHighestValueX());
-                graph.getViewport().setYAxisBoundsManual(true);
-                //World record lows and highs for plot limits.
-                if (units == 0) {
-                    graph.getViewport().setMinY(26);
-                    graph.getViewport().setMaxY(32);
-                } else {
-                    graph.getViewport().setMinY(870);
-                    graph.getViewport().setMaxY(1085);
-                }
-                graph.getLegendRenderer().setVisible(true);
-                graph.getLegendRenderer().setTextSize(40f);
-                graph.getLegendRenderer().setSpacing(30);
-                graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
-                graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
-
-                graph.addSeries(seriesP);
-                graph.addSeries(seriesPB);
-                graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
-                    @Override
-                    public String formatLabel(double value, boolean isValueX) {
-                        if (isValueX) {
-                            return super.formatLabel(value, isValueX) + " h";
-                        } else {
-                            if (units == 0) {
-                                return super.formatLabel(value, isValueX) + " inHg";
-                            } else {
-                                return super.formatLabel(value, isValueX) + " hPa";
-                            }
-                        }
-                    }
-                });
-                seriesPB.setColor(Color.GRAY);
             } else if (viewSel == "windPlot") {
                 text.setVisibility(View.GONE);
                 temp.setVisibility(View.GONE);
@@ -1767,13 +1689,8 @@ public class MainActivity extends AppCompatActivity
                 graph.getViewport().setMinX(0);
                 graph.getViewport().setMaxX(seriesP.getHighestValueX());
                 graph.getViewport().setYAxisBoundsManual(true);
-                if (units == 0) {
-                    graph.getViewport().setMinY(26);
-                    graph.getViewport().setMaxY(32);
-                } else {
-                    graph.getViewport().setMinY(870);
-                    graph.getViewport().setMaxY(1085);
-                }
+                graph.getViewport().setMinY(seriesP.getLowestValueY()*0.95);
+                graph.getViewport().setMaxY(seriesP.getHighestValueY()*1.05);
                 graph.getLegendRenderer().setVisible(true);
                 graph.getLegendRenderer().setTextSize(40f);
                 graph.getLegendRenderer().setSpacing(30);
@@ -1781,7 +1698,6 @@ public class MainActivity extends AppCompatActivity
                 graph.getLegendRenderer().setBackgroundColor(Color.TRANSPARENT);
 
                 graph.addSeries(seriesP);
-                graph.addSeries(seriesPB);
                 graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
                     @Override
                     public String formatLabel(double value, boolean isValueX) {
@@ -1796,7 +1712,6 @@ public class MainActivity extends AppCompatActivity
                         }
                     }
                 });
-                seriesPB.setColor(Color.GRAY);
             } else if (id == R.id.nav_windDPlot) {
                 viewSel = "windDPlot";
                 text.setVisibility(View.GONE);
