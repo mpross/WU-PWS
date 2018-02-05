@@ -1005,8 +1005,8 @@ public class MainActivity extends AppCompatActivity
                 graph.getViewport().setMinX(0);
                 graph.getViewport().setMaxX(seriesP.getHighestValueX());
                 graph.getViewport().setYAxisBoundsManual(true);
-                graph.getViewport().setMinY(seriesP.getLowestValueY()*0.95);
-                graph.getViewport().setMaxY(seriesP.getHighestValueY()*1.05);
+                graph.getViewport().setMinY(seriesP.getLowestValueY()*0.99);
+                graph.getViewport().setMaxY(seriesP.getHighestValueY()*1.01);
                 graph.getLegendRenderer().setVisible(true);
                 graph.getLegendRenderer().setTextSize(40f);
                 graph.getLegendRenderer().setSpacing(30);
@@ -1516,7 +1516,7 @@ public class MainActivity extends AppCompatActivity
 
                 if ((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0])) < 32 && units == 0) {
                     snowIcon.setVisibility(View.VISIBLE);
-                } else if ((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0])) > 0 && units == 1) {
+                } else if ((Float.parseFloat(currentString.split("\n")[1].split(": ")[1].split(" ")[0])) < 0 && units == 1) {
                     snowIcon.setVisibility(View.VISIBLE);
                 } else {
                     snowIcon.setVisibility(View.INVISIBLE);
@@ -1577,7 +1577,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 if ((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0])) < 32 && units == 0) {
                     snowIcon.setVisibility(View.VISIBLE);
-                } else if ((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0])) > 0 && units == 1) {
+                } else if ((Float.parseFloat(dailyString.split("\n")[1].split(": ")[1].split(" ")[0])) < 0 && units == 1) {
                     snowIcon.setVisibility(View.VISIBLE);
                 } else {
                     snowIcon.setVisibility(View.INVISIBLE);
@@ -1693,8 +1693,8 @@ public class MainActivity extends AppCompatActivity
                 graph.getViewport().setMinX(0);
                 graph.getViewport().setMaxX(seriesP.getHighestValueX());
                 graph.getViewport().setYAxisBoundsManual(true);
-                graph.getViewport().setMinY(seriesP.getLowestValueY()*0.95);
-                graph.getViewport().setMaxY(seriesP.getHighestValueY()*1.05);
+                graph.getViewport().setMinY(seriesP.getLowestValueY()*0.99);
+                graph.getViewport().setMaxY(seriesP.getHighestValueY()*1.01);
                 graph.getLegendRenderer().setVisible(true);
                 graph.getLegendRenderer().setTextSize(40f);
                 graph.getLegendRenderer().setSpacing(30);

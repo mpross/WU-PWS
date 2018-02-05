@@ -24,6 +24,7 @@ public class SimpleWidget extends AppWidgetProvider {
     String station = ""; //Weather station name
     int units = 0; // User unit choice
     int nativeUnits = 0; // Units the data is in
+    int nordic=0; // Wind speed unit choice
     Context con;
     public String widText="Loading";
 
@@ -52,6 +53,14 @@ public class SimpleWidget extends AppWidgetProvider {
                 fis.read(byU);
                 fis.close();
                 units = (int) byU[0];
+            } catch (IOException e) {
+                widgetText = e.toString();
+            }
+            try {
+                FileInputStream fis = con.openFileInput("nordic_file");
+                fis.read(byU);
+                fis.close();
+                nordic = (int) byU[0];
             } catch (IOException e) {
                 widgetText = e.toString();
             }
@@ -125,10 +134,21 @@ public class SimpleWidget extends AppWidgetProvider {
                                 dew[j / 2 - 1] = Float.parseFloat(col[2]);
                                 press[j / 2 - 1] = Float.parseFloat(col[3]);
                                 windSpeed[j / 2 - 1] = Float.parseFloat(col[6]);
+                                windGust[j / 2 - 1] = Float.parseFloat(col[7]);
+                                precip[j / 2 - 1] = Float.parseFloat(col[9]);
                             } else {
                                 temp[j / 2 - 1] = (Float.parseFloat(col[1]) - 32.0f) * 5.0f / 9.0f;
                                 dew[j / 2 - 1] = (Float.parseFloat(col[2]) - 32.0f) * 5.0f / 9.0f;
                                 press[j / 2 - 1] = Float.parseFloat(col[3]) * 33.8639f;
+                                precip[j / 2 - 1] = Float.parseFloat(col[9]) * 25.4f;
+                                if(nordic==0) {
+                                    windSpeed[j / 2 - 1] = Float.parseFloat(col[6]) * 1.60934f;
+                                    windGust[j / 2 - 1] = Float.parseFloat(col[7]) * 1.60934f;
+                                }
+                                else{
+                                    windSpeed[j / 2 - 1] = Float.parseFloat(col[6]) * 0.44704f;
+                                    windGust[j / 2 - 1] = Float.parseFloat(col[7]) * 0.44704f;
+                                }
                             }
                         }
                         //If data is in metric
@@ -137,31 +157,79 @@ public class SimpleWidget extends AppWidgetProvider {
                                 temp[j / 2 - 1] = (Float.parseFloat(col[1]) * 9.0f / 5.0f + 32.0f);
                                 dew[j / 2 - 1] = (Float.parseFloat(col[2]) * 9.0f / 5.0f + 32.0f);
                                 press[j / 2 - 1] = Float.parseFloat(col[3]) / 33.8639f;
+                                windSpeed[j / 2 - 1] = Float.parseFloat(col[6])/1.60934f;
+                                windGust[j / 2 - 1] = Float.parseFloat(col[7])/ 1.60934f;
+                                precip[j / 2 - 1] = Float.parseFloat(col[9])/ 25.4f;
                             } else {
                                 temp[j / 2 - 1] = Float.parseFloat(col[1]);
                                 dew[j / 2 - 1] = Float.parseFloat(col[2]);
                                 press[j / 2 - 1] = Float.parseFloat(col[3]);
+                                precip[j / 2 - 1] = Float.parseFloat(col[9]);
+                                if(nordic==0) {
+                                    windSpeed[j / 2 - 1] = Float.parseFloat(col[6]);
+                                    windGust[j / 2 - 1] = Float.parseFloat(col[7]);
+                                }
+                                else {
+                                    windSpeed[j / 2 - 1] = Float.parseFloat(col[6])*0.277778f;
+                                    windGust[j / 2 - 1] = Float.parseFloat(col[7])*0.277778f;
+                                }
                             }
                         }
+                        hum[j /2-1] = Float.parseFloat(col[8]);
                     }
                     j++;
                 }
                 if (units == 0) {
                     outBuild.append("PWS:\n");
                     outBuild.append(String.valueOf(Math.round(temp[temp.length -1] * 100.0) / 100.0));
-                    outBuild.append(" °F\n");
+                    outBuild.append(" °F  ");
                     outBuild.append(String.valueOf(Math.round(dew[dew.length - 1] * 100.0) / 100.0));
                     outBuild.append(" °F\n");
                     outBuild.append(String.valueOf(Math.round(press[press.length - 1] * 100.0) / 100.0));
                     outBuild.append(" inHg\n");
+                    outBuild.append(String.valueOf(Math.round(windSpeed[windSpeed.length - 1] * 100.0) / 100.0));
+                    outBuild.append(" mph   ");
+                    outBuild.append(String.valueOf(Math.round(windGust[windGust.length - 1] * 100.0) / 100.0));
+                    outBuild.append(" mph\n");
+                    outBuild.append(String.valueOf(Math.round(precip[precip.length - 1] * 100.0) / 100.0));
+                    outBuild.append(" in.   ");
+                    outBuild.append(String.valueOf(Math.round(hum[hum.length - 1] * 100.0) / 100.0));
+                    outBuild.append(" %");
+
                 } else {
-                    outBuild.append("PWS:\n");
-                    outBuild.append(String.valueOf(Math.round(temp[temp.length - 1] * 100.0) / 100.0));
-                    outBuild.append(" °C\n");
-                    outBuild.append(String.valueOf(Math.round(dew[dew.length - 1] * 100.0) / 100.0));
-                    outBuild.append(" °C\n");
-                    outBuild.append(String.valueOf(Math.round(press[press.length - 1] * 100.0) / 100.0));
-                    outBuild.append(" hPa\n");
+                    if(nordic==0) {
+                        outBuild.append(String.valueOf(Math.round(temp[temp.length - 1] * 100.0) / 100.0));
+                        outBuild.append(" °C\t");
+                        outBuild.append(String.valueOf(Math.round(dew[dew.length - 1] * 100.0) / 100.0));
+                        outBuild.append(" °C dew");
+                        outBuild.append(String.valueOf(Math.round(press[press.length - 1] * 100.0) / 100.0));
+                        outBuild.append(" hPa\n");
+                        outBuild.append(String.valueOf(Math.round(windSpeed[windSpeed.length - 1] * 100.0) / 100.0));
+                        outBuild.append(" km/h\t");
+                        outBuild.append(String.valueOf(Math.round(windGust[windGust.length - 1] * 100.0) / 100.0));
+                        outBuild.append(" km/h gust\n");
+                        outBuild.append(String.valueOf(Math.round(precip[precip.length - 1] * 100.0) / 100.0));
+                        outBuild.append(" mm\t");
+                        outBuild.append(String.valueOf(Math.round(hum[hum.length - 1] * 100.0) / 100.0));
+                        outBuild.append(" %");
+                    }
+                    else{
+                        outBuild.append("PWS:\n");
+                        outBuild.append(String.valueOf(Math.round(temp[temp.length - 1] * 100.0) / 100.0));
+                        outBuild.append(" °C\n");
+                        outBuild.append(String.valueOf(Math.round(dew[dew.length - 1] * 100.0) / 100.0));
+                        outBuild.append(" °C dew\n");
+                        outBuild.append(String.valueOf(Math.round(press[press.length - 1] * 100.0) / 100.0));
+                        outBuild.append(" hPa\n");
+                        outBuild.append(String.valueOf(Math.round(windSpeed[windSpeed.length - 1] * 100.0) / 100.0));
+                        outBuild.append(" m/s\n");
+                        outBuild.append(String.valueOf(Math.round(windGust[windGust.length - 1] * 100.0) / 100.0));
+                        outBuild.append(" m/s gust\n");
+                        outBuild.append(String.valueOf(Math.round(precip[precip.length - 1] * 100.0) / 100.0));
+                        outBuild.append(" mm rain\n");
+                        outBuild.append(String.valueOf(Math.round(hum[hum.length - 1] * 100.0) / 100.0));
+                        outBuild.append(" % hum\n");
+                    }
                 }
                 widgetText = outBuild.toString();
             } catch (IOException e) {

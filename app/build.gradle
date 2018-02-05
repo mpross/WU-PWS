@@ -6,8 +6,8 @@ android {
         applicationId "net.mpross.pws"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 26
-        versionName "1.27"
+        versionCode 27
+        versionName "1.28"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
