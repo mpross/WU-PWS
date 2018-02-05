@@ -108,6 +108,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                     finish();
                 }
                 catch (IOException e){
+                    System.out.println(e);
                 }
             }
         });
@@ -140,6 +141,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                         finish();
                     }
                     catch (IOException e){
+                        System.out.println(e);
                     }
 
                     handled = true;

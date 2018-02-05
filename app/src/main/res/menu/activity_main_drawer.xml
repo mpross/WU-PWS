@@ -28,7 +28,7 @@
             android:title="Rain Plot" />
         <item
             android:id="@+id/nav_support"
-            android:title="Support the Developer :)" />
+            android:title="@string/widget_lock" />
 
 
     </group>
