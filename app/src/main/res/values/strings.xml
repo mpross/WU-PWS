@@ -8,7 +8,11 @@
     <string name="action_date">Date Selection</string>
     <string name="action_refresh">Refresh</string>
     <string name="title_activity_settings">Settings</string>
+<<<<<<< HEAD
     <string name="settings_title">Personal Weather Station Data Viewer Version 1.28</string>
+=======
+    <string name="settings_title">Personal Weather Station Data Viewer Version 1.29</string>
+>>>>>>> master
     <string-array name="units">
         <item>Imperial</item>
         <item>Metric</item>
@@ -19,5 +23,7 @@
     </string-array>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="widget_lock">Unlock widget</string>
+    <string name="widget_unlock">Thanks for your support!</string>
 
 </resources>

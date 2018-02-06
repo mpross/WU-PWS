@@ -7,7 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.NetworkOnMainThreadException;
+import android.util.Log;
 import android.widget.RemoteViews;
+
+import net.mpross.pws.util.IabHelper;
+import net.mpross.pws.util.IabResult;
+import net.mpross.pws.util.Inventory;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -253,8 +258,7 @@ public class SimpleWidget extends AppWidgetProvider {
             widText=result;
             RemoteViews remoteViews = new RemoteViews(con.getPackageName(), R.layout.simple_widget);
             ComponentName thisWidget = new ComponentName( con, SimpleWidget.class );
-            remoteViews.setTextViewText(R.id.appwidget_text,widText);
-            AppWidgetManager.getInstance( con ).updateAppWidget( thisWidget, remoteViews );
+            remoteViews.setTextViewText(R.id.appwidget_text, widText);
 
         }
     }
@@ -264,8 +268,7 @@ public class SimpleWidget extends AppWidgetProvider {
         con=context;
         new datagrab().execute("");
         RemoteViews views = new RemoteViews(con.getPackageName(), R.layout.simple_widget);
-        views.setTextViewText(R.id.appwidget_text, widText);
-
+            views.setTextViewText(R.id.appwidget_text, widText);
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 

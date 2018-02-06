@@ -3,6 +3,7 @@
     package="net.mpross.pws">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.android.vending.BILLING" />
 
     <application
         android:allowBackup="true"
@@ -22,10 +23,10 @@
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:launchMode="singleInstance" />
+            android:launchMode="singleTask" />
         <activity
             android:name=".DateActivity"
-            android:launchMode="singleInstance" />
+            android:launchMode="singleTask" />
 
         <receiver android:name=".SimpleWidget">
             <intent-filter>

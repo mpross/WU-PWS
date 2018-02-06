@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.NetworkOnMainThreadException;
@@ -34,6 +35,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,9 +58,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import net.mpross.pws.util.*;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -72,6 +76,8 @@ public class MainActivity extends AppCompatActivity
     int nativeUnits=0; // Units the data is in
     int errSrcId=0; //0=originated from settings, 1=originated from date
     boolean errBool=false; //Error status
+    boolean settingsBool=false;
+    boolean hasWidget=false;
 
     //LineGraph time series
     LineGraphSeries<DataPoint> seriesT = new LineGraphSeries<>();
@@ -89,10 +95,41 @@ public class MainActivity extends AppCompatActivity
     static String year = new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime());
     static String calDate=day+","+month+","+year;
 
+    IabHelper mHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        String base64EncodedPublicKey= "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAibaQyEeZMA7XZoF+yZILnEagtho6TLM5E5Q2OcgeizGZeO18kuWctkP8ei/yzwlYwTThFk2Hv6HUqs3HKJMWRXf6O7W9Gr6KCZungxoEroIONYz7SCo5LyyD6rvKl6kOWCDsAEotMeARNF734uUyCv8hRBb/nND4O/xwUjgzEThmk+wNKRtrjrCRBya5xi8OoJySxBXnAfp2afI1YwY9FZl0EdIVM5Yp5vU2IYQtGOqdSBRtcaa0PHlfRJO57RfpctiauZ9878DPDRbIC6xSgMy58tFeU0xtAEklY7qLsfjVXItHpV1oNpSo9dikNrZ1iLuGeavwDVx/5nSu0XLKiQIDAQAB";
+
+        // compute your public key and store it in base64EncodedPublicKey
+        mHelper = new IabHelper(this, base64EncodedPublicKey);
+
+        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            public void onIabSetupFinished(IabResult result) {
+                if (!result.isSuccess()) {
+                    // Oh no, there was a problem.
+                    Log.d("1", "Problem setting up In-app Billing: " + result);
+                }
+                // Hooray, IAB is fully set up!
+            }
+        });
+
+        IabHelper.QueryInventoryFinishedListener mGotInventoryListener
+                = new IabHelper.QueryInventoryFinishedListener() {
+            public void onQueryInventoryFinished(IabResult result,
+                                                 Inventory inventory) {
+
+                if (result.isFailure()) {
+                }
+                else {
+                    hasWidget = inventory.hasPurchase("widget");
+                }
+            }
+        };
+
 
         TextView text =(TextView) findViewById(R.id.text1);
         GraphView graph = (GraphView) findViewById(R.id.graph);
@@ -114,6 +151,7 @@ public class MainActivity extends AppCompatActivity
             units = (int) byU[0];
         } catch (IOException e) {
             System.out.println(e);
+            error();
         }
         // Reads wind speed unit selection to file
         try {
@@ -123,6 +161,7 @@ public class MainActivity extends AppCompatActivity
             nordic = (int) byU[0];
         } catch (IOException e) {
             System.out.println(e);
+            error();
         }
 
         //Initiated data grab from WeatherUnderground
@@ -160,6 +199,7 @@ public class MainActivity extends AppCompatActivity
             }
             catch (IOException e){
                 System.out.println(e);
+                error();
             }
 
 
@@ -433,7 +473,6 @@ public class MainActivity extends AppCompatActivity
                 DataPoint[] tempData=new DataPoint[temp.length];
                 DataPoint[] dewData=new DataPoint[dew.length];
                 DataPoint[] pressData=new DataPoint[press.length];
-                DataPoint[] pressBLData=new DataPoint[press.length];
                 DataPoint[] windDData=new DataPoint[windDeg.length];
                 DataPoint[] windSData=new DataPoint[windSpeed.length];
                 DataPoint[] windGData=new DataPoint[windGust.length];
@@ -619,15 +658,20 @@ public class MainActivity extends AppCompatActivity
             }
 
             catch(IOException e){
+                System.out.println(e);
                 return "";
             }
             catch(NetworkOnMainThreadException b){
+                System.out.println(b);
                 return "";
             }
             catch (NumberFormatException n){
+                System.out.println(n);
                 return "";
             }
             catch (ArrayIndexOutOfBoundsException a){
+
+                System.out.println(a);
                 return "";
             }
         }
@@ -725,6 +769,7 @@ public class MainActivity extends AppCompatActivity
                 text.setText(dailyString);
             }
         } catch (ArrayIndexOutOfBoundsException a) {
+            System.out.println(a);
             error();
         }
 
@@ -744,7 +789,7 @@ public class MainActivity extends AppCompatActivity
             text2.setText(station);
         }
         catch(NullPointerException n){
-
+            System.out.println(n);
         }
         try {
             GraphView graph = (GraphView) findViewById(R.id.graph);
@@ -1333,19 +1378,25 @@ public class MainActivity extends AppCompatActivity
         if(errSrcId==0) {
             Intent intent = new Intent(this, SettingsActivity.class);
             intent.putExtra("error", true);
-            startActivityForResult(intent, 2);
+            if(settingsBool==false) {
+                settingsBool=true;
+                startActivityForResult(intent, 2);
+            }
         }
-        else if(errSrcId==1 && errBool==false){
+        else if(errSrcId==1 && errBool==false) {
             Intent intent = new Intent(this, DateActivity.class);
-            intent.putExtra("calDate",calDate);
+            intent.putExtra("calDate", calDate);
             startActivityForResult(intent, 2);
-            errBool=true;
+            errBool = true;
         }
         else{
             errBool=false;
             Intent intent = new Intent(this, SettingsActivity.class);
             intent.putExtra("error", true);
-            startActivityForResult(intent, 2);
+            if(settingsBool==false) {
+                settingsBool=true;
+                startActivityForResult(intent, 2);
+            }
         }
     }
     @Override
@@ -1367,7 +1418,10 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             setIntent.putExtra("error",false);
             setIntent.putExtra("unit",units);
-            startActivityForResult(setIntent,0);
+            if(settingsBool==false) {
+                settingsBool=true;
+                startActivityForResult(setIntent, 0);
+            }
             return true;
         }
         if (id == R.id.action_date) {
@@ -1381,6 +1435,7 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        settingsBool=false;
         errSrcId=requestCode;
         if(requestCode==0){
             units=resultCode;
@@ -1394,6 +1449,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 catch (IOException e){
                     System.out.println(e);
+                    error();
                 }
                 try {
                     FileOutputStream fos = openFileOutput("nordic_file", Context.MODE_PRIVATE);
@@ -1402,10 +1458,12 @@ public class MainActivity extends AppCompatActivity
                 }
                 catch (IOException e) {
                     System.out.println(e);
+                    error();
                 }
             }
             catch(NullPointerException n){
                 System.out.println(n);
+                error();
             }
         }
         else{
@@ -1993,8 +2051,22 @@ public class MainActivity extends AppCompatActivity
                 });
                 seriesRD.setColor(Color.GRAY);
             } else if (id == R.id.nav_support) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.me/mpross"));
-                startActivity(browserIntent);
+                if(hasWidget){
+                    Context context = getApplicationContext();
+                    CharSequence toastText = "Thanks for your support!";
+                    int duration = Toast.LENGTH_LONG;
+
+                    Toast toast = Toast.makeText(context, toastText, duration);
+                    toast.show();
+                }
+                else {
+                    try {
+                        mHelper.launchPurchaseFlow(this, "widget", 10001,
+                                mPurchaseFinishedListener, "bGoa+V7g/yqDXvKRqq+JTFn4uQZbPiQJo4pf9RzJ");
+                    } catch (IabHelper.IabAsyncInProgressException e) {
+
+                    }
+                }
             }
 
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -2002,15 +2074,41 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         catch(ArrayIndexOutOfBoundsException a) {
-            new datagrab().execute("");
+            System.out.println(a);
+            error();
             return true;
         }
     }
-
+    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener
+            = new IabHelper.OnIabPurchaseFinishedListener() {
+        public void onIabPurchaseFinished(IabResult result, Purchase purchase)
+        {
+            if (result.isFailure()) {
+                Log.d("1", "Error purchasing: " + result);
+                return;
+            }
+            else if (purchase.getSku().equals("widget")) {
+                hasWidget=true;
+            }
+        }
+    };
     // Orientation change handling
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         new datagrab().execute("");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            if (mHelper != null) mHelper.dispose();
+            mHelper = null;
+        }
+        catch (IabHelper.IabAsyncInProgressException e){
+            System.out.println(e);
+        }
+
     }
 }
