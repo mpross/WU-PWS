@@ -198,37 +198,38 @@ public class SimpleWidget extends AppWidgetProvider {
 
                 } else {
                     if(nordic==0) {
+                        outBuild.append("PWS:\n");
                         outBuild.append(String.valueOf(Math.round(temp[temp.length - 1] * 100.0) / 100.0));
-                        outBuild.append(" °C\t");
+                        outBuild.append(" °C   ");
                         outBuild.append(String.valueOf(Math.round(dew[dew.length - 1] * 100.0) / 100.0));
-                        outBuild.append(" °C dew");
+                        outBuild.append(" °C\n");
                         outBuild.append(String.valueOf(Math.round(press[press.length - 1] * 100.0) / 100.0));
                         outBuild.append(" hPa\n");
                         outBuild.append(String.valueOf(Math.round(windSpeed[windSpeed.length - 1] * 100.0) / 100.0));
-                        outBuild.append(" km/h\t");
+                        outBuild.append(" km/h   ");
                         outBuild.append(String.valueOf(Math.round(windGust[windGust.length - 1] * 100.0) / 100.0));
-                        outBuild.append(" km/h gust\n");
+                        outBuild.append(" km/h\n");
                         outBuild.append(String.valueOf(Math.round(precip[precip.length - 1] * 100.0) / 100.0));
-                        outBuild.append(" mm\t");
+                        outBuild.append(" mm   ");
                         outBuild.append(String.valueOf(Math.round(hum[hum.length - 1] * 100.0) / 100.0));
                         outBuild.append(" %");
                     }
                     else{
                         outBuild.append("PWS:\n");
                         outBuild.append(String.valueOf(Math.round(temp[temp.length - 1] * 100.0) / 100.0));
-                        outBuild.append(" °C\n");
+                        outBuild.append(" °C   ");
                         outBuild.append(String.valueOf(Math.round(dew[dew.length - 1] * 100.0) / 100.0));
-                        outBuild.append(" °C dew\n");
+                        outBuild.append(" °C\n");
                         outBuild.append(String.valueOf(Math.round(press[press.length - 1] * 100.0) / 100.0));
                         outBuild.append(" hPa\n");
                         outBuild.append(String.valueOf(Math.round(windSpeed[windSpeed.length - 1] * 100.0) / 100.0));
-                        outBuild.append(" m/s\n");
+                        outBuild.append(" m/s   ");
                         outBuild.append(String.valueOf(Math.round(windGust[windGust.length - 1] * 100.0) / 100.0));
-                        outBuild.append(" m/s gust\n");
+                        outBuild.append(" m/s\n");
                         outBuild.append(String.valueOf(Math.round(precip[precip.length - 1] * 100.0) / 100.0));
-                        outBuild.append(" mm rain\n");
+                        outBuild.append(" mm   ");
                         outBuild.append(String.valueOf(Math.round(hum[hum.length - 1] * 100.0) / 100.0));
-                        outBuild.append(" % hum\n");
+                        outBuild.append(" % hum");
                     }
                 }
                 widgetText = outBuild.toString();

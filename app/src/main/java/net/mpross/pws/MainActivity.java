@@ -680,6 +680,7 @@ public class MainActivity extends AppCompatActivity
         TextView windSpeed = (TextView) findViewById(R.id.windSpeed);
         TextView windGust = (TextView) findViewById(R.id.windGust);
         TextView windDir = (TextView) findViewById(R.id.windDir);
+        TextView windDeg = (TextView) findViewById(R.id.windDeg);
         TextView rain = (TextView) findViewById(R.id.rain);
         TextView hum = (TextView) findViewById(R.id.hum);
         TextView time = (TextView) findViewById(R.id.date);
@@ -765,6 +766,7 @@ public class MainActivity extends AppCompatActivity
                 windSpeed.setVisibility(View.VISIBLE);
                 windGust.setVisibility(View.VISIBLE);
                 windDir.setVisibility(View.VISIBLE);
+                windDeg.setVisibility(View.VISIBLE);
                 rain.setVisibility(View.VISIBLE);
                 hum.setVisibility(View.VISIBLE);
                 time.setVisibility(View.VISIBLE);
@@ -781,6 +783,7 @@ public class MainActivity extends AppCompatActivity
                 dew.setText("Dew: "+currentString.split("\n")[2].split(": ")[1]);
                 press.setText("Press: "+currentString.split("\n")[3].split(": ")[1]);
                 windDir.setText(currentString.split("\n")[5].split(": ")[1]);
+                windDeg.setText(currentString.split("\n")[6].split(": ")[1]);
                 windSpeed.setText(currentString.split("\n")[7].split(": ")[1]);
                 windGust.setText("Gust: " + currentString.split("\n")[8].split(": ")[1]);
                 hum.setText("Humidity: " + currentString.split("\n")[9].split(": ")[1]);
@@ -842,6 +845,7 @@ public class MainActivity extends AppCompatActivity
                 windSpeed.setVisibility(View.VISIBLE);
                 windGust.setVisibility(View.VISIBLE);
                 windDir.setVisibility(View.VISIBLE);
+                windDeg.setVisibility(View.INVISIBLE);
                 rain.setVisibility(View.VISIBLE);
                 hum.setVisibility(View.VISIBLE);
                 time.setVisibility(View.INVISIBLE);
@@ -907,6 +911,7 @@ public class MainActivity extends AppCompatActivity
                 windSpeed.setVisibility(View.GONE);
                 windGust.setVisibility(View.GONE);
                 windDir.setVisibility(View.GONE);
+                windDeg.setVisibility(View.GONE);
                 rain.setVisibility(View.GONE);
                 hum.setVisibility(View.GONE);
                 time.setVisibility(View.GONE);
@@ -987,6 +992,7 @@ public class MainActivity extends AppCompatActivity
                 windSpeed.setVisibility(View.GONE);
                 windGust.setVisibility(View.GONE);
                 windDir.setVisibility(View.GONE);
+                windDeg.setVisibility(View.GONE);
                 rain.setVisibility(View.GONE);
                 hum.setVisibility(View.GONE);
                 time.setVisibility(View.GONE);
@@ -1041,6 +1047,7 @@ public class MainActivity extends AppCompatActivity
                 windSpeed.setVisibility(View.GONE);
                 windGust.setVisibility(View.GONE);
                 windDir.setVisibility(View.GONE);
+                windDeg.setVisibility(View.GONE);
                 rain.setVisibility(View.GONE);
                 hum.setVisibility(View.GONE);
                 time.setVisibility(View.GONE);
@@ -1127,6 +1134,7 @@ public class MainActivity extends AppCompatActivity
                 windSpeed.setVisibility(View.GONE);
                 windGust.setVisibility(View.GONE);
                 windDir.setVisibility(View.GONE);
+                windDeg.setVisibility(View.GONE);
                 rain.setVisibility(View.GONE);
                 hum.setVisibility(View.GONE);
                 time.setVisibility(View.GONE);
@@ -1185,6 +1193,7 @@ public class MainActivity extends AppCompatActivity
                 windSpeed.setVisibility(View.GONE);
                 windGust.setVisibility(View.GONE);
                 windDir.setVisibility(View.GONE);
+                windDeg.setVisibility(View.GONE);
                 rain.setVisibility(View.GONE);
                 hum.setVisibility(View.GONE);
                 time.setVisibility(View.GONE);
@@ -1237,6 +1246,7 @@ public class MainActivity extends AppCompatActivity
                 windSpeed.setVisibility(View.GONE);
                 windGust.setVisibility(View.GONE);
                 windDir.setVisibility(View.GONE);
+                windDeg.setVisibility(View.GONE);
                 rain.setVisibility(View.GONE);
                 hum.setVisibility(View.GONE);
                 time.setVisibility(View.GONE);
@@ -1443,6 +1453,7 @@ public class MainActivity extends AppCompatActivity
         TextView windSpeed =(TextView) findViewById(R.id.windSpeed);
         TextView windGust =(TextView) findViewById(R.id.windGust);
         TextView windDir =(TextView) findViewById(R.id.windDir);
+        TextView windDeg =(TextView) findViewById(R.id.windDeg);
         TextView rain =(TextView) findViewById(R.id.rain);
         TextView hum =(TextView) findViewById(R.id.hum);
         TextView time =(TextView) findViewById(R.id.date);
@@ -1467,6 +1478,7 @@ public class MainActivity extends AppCompatActivity
                 windSpeed.setVisibility(View.VISIBLE);
                 windGust.setVisibility(View.VISIBLE);
                 windDir.setVisibility(View.VISIBLE);
+                windDeg.setVisibility(View.INVISIBLE);
                 rain.setVisibility(View.VISIBLE);
                 hum.setVisibility(View.VISIBLE);
                 time.setVisibility(View.VISIBLE);
@@ -1483,6 +1495,7 @@ public class MainActivity extends AppCompatActivity
                 dew.setText("Dew: " + currentString.split("\n")[2].split(": ")[1]);
                 press.setText("Press: " + currentString.split("\n")[3].split(": ")[1]);
                 windDir.setText(currentString.split("\n")[5].split(": ")[1]);
+                windDeg.setText(currentString.split("\n")[6].split(": ")[1]);
                 windSpeed.setText(currentString.split("\n")[7].split(": ")[1]);
                 windGust.setText("Gust: " + currentString.split("\n")[8].split(": ")[1]);
                 hum.setText("Humidity: " + currentString.split("\n")[9].split(": ")[1]);
@@ -1537,6 +1550,7 @@ public class MainActivity extends AppCompatActivity
                 windSpeed.setVisibility(View.VISIBLE);
                 windGust.setVisibility(View.VISIBLE);
                 windDir.setVisibility(View.VISIBLE);
+                windDeg.setVisibility(View.INVISIBLE);
                 rain.setVisibility(View.VISIBLE);
                 hum.setVisibility(View.VISIBLE);
                 time.setVisibility(View.INVISIBLE);
@@ -1596,6 +1610,7 @@ public class MainActivity extends AppCompatActivity
                 windSpeed.setVisibility(View.GONE);
                 windGust.setVisibility(View.GONE);
                 windDir.setVisibility(View.GONE);
+                windDeg.setVisibility(View.GONE);
                 rain.setVisibility(View.GONE);
                 hum.setVisibility(View.GONE);
                 time.setVisibility(View.GONE);
@@ -1675,6 +1690,7 @@ public class MainActivity extends AppCompatActivity
                 windSpeed.setVisibility(View.GONE);
                 windGust.setVisibility(View.GONE);
                 windDir.setVisibility(View.GONE);
+                windDeg.setVisibility(View.GONE);
                 rain.setVisibility(View.GONE);
                 hum.setVisibility(View.GONE);
                 time.setVisibility(View.GONE);
@@ -1729,6 +1745,7 @@ public class MainActivity extends AppCompatActivity
                 windSpeed.setVisibility(View.GONE);
                 windGust.setVisibility(View.GONE);
                 windDir.setVisibility(View.GONE);
+                windDeg.setVisibility(View.GONE);
                 rain.setVisibility(View.GONE);
                 hum.setVisibility(View.GONE);
                 time.setVisibility(View.GONE);
@@ -1781,6 +1798,7 @@ public class MainActivity extends AppCompatActivity
                 windSpeed.setVisibility(View.GONE);
                 windGust.setVisibility(View.GONE);
                 windDir.setVisibility(View.GONE);
+                windDeg.setVisibility(View.GONE);
                 rain.setVisibility(View.GONE);
                 hum.setVisibility(View.GONE);
                 time.setVisibility(View.GONE);
@@ -1867,6 +1885,7 @@ public class MainActivity extends AppCompatActivity
                 windSpeed.setVisibility(View.GONE);
                 windGust.setVisibility(View.GONE);
                 windDir.setVisibility(View.GONE);
+                windDeg.setVisibility(View.GONE);
                 rain.setVisibility(View.GONE);
                 hum.setVisibility(View.GONE);
                 time.setVisibility(View.GONE);
@@ -1925,6 +1944,7 @@ public class MainActivity extends AppCompatActivity
                 windSpeed.setVisibility(View.GONE);
                 windGust.setVisibility(View.GONE);
                 windDir.setVisibility(View.GONE);
+                windDeg.setVisibility(View.GONE);
                 rain.setVisibility(View.GONE);
                 hum.setVisibility(View.GONE);
                 time.setVisibility(View.GONE);
