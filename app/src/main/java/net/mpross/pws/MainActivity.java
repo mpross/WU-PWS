@@ -494,12 +494,12 @@ public class MainActivity extends AppCompatActivity
                 seriesR.setTitle("Hourly Precipitation");
                 seriesRD.setTitle("Daily Precipitation");
 
-                tempAvg /= j / 2;
-                dewAvg /= j / 2;
-                pressAvg /= j / 2;
-                windDAvg /= j / 2;
-                windSAvg /= j / 2;
-                humAvg /= j / 2;
+                tempAvg /= (j / 2)-1;
+                dewAvg /= (j / 2)-1;
+                pressAvg /= (j / 2)-1;
+                windDAvg /= (j / 2)-1;
+                windSAvg /= (j / 2)-1;
+                humAvg /= (j / 2)-1;
                 //If native units are imperial
                 if (nativeUnits == 0) {
                     //Last line of data file is already the correct format for displaying
@@ -1506,7 +1506,7 @@ public class MainActivity extends AppCompatActivity
                 windSpeed.setVisibility(View.VISIBLE);
                 windGust.setVisibility(View.VISIBLE);
                 windDir.setVisibility(View.VISIBLE);
-                windDeg.setVisibility(View.INVISIBLE);
+                windDeg.setVisibility(View.VISIBLE);
                 rain.setVisibility(View.VISIBLE);
                 hum.setVisibility(View.VISIBLE);
                 time.setVisibility(View.VISIBLE);
