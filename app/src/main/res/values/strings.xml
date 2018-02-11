@@ -13,9 +13,13 @@
         <item>Imperial</item>
         <item>Metric</item>
     </string-array>
-    <string-array name="speeds">
+    <string-array name="mspeeds">
         <item>km/h</item>
         <item>m/s</item>
+    </string-array>
+    <string-array name="ispeeds">
+        <item>mph</item>
+        <item>knots</item>
     </string-array>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>

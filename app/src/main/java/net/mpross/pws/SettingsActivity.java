@@ -20,6 +20,7 @@ package net.mpross.pws;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -27,6 +28,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -152,11 +154,27 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         Spinner spin= (Spinner) parent;
         if(spin.getId()==R.id.spinner) {
             Spinner nordicSpinner = (Spinner) findViewById(R.id.nordicSpinner);
+            nordicSpinner.setVisibility(View.VISIBLE);
+
+            Resources res = getResources();
+            String[] istring = res.getStringArray(R.array.ispeeds);
+            String[] mstring = res.getStringArray(R.array.mspeeds);
+
+            ArrayAdapter<String> iadapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_spinner_item, istring);
+            iadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            ArrayAdapter<String> madapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_spinner_item, mstring);
+            madapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
             units = pos;
             if (pos == 1) {
-                nordicSpinner.setVisibility(View.VISIBLE);
+                nordicSpinner.setAdapter(madapter);
+                iadapter.notifyDataSetChanged();
+
             } else {
-                nordicSpinner.setVisibility(View.INVISIBLE);
+                nordicSpinner.setAdapter(iadapter);
+                madapter.notifyDataSetChanged();
             }
         }
         if(spin.getId()==R.id.nordicSpinner) {

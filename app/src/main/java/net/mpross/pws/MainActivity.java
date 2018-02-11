@@ -324,7 +324,12 @@ public class MainActivity extends AppCompatActivity
                         if (Float.parseFloat(col[6]) > 0) {
                             if(nativeUnits==0) {
                                 if (units == 0) {
-                                    windSpeed[j / 2 - 1] = Float.parseFloat(col[6]);
+                                    if(nordic==0) {
+                                        windSpeed[j / 2 - 1] = Float.parseFloat(col[6]);
+                                    }
+                                    else {
+                                        windSpeed[j / 2 - 1] = Float.parseFloat(col[6])/1.150779f;
+                                    }
                                 } else {
                                     if(nordic==0) {
                                         windSpeed[j / 2 - 1] = Float.parseFloat(col[6]) * 1.60934f;
@@ -336,7 +341,12 @@ public class MainActivity extends AppCompatActivity
                             }
                             else{
                                 if (units == 0) {
-                                    windSpeed[j / 2 - 1] = Float.parseFloat(col[6])/1.60934f;
+                                    if(nordic==0) {
+                                        windSpeed[j / 2 - 1] = Float.parseFloat(col[6]) / 1.60934f;
+                                    }
+                                    else{
+                                        windSpeed[j / 2 - 1] = Float.parseFloat(col[6]) / 1.852f;
+                                    }
                                 } else {
                                     if(nordic==0) {
                                         windSpeed[j / 2 - 1] = Float.parseFloat(col[6]);
@@ -350,7 +360,12 @@ public class MainActivity extends AppCompatActivity
                         if (Float.parseFloat(col[7]) > 0) {
                             if (nativeUnits == 0){
                                 if (units == 0) {
-                                    windGust[j / 2 - 1] = Float.parseFloat(col[7]);
+                                    if(nordic==0) {
+                                        windGust[j / 2 - 1] = Float.parseFloat(col[7]);
+                                    }
+                                    else {
+                                        windGust[j / 2 - 1] = Float.parseFloat(col[7])/1.150779f;
+                                    }
                                 } else {
                                     if(nordic==0) {
                                         windGust[j / 2 - 1] = Float.parseFloat(col[7]) * 1.60934f;
@@ -362,7 +377,12 @@ public class MainActivity extends AppCompatActivity
                             }
                             else {
                                 if (units == 0) {
-                                    windGust[j / 2 - 1] = Float.parseFloat(col[7])/ 1.60934f;
+                                    if(nordic==0) {
+                                        windGust[j / 2 - 1] = Float.parseFloat(col[7]) / 1.60934f;
+                                    }
+                                    else{
+                                        windGust[j / 2 - 1] = Float.parseFloat(col[7]) / 1.852f;
+                                    }
                                 } else {
                                     if(nordic==0){
                                         windGust[j / 2 - 1] = Float.parseFloat(col[7]);}
@@ -644,15 +664,23 @@ public class MainActivity extends AppCompatActivity
         String endString = "";
         String endStringD = "";
         if (units == 0) {
-            endString = ", °F, °F, inHg,, °, mph, mph, %, in,,, in,,";
-            endStringD = " °F, °F, °F, °F, °F, °F, inHg, °, mph, mph, %, in";
-        } else if(nordic==0) {
-            endString = ", °C, °C, hPa,, °, km/h, km/h, %, mm,,, mm,,";
-            endStringD = " °C, °C, °C, °C, °C, °C, hPa, °, km/h, km/h, %, mm";
-        }
-        else{
-            endString = ", °C, °C, hPa,, °, m/s, m/s, %, mm,,, mm,,";
-            endStringD = " °C, °C, °C, °C, °C, °C, hPa, °, m/s, m/s, %, mm";
+            if(nordic==0) {
+                endString = ", °F, °F, inHg,, °, mph, mph, %, in,,, in,,";
+                endStringD = " °F, °F, °F, °F, °F, °F, inHg, °, mph, mph, %, in";
+            }
+            else{
+                endString = ", °F, °F, inHg,, °, knots, knots, %, in,,, in,,";
+                endStringD = " °F, °F, °F, °F, °F, °F, inHg, °, knots, knots, %, in";
+            }
+        } else {
+            if(nordic==0) {
+                endString = ", °C, °C, hPa,, °, km/h, km/h, %, mm,,, mm,,";
+                endStringD = " °C, °C, °C, °C, °C, °C, hPa, °, km/h, km/h, %, mm";
+            }
+            else{
+                endString = ", °C, °C, hPa,, °, m/s, m/s, %, mm,,, mm,,";
+                endStringD = " °C, °C, °C, °C, °C, °C, hPa, °, m/s, m/s, %, mm";
+            }
         }
         //Excluded labels that are included in data file
         String exString = "Conditions,Clouds,SoftwareType,DateUTC,Daily Rain";
