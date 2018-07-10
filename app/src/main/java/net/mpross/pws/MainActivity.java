@@ -190,288 +190,277 @@ public class MainActivity extends AppCompatActivity
                 //Splits lines
                 String[] lines = build.toString().split("\r");
                 //Data vector initialization
-                float[] temp = new float[lines.length /2-1];
-                float[] dew = new float[lines.length/2-1];
-                float[] press = new float[lines.length/2-1];
-                float[] windDeg = new float[lines.length/2-1];
-                float[] windSpeed = new float[lines.length/2-1];
-                float[] windGust = new float[lines.length/2-1];
-                float[] hum = new float[lines.length/2-1];
-                float[] precip = new float[lines.length/2-1];
-                float[] precipDay = new float[lines.length/2-1];
-                float[] tim=new float[lines.length/2-1];
+                float[] temp = new float[lines.length / 2 - 1];
+                float[] dew = new float[lines.length / 2 - 1];
+                float[] press = new float[lines.length / 2 - 1];
+                float[] windDeg = new float[lines.length / 2 - 1];
+                float[] windSpeed = new float[lines.length / 2 - 1];
+                float[] windGust = new float[lines.length / 2 - 1];
+                float[] hum = new float[lines.length / 2 - 1];
+                float[] precip = new float[lines.length / 2 - 1];
+                float[] precipDay = new float[lines.length / 2 - 1];
+                float[] tim = new float[lines.length / 2 - 1];
 
-                int m=0;
+                int m = 0;
 
                 float tempAvg = 0;
-                float tempHigh=-1000;
-                float tempLow=1000;
-                float dewHigh=-1000;
-                float dewLow=1000;
+                float tempHigh = -1000;
+                float tempLow = 1000;
+                float dewHigh = -1000;
+                float dewLow = 1000;
                 float dewAvg = 0;
                 float pressAvg = 0;
-                String windDir="";
+                String windDir = "";
                 float windDAvg = 0;
                 float windSAvg = 0;
                 float windG = 0;
                 float humAvg = 0;
                 float precipMax = 0;
 
-                float lastHum=0;
-                float lastTemp=0;
-                float lastDew=0;
-                float lastPress=0;
+                float lastHum = 0;
+                float lastTemp = 0;
+                float lastDew = 0;
+                float lastPress = 0;
 
-                String timStamp="";
+                String timStamp = "";
                 int j = 0;
                 for (String line : lines) {
                     //Splits lines into columns
                     String[] col = line.split(",");
                     //Reads data units from first line
-                    if (j==1) {
-                        if(col[1].equals("TemperatureF")){
-                            nativeUnits=0;
-                        }
-                        else{
-                            nativeUnits=1;
+                    if (j == 1) {
+                        if (col[1].equals("TemperatureF")) {
+                            nativeUnits = 0;
+                        } else {
+                            nativeUnits = 1;
                         }
                     }
                     if (col.length > 1 && j > 1) {
-                        timStamp=col[0];
+                        timStamp = col[0];
                         //Time stamp to hours conversion
-                        tim[j /2-1]=Float.parseFloat(col[0].split(" ")[1].split(":")[0])+Float.parseFloat(col[0].split(" ")[1].split(":")[1])/60
-                                +Float.parseFloat(col[0].split(" ")[1].split(":")[2])/3600;
+                        tim[j/2 - 1] = Float.parseFloat(col[0].split(" ")[1].split(":")[0]) + Float.parseFloat(col[0].split(" ")[1].split(":")[1]) / 60
+                                + Float.parseFloat(col[0].split(" ")[1].split(":")[2]) / 3600;
                         //Drop out handling
-                        if (Float.parseFloat(col[1])>-50) {
+                        if (Float.parseFloat(col[1]) > -50) {
                             //If data is in imperial
-                            if(nativeUnits==0) {
+                            if (nativeUnits == 0) {
                                 if (units == 0) {
-                                    temp[j / 2 - 1] = Float.parseFloat(col[1]);
+                                    temp[j/2 - 1] = Float.parseFloat(col[1]);
                                 } else {
-                                    temp[j / 2 - 1] = (Float.parseFloat(col[1]) - 32.0f) * 5.0f / 9.0f;
+                                    temp[j/2 - 1] = (Float.parseFloat(col[1]) - 32.0f) * 5.0f / 9.0f;
                                 }
                             }
                             //If data is in metric
-                            else{
+                            else {
                                 if (units == 0) {
-                                    temp[j / 2 - 1] = (Float.parseFloat(col[1])*9.0f/5.0f+32.0f);
+                                    temp[j/2 - 1] = (Float.parseFloat(col[1]) * 9.0f / 5.0f + 32.0f);
                                 } else {
-                                    temp[j / 2 - 1] = Float.parseFloat(col[1]);
+                                    temp[j/2 - 1] = Float.parseFloat(col[1]);
                                 }
                             }
-                            if(temp[j /2-1]<tempLow){
-                                tempLow=temp[j /2-1];
+                            if (temp[j/2 - 1] < tempLow) {
+                                tempLow = temp[j/2 - 1];
                             }
-                            if(temp[j /2-1]>tempHigh){
-                                tempHigh=temp[j /2-1];
+                            if (temp[j/2 - 1] > tempHigh) {
+                                tempHigh = temp[j/2 - 1];
                             }
-                            lastTemp=temp[j/2-1];
+                            lastTemp = temp[j/2 - 1];
                         }
                         //Drop outs just retain last value
-                        else{
-                            temp[j/2-1]=lastTemp;
+                        else {
+                            temp[j/2 - 1] = lastTemp;
                         }
-                        if (Float.parseFloat(col[2]) >-50) {
-                            if(nativeUnits==0) {
+                        if (Float.parseFloat(col[2]) > -50) {
+                            if (nativeUnits == 0) {
                                 if (units == 0) {
-                                    dew[j / 2 - 1] = Float.parseFloat(col[2]);
+                                    dew[j/2 - 1] = Float.parseFloat(col[2]);
                                 } else {
-                                    dew[j / 2 - 1] = (Float.parseFloat(col[2]) - 32.0f) * 5.0f / 9.0f;
+                                    dew[j/2 - 1] = (Float.parseFloat(col[2]) - 32.0f) * 5.0f / 9.0f;
+                                }
+                            } else {
+                                if (units == 0) {
+                                    dew[j/2 - 1] = (Float.parseFloat(col[2]) * 9.0f / 5.0f + 32.0f);
+                                } else {
+                                    dew[j/2 - 1] = Float.parseFloat(col[2]);
                                 }
                             }
-                            else{
+                            if (dew[j/2 - 1] < dewLow) {
+                                dewLow = dew[j/2 - 1];
+                            }
+                            if (dew[j/2 - 1] > dewHigh) {
+                                dewHigh = dew[j/2 - 1];
+                            }
+                            lastDew = dew[j/2 - 1];
+                        } else {
+                            dew[j/2 - 1] = lastDew;
+                        }
+                        if (Float.parseFloat(col[3]) > 0) {
+                            if (nativeUnits == 0) {
                                 if (units == 0) {
-                                    dew[j / 2 - 1] = (Float.parseFloat(col[2])*9.0f/5.0f+32.0f);
+                                    press[j/2 - 1] = Float.parseFloat(col[3]);
                                 } else {
-                                    dew[j / 2 - 1] = Float.parseFloat(col[2]);
+                                    press[j/2 - 1] = Float.parseFloat(col[3]) * 33.8639f;
+                                }
+                            } else {
+                                if (units == 0) {
+                                    press[j/2 - 1] = Float.parseFloat(col[3]) / 33.8639f;
+                                } else {
+                                    press[j/2 - 1] = Float.parseFloat(col[3]);
                                 }
                             }
-                            if(dew[j /2-1]<dewLow){
-                                dewLow=dew[j /2-1];
-                            }
-                            if(dew[j /2-1]>dewHigh){
-                                dewHigh=dew[j /2-1];
-                            }
-                            lastDew=dew[j/2-1];
+                            lastPress = press[j/2 - 1];
+                        } else {
+                            press[j/2 - 1] = lastPress;
                         }
-                        else{
-                            dew[j/2-1]=lastDew;
-                        }
-                        if (Float.parseFloat(col[3]) > 0){
-                            if(nativeUnits==0) {
-                                if (units == 0) {
-                                    press[j / 2 - 1] = Float.parseFloat(col[3]);
-                                } else {
-                                    press[j / 2 - 1] = Float.parseFloat(col[3]) * 33.8639f;
-                                }
+                        windDir = col[4];
+                        try {
+                            if (Float.parseFloat(col[5]) > 0) {
+                                windDeg[j/2 - 1] = Float.parseFloat(col[5]);
                             }
-                            else{
-                                if (units == 0) {
-                                    press[j / 2 - 1] = Float.parseFloat(col[3])/33.8639f;
-                                } else {
-                                    press[j / 2 - 1] = Float.parseFloat(col[3]);
-                                }
-                            }
-                            lastPress=press[j / 2 - 1];
                         }
-                        else{
-                            press[j/2-1]=lastPress;
-                        }
-                        windDir=col[4];
-                        if (Float.parseFloat(col[5]) > 0) {
-                            windDeg[j /2-1] = Float.parseFloat(col[5]);
+                        catch (NumberFormatException n){
+                            windDeg[j/2 - 1] = 0;
                         }
                         if (Float.parseFloat(col[6]) > 0) {
-                            if(nativeUnits==0) {
+                            if (nativeUnits == 0) {
                                 if (units == 0) {
-                                    if(nordic==0) {
-                                        windSpeed[j / 2 - 1] = Float.parseFloat(col[6]);
-                                    }
-                                    else {
-                                        windSpeed[j / 2 - 1] = Float.parseFloat(col[6])/1.150779f;
+                                    if (nordic == 0) {
+                                        windSpeed[j/2 - 1] = Float.parseFloat(col[6]);
+                                    } else {
+                                        windSpeed[j/2 - 1] = Float.parseFloat(col[6]) / 1.150779f;
                                     }
                                 } else {
-                                    if(nordic==0) {
-                                        windSpeed[j / 2 - 1] = Float.parseFloat(col[6]) * 1.60934f;
-                                    }
-                                    else{
-                                        windSpeed[j / 2 - 1] = Float.parseFloat(col[6]) * 0.44704f;
+                                    if (nordic == 0) {
+                                        windSpeed[j/2 - 1] = Float.parseFloat(col[6]) * 1.60934f;
+                                    } else {
+                                        windSpeed[j/2 - 1] = Float.parseFloat(col[6]) * 0.44704f;
                                     }
                                 }
-                            }
-                            else{
+                            } else {
                                 if (units == 0) {
-                                    if(nordic==0) {
-                                        windSpeed[j / 2 - 1] = Float.parseFloat(col[6]) / 1.60934f;
-                                    }
-                                    else{
-                                        windSpeed[j / 2 - 1] = Float.parseFloat(col[6]) / 1.852f;
+                                    if (nordic == 0) {
+                                        windSpeed[j/2 - 1] = Float.parseFloat(col[6]) / 1.60934f;
+                                    } else {
+                                        windSpeed[j/2 - 1] = Float.parseFloat(col[6]) / 1.852f;
                                     }
                                 } else {
-                                    if(nordic==0) {
-                                        windSpeed[j / 2 - 1] = Float.parseFloat(col[6]);
-                                    }
-                                    else {
-                                        windSpeed[j / 2 - 1] = Float.parseFloat(col[6])*0.277778f;
+                                    if (nordic == 0) {
+                                        windSpeed[j/2 - 1] = Float.parseFloat(col[6]);
+                                    } else {
+                                        windSpeed[j/2 - 1] = Float.parseFloat(col[6]) * 0.277778f;
                                     }
                                 }
                             }
                         }
                         if (Float.parseFloat(col[7]) > 0) {
-                            if (nativeUnits == 0){
+                            if (nativeUnits == 0) {
                                 if (units == 0) {
-                                    if(nordic==0) {
-                                        windGust[j / 2 - 1] = Float.parseFloat(col[7]);
-                                    }
-                                    else {
-                                        windGust[j / 2 - 1] = Float.parseFloat(col[7])/1.150779f;
+                                    if (nordic == 0) {
+                                        windGust[j/2 - 1] = Float.parseFloat(col[7]);
+                                    } else {
+                                        windGust[j/2 - 1] = Float.parseFloat(col[7]) / 1.150779f;
                                     }
                                 } else {
-                                    if(nordic==0) {
-                                        windGust[j / 2 - 1] = Float.parseFloat(col[7]) * 1.60934f;
-                                    }
-                                    else{
-                                        windGust[j / 2 - 1] = Float.parseFloat(col[7]) * 0.44704f;
+                                    if (nordic == 0) {
+                                        windGust[j/2 - 1] = Float.parseFloat(col[7]) * 1.60934f;
+                                    } else {
+                                        windGust[j/2 - 1] = Float.parseFloat(col[7]) * 0.44704f;
                                     }
                                 }
-                            }
-                            else {
+                            } else {
                                 if (units == 0) {
-                                    if(nordic==0) {
-                                        windGust[j / 2 - 1] = Float.parseFloat(col[7]) / 1.60934f;
-                                    }
-                                    else{
-                                        windGust[j / 2 - 1] = Float.parseFloat(col[7]) / 1.852f;
+                                    if (nordic == 0) {
+                                        windGust[j/2 - 1] = Float.parseFloat(col[7]) / 1.60934f;
+                                    } else {
+                                        windGust[j/2 - 1] = Float.parseFloat(col[7]) / 1.852f;
                                     }
                                 } else {
-                                    if(nordic==0){
-                                        windGust[j / 2 - 1] = Float.parseFloat(col[7]);}
-                                    else {
-                                        windGust[j / 2 - 1] = Float.parseFloat(col[7])*0.277778f;
+                                    if (nordic == 0) {
+                                        windGust[j/2 - 1] = Float.parseFloat(col[7]);
+                                    } else {
+                                        windGust[j/2 - 1] = Float.parseFloat(col[7]) * 0.277778f;
                                     }
                                 }
                             }
                         }
-                        if (Float.parseFloat(col[8])>0){
-                            hum[j /2-1] = Float.parseFloat(col[8]);
-                            lastHum=hum[j /2-1];
+                        try{
+                            hum[j/2 - 1] = Float.parseFloat(col[8]);
+                            lastHum = hum[j/2 - 1];
                         }
-                        else{
-                            hum[j /2-1]=lastHum;
+                        catch (NumberFormatException n) {
+                            hum[j/2 - 1] = lastHum;
                         }
                         if (Float.parseFloat(col[9]) > 0) {
-                            if(nativeUnits==0) {
+                            if (nativeUnits == 0) {
                                 if (units == 0) {
-                                    precip[j / 2 - 1] = Float.parseFloat(col[9]);
+                                    precip[j/2 - 1] = Float.parseFloat(col[9]);
                                 } else {
-                                    precip[j / 2 - 1] = Float.parseFloat(col[9]) * 25.4f;
+                                    precip[j/2 - 1] = Float.parseFloat(col[9]) * 25.4f;
                                 }
-                            }
-                            else{
+                            } else {
                                 if (units == 0) {
-                                    precip[j / 2 - 1] = Float.parseFloat(col[9])/ 25.4f;
+                                    precip[j/2 - 1] = Float.parseFloat(col[9]) / 25.4f;
                                 } else {
-                                    precip[j / 2 - 1] = Float.parseFloat(col[9]);
+                                    precip[j/2 - 1] = Float.parseFloat(col[9]);
                                 }
                             }
                         }
                         if (Float.parseFloat(col[12]) > 0) {
-                            if (nativeUnits == 0){
+                            if (nativeUnits == 0) {
                                 if (units == 0) {
-                                    precipDay[j / 2 - 1] = Float.parseFloat(col[12]);
+                                    precipDay[j/2 - 1] = Float.parseFloat(col[12]);
                                 } else {
-                                    precipDay[j / 2 - 1] = Float.parseFloat(col[12]) * 25.4f;
+                                    precipDay[j/2 - 1] = Float.parseFloat(col[12]) * 25.4f;
                                 }
-                            }
-                            else{
+                            } else {
                                 if (units == 0) {
-                                    precipDay[j / 2 - 1] = Float.parseFloat(col[12])/25.4f;
+                                    precipDay[j/2 - 1] = Float.parseFloat(col[12]) / 25.4f;
                                 } else {
-                                    precipDay[j / 2 - 1] = Float.parseFloat(col[12]);
+                                    precipDay[j/2 - 1] = Float.parseFloat(col[12]);
                                 }
                             }
                         }
 
-                        tempAvg += temp[j /2-1];
-                        dewAvg += dew[j /2-1];
-                        pressAvg += press[j /2-1];
-                        windDAvg += windDeg[j /2-1];
-                        windSAvg += windSpeed[j /2-1];
-                        humAvg += hum[j /2-1];
+                        tempAvg += temp[j/2 - 1];
+                        dewAvg += dew[j/2 - 1];
+                        pressAvg += press[j/2 - 1];
+                        windDAvg += windDeg[j/2 - 1];
+                        windSAvg += windSpeed[j/2 - 1];
+                        humAvg += hum[j/2 - 1];
 
-                        if (windGust[j /2-1] > windG) {
-                            windG = windGust[j /2-1];
+                        if (windGust[j/2 - 1] > windG) {
+                            windG = windGust[j/2 - 1];
                         }
 
-                        if (precipDay[j / 2 - 1] > precipMax) {
-                            precipMax = precipDay[j / 2 - 1];
+                        if (precipDay[j/2 - 1] > precipMax) {
+                            precipMax = precipDay[j/2 - 1];
                         }
                     }
                     j++;
                 }
                 //Plot data vector creation
-                DataPoint[] tempData=new DataPoint[temp.length];
-                DataPoint[] dewData=new DataPoint[dew.length];
-                DataPoint[] pressData=new DataPoint[press.length];
-                DataPoint[] pressBLData=new DataPoint[press.length];
-                DataPoint[] windDData=new DataPoint[windDeg.length];
-                DataPoint[] windSData=new DataPoint[windSpeed.length];
-                DataPoint[] windGData=new DataPoint[windGust.length];
-                DataPoint[] humData=new DataPoint[hum.length];
-                DataPoint[] rainData=new DataPoint[precip.length];
-                DataPoint[] rainDayData=new DataPoint[precipDay.length];
+                DataPoint[] tempData = new DataPoint[temp.length];
+                DataPoint[] dewData = new DataPoint[dew.length];
+                DataPoint[] pressData = new DataPoint[press.length];
+                DataPoint[] pressBLData = new DataPoint[press.length];
+                DataPoint[] windDData = new DataPoint[windDeg.length];
+                DataPoint[] windSData = new DataPoint[windSpeed.length];
+                DataPoint[] windGData = new DataPoint[windGust.length];
+                DataPoint[] humData = new DataPoint[hum.length];
+                DataPoint[] rainData = new DataPoint[precip.length];
+                DataPoint[] rainDayData = new DataPoint[precipDay.length];
 
-                m=0;
-                for(float t:temp){
+                m = 0;
+                for (float t : temp) {
                     tempData[m] = new DataPoint(tim[m], t);
                     dewData[m] = new DataPoint(tim[m], dew[m]);
-                    pressData[m]=new DataPoint(tim[m],press[m]);
-                    windSData[m]=new DataPoint(tim[m],windSpeed[m]);
-                    windGData[m]=new DataPoint(tim[m],windGust[m]);
-                    windDData[m]=new DataPoint(tim[m],windDeg[m]);
-                    humData[m]=new DataPoint(tim[m],hum[m]);
-                    rainData[m]=new DataPoint(tim[m],precip[m]);
-                    rainDayData[m]=new DataPoint(tim[m],precipDay[m]);
+                    pressData[m] = new DataPoint(tim[m], press[m]);
+                    windSData[m] = new DataPoint(tim[m], windSpeed[m]);
+                    windGData[m] = new DataPoint(tim[m], windGust[m]);
+                    windDData[m] = new DataPoint(tim[m], windDeg[m]);
+                    humData[m] = new DataPoint(tim[m], hum[m]);
+                    rainData[m] = new DataPoint(tim[m], precip[m]);
+                    rainDayData[m] = new DataPoint(tim[m], precipDay[m]);
                     m++;
                 }
                 seriesT = new LineGraphSeries<>(tempData);
@@ -494,16 +483,16 @@ public class MainActivity extends AppCompatActivity
                 seriesR.setTitle("Hourly Precipitation");
                 seriesRD.setTitle("Daily Precipitation");
 
-                tempAvg /= (j / 2)-1;
-                dewAvg /= (j / 2)-1;
-                pressAvg /= (j / 2)-1;
-                windDAvg /= (j / 2)-1;
-                windSAvg /= (j / 2)-1;
-                humAvg /= (j / 2)-1;
+                tempAvg /= (j/2) - 1;
+                dewAvg /= (j/2) - 1;
+                pressAvg /= (j/2) - 1;
+                windDAvg /= (j/2) - 1;
+                windSAvg /= (j/2) - 1;
+                humAvg /= (j/2) - 1;
                 //If native units are imperial
                 if (nativeUnits == 0) {
                     //Last line of data file is already the correct format for displaying
-                    if (nordic==0) {
+                    if (nordic == 0) {
                         if (units == 0) {
                             outBuild.append(lines[lines.length - 2]);
                         }
@@ -556,7 +545,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
                 //If native units are metric
-                else{
+                else {
                     if (nordic == 0) {
                         if (units == 0) {
                             outBuild.append(timStamp);
@@ -582,8 +571,7 @@ public class MainActivity extends AppCompatActivity
                         } else {
                             outBuild.append(lines[lines.length - 2]);
                         }
-                    }
-                    else{
+                    } else {
                         outBuild.append(timStamp);
                         outBuild.append(",");
                         outBuild.append(String.valueOf(Math.round(temp[temp.length - 2] * 100.0) / 100.0));
@@ -631,23 +619,22 @@ public class MainActivity extends AppCompatActivity
                 outBuild.append(",");
                 outBuild.append(String.valueOf(Math.round(humAvg * 100.0) / 100.0));
                 outBuild.append(",");
-                outBuild.append(String.valueOf(Math.round(precipMax* 100.0) / 100.0));
+                outBuild.append(String.valueOf(Math.round(precipMax * 100.0) / 100.0));
                 //Return current status; average values
                 return outBuild.toString();
 
 
             }
-
             catch(IOException e){
+                System.out.println(e);
                 return "";
             }
             catch(NetworkOnMainThreadException b){
-                return "";
-            }
-            catch (NumberFormatException n){
+                System.out.println(b);
                 return "";
             }
             catch (ArrayIndexOutOfBoundsException a){
+                System.out.println(a);
                 return "";
             }
         }
@@ -858,8 +845,12 @@ public class MainActivity extends AppCompatActivity
                 else{
                     snowIcon.setVisibility(View.INVISIBLE);
                 }
-
-                windDirIcon.setRotation((Float.parseFloat(currentString.split("\n")[6].split(": ")[1].split(" ")[0])));
+                try {
+                    windDirIcon.setRotation((Float.parseFloat(currentString.split("\n")[6].split(": ")[1].split(" ")[0])));
+                }
+                catch (NumberFormatException n){
+                    windDirIcon.setRotation(0);
+                }
             } else if (viewSel == "daily") {
 
                 text.setVisibility(View.INVISIBLE);
@@ -1562,9 +1553,12 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     snowIcon.setVisibility(View.INVISIBLE);
                 }
-
-                windDirIcon.setRotation((Float.parseFloat(currentString.split("\n")[6].split(": ")[1].split(" ")[0])));
-
+                try {
+                    windDirIcon.setRotation((Float.parseFloat(currentString.split("\n")[6].split(": ")[1].split(" ")[0])));
+                }
+                catch (NumberFormatException n){
+                    windDirIcon.setRotation(0);
+                }
             } else if (id == R.id.nav_daily) {
                 viewSel = "daily";
                 text.setVisibility(View.INVISIBLE);
