@@ -69,20 +69,26 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
         final EditText editText = (EditText) findViewById(R.id.station);
         byte[] by=new byte[13];
-        //Writes station to file
+        byte[] byU=new byte[1];
         try {
             FileInputStream fis = openFileInput("station_file");
             int n= fis.read(by);
             fis.close();
             String str = new String(by, "UTF-8");
-            if(getIntent().getExtras().getBoolean("error")==true){
-                editText.setText("");
-            }
-            else {
-                editText.setText(str);
-            }
+            editText.setText(str);
+
+            fis = openFileInput("unit_file");
+            fis.read(byU);
+            fis.close();
+            spinner.setSelection((int) byU[0]);
+
+            fis = openFileInput("nordic_file");
+            fis.read(byU);
+            fis.close();
+            spinner.setSelection((int) byU[0]);
         }
         catch (IOException e) {
+            System.out.println(e);
         }
         //"Apply" button action
         final Button button = (Button) findViewById(R.id.button);
