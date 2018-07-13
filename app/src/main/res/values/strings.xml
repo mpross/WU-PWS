@@ -8,7 +8,14 @@
     <string name="action_date">Date Selection</string>
     <string name="action_refresh">Refresh</string>
     <string name="title_activity_settings">Settings</string>
+
     <string name="settings_title">Personal Weather Station Data Viewer Version 2.0</string>
+    <string name="recent_stations">Recent Stations:</string>
+    <string name="units_label">Units: </string>
+    <string name="apply_buton">Apply</string>
+    <string name="station_label">Station:</string>
+    <string name="clear_button">Clear</string>
+
     <string-array name="units">
         <item>Imperial</item>
         <item>Metric</item>
@@ -20,6 +27,8 @@
     <string-array name="ispeeds">
         <item>mph</item>
         <item>knots</item>
+    </string-array>
+    <string-array name="stations">
     </string-array>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>

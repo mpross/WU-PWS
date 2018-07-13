@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_settings"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -11,82 +11,88 @@
     tools:context="net.mpross.pws.SettingsActivity">
 
     <Button
-        android:text="Apply"
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:text="@string/apply_buton" />
+
+    <Button
+        android:id="@+id/clearButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/windLabel2"
+        android:layout_toEndOf="@+id/stationList"
+        android:text="@string/clear_button" />
 
     <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/spinner"
-        android:layout_alignBottom="@+id/windLabel"
-        android:entries="@array/units"
-        android:layout_toRightOf="@+id/textView4" />
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:layout_alignTop="@+id/windLabel"
+        android:layout_marginLeft="10dp"
+        android:layout_toEndOf="@+id/windLabel"
+        android:entries="@array/units" />
 
     <TextView
-        android:text="Units:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/windLabel"
-        android:textSize="24sp"
-        android:textAlignment="textEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/textView4"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="15dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/errText"
-        android:textSize="24sp"
-        android:text="error"
-        android:layout_marginBottom="19dp"
-        android:layout_above="@+id/textView4"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/titleText"
-        android:textSize="24sp"
-        android:text="@string/settings_title"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:text="Station:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView4"
-        android:textSize="24sp"
+        android:layout_marginTop="15dp"
+        android:text="@string/units_label"
         android:textAlignment="textEnd"
-        android:layout_alignBaseline="@+id/station"
-        android:layout_alignBottom="@+id/station"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/windLabel2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/windLabel"
+        android:layout_below="@+id/nordicSpinner"
+        android:layout_marginTop="20dp"
+        android:text="@string/recent_stations"
+        android:textAlignment="textEnd"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/settings_title"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/titleText"
+        android:layout_marginTop="75dp"
+        android:text="@string/station_label"
+        android:textAlignment="textEnd"
+        android:textSize="24sp" />
 
     <EditText
+        android:id="@+id/station"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
+        android:layout_alignBaseline="@+id/textView4"
+        android:layout_marginLeft="10dp"
+        android:layout_toEndOf="@+id/textView4"
         android:ems="10"
-        android:id="@+id/station"
-        android:layout_marginTop="60dp"
-        android:singleLine="true"
-        android:layout_below="@+id/titleText"
-        android:layout_toRightOf="@+id/textView4"
-        android:layout_toEndOf="@+id/textView4" />
+        android:imeOptions="actionDone"
+        android:inputType="textPersonName"
+        android:singleLine="true" />
 
     <Spinner
         android:id="@+id/nordicSpinner"
@@ -98,5 +104,13 @@
         android:layout_alignStart="@+id/spinner"
         android:layout_below="@+id/spinner"
         android:visibility="invisible" />
+
+    <ListView
+        android:id="@+id/stationList"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_alignStart="@+id/windLabel"
+        android:layout_below="@+id/windLabel2"
+        android:entries="@array/stations" />
 
 </RelativeLayout>

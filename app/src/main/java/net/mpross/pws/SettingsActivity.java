@@ -25,24 +25,34 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     int units=0;
     int nordic=0;
     boolean nothingSelected=false;
     boolean nothingSelectedNordic=false;
+    String listIn=",";
     Bundle b=new Bundle();
     Intent i=new Intent();
     @Override
@@ -50,6 +60,8 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         b=getIntent().getExtras();
         //Units selection
@@ -59,15 +71,6 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
         Spinner nordicSpinner = (Spinner) findViewById(R.id.nordicSpinner);
         nordicSpinner.setOnItemSelectedListener(this);
-
-        TextView errText =(TextView) findViewById(R.id.errText);
-        //Tells user if they selected an invalid weather station
-        if(getIntent().getExtras().getBoolean("error")==true){
-            errText.setText("Input a valid weather station ID");
-        }
-        else{
-            errText.setText("");
-        }
 
         final EditText editText = (EditText) findViewById(R.id.station);
         byte[] by=new byte[50];
@@ -100,6 +103,16 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         catch (IOException e) {
             System.out.println(e);
         }
+        try {
+            FileInputStream fis = openFileInput("stationList_file");
+            int n= fis.read(by);
+            fis.close();
+            listIn = new String(by, "UTF-8");
+
+        }
+        catch (IOException e) {
+            System.out.println(e);
+        }
         //"Apply" button action
         final Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +131,14 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                     }
                     fos.write(string.toUpperCase().getBytes());
                     fos.close();
+                    if(!string.trim().equals("")) {
+                        fos = openFileOutput("stationList_file", Context.MODE_APPEND);
+                        StringBuilder listBuild = new StringBuilder();
+                        listBuild.append(string.trim().toUpperCase());
+                        listBuild.append(',');
+                        fos.write(listBuild.toString().getBytes());
+                        fos.close();
+                    }
 
                     InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -130,37 +151,55 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                 }
             }
         });
+        // Recent station list
+        final ListView listview = (ListView) findViewById(R.id.stationList);
+        final String[] values = listIn.replaceAll("\\P{Print}", "").split(",");
+        final ArrayList<String> list = new ArrayList<String>();
+        for (int i = 0; i < values.length; ++i) {
+            list.add(values[i]);
+        }
+        list.removeAll(Arrays.asList("", null));
+        Set<String> hs = new HashSet<>();
+        hs.addAll(list);
+        list.clear();
+        list.addAll(hs);
+        Collections.reverse(list);
+        final ArrayAdapter adapter = new ArrayAdapter(this,
+                android.R.layout.simple_list_item_1, list);
+        listview.setAdapter(adapter);
+
+        ListView recentStations= (ListView) findViewById(R.id.stationList);
+        recentStations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                editText.setText(list.get(position).toString());
+            }
+        });
+        //"Clear" button action
+        final Button clearButton = (Button) findViewById(R.id.clearButton);
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                try {
+                    FileOutputStream fos = openFileOutput("stationList_file", Context.MODE_PRIVATE);
+                    fos.write("".getBytes());
+                    fos.close();
+                }
+                catch (IOException e){
+
+                }
+                adapter.clear();
+                adapter.notifyDataSetChanged();
+            }
+        });
         //Return key action
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-
-                    String string = editText.getText().toString();
-                    StringBuilder build =new StringBuilder();
-
-                    try {
-                        FileOutputStream fos = openFileOutput("station_file", Context.MODE_PRIVATE);
-                        if(string.length()<10){
-                            build.append(string);
-                            for(int i=0; i<(10-string.length());i++) {
-                                build.append("");
-                            }
-                            string=build.toString();
-                        }
-                        fos.write(string.toUpperCase().getBytes());
-                        fos.close();
                         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                        i.putExtra("nordic",nordic);
-                        setResult(units,i);
-
-                        finish();
-                    }
-                    catch (IOException e){
-                    }
-
                     handled = true;
                 }
                 return handled;
