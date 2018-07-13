@@ -41,6 +41,8 @@ import java.io.IOException;
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     int units=0;
     int nordic=0;
+    boolean nothingSelected=false;
+    boolean nothingSelectedNordic=false;
     Bundle b=new Bundle();
     Intent i=new Intent();
     @Override
@@ -76,16 +78,24 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             fis.close();
             String str = new String(by, "UTF-8");
             editText.setText(str);
-
-            fis = openFileInput("unit_file");
+        }
+        catch (IOException e) {
+            System.out.println(e);
+        }
+        try{
+            FileInputStream fis = openFileInput("unit_file");
             fis.read(byU);
             fis.close();
-            spinner.setSelection((int) byU[0]);
-
-            fis = openFileInput("nordic_file");
+            units=(int)byU[0];
+        }
+        catch (IOException e) {
+            System.out.println(e);
+        }
+        try{
+            FileInputStream fis = openFileInput("nordic_file");
             fis.read(byU);
             fis.close();
-            spinner.setSelection((int) byU[0]);
+            nordic=(int)byU[0];
         }
         catch (IOException e) {
             System.out.println(e);
@@ -108,6 +118,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                     }
                     fos.write(string.toUpperCase().getBytes());
                     fos.close();
+
                     InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                     i.putExtra("nordic",nordic);
@@ -173,6 +184,19 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                     android.R.layout.simple_spinner_item, mstring);
             madapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+            if(nothingSelected==false){
+                if (units == 1) {
+                    nordicSpinner.setAdapter(madapter);
+                    iadapter.notifyDataSetChanged();
+
+                } else {
+                    nordicSpinner.setAdapter(iadapter);
+                    madapter.notifyDataSetChanged();
+                }
+                spin.setSelection(units);
+                nothingSelected=true;
+            }
+
             units = pos;
             if (pos == 1) {
                 nordicSpinner.setAdapter(madapter);
@@ -184,6 +208,11 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             }
         }
         if(spin.getId()==R.id.nordicSpinner) {
+            Spinner nordicSpinner = (Spinner) findViewById(R.id.nordicSpinner);
+            if(nothingSelectedNordic==false){
+                nordicSpinner.setSelection(nordic);
+                nothingSelectedNordic=true;
+            }
             nordic=pos;
         }
 
