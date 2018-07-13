@@ -70,14 +70,14 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         }
 
         final EditText editText = (EditText) findViewById(R.id.station);
-        byte[] by=new byte[13];
+        byte[] by=new byte[50];
         byte[] byU=new byte[1];
         try {
             FileInputStream fis = openFileInput("station_file");
             int n= fis.read(by);
             fis.close();
             String str = new String(by, "UTF-8");
-            editText.setText(str);
+            editText.setText(str.trim());
         }
         catch (IOException e) {
             System.out.println(e);

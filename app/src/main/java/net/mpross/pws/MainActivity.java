@@ -489,12 +489,38 @@ public class MainActivity extends AppCompatActivity
                 windDAvg /= (j/2) - 1;
                 windSAvg /= (j/2) - 1;
                 humAvg /= (j/2) - 1;
-                //If native units are imperial
-                if (nativeUnits == 0) {
-                    //Last line of data file is already the correct format for displaying
-                    if (nordic == 0) {
-                        if (units == 0) {
-                            outBuild.append(lines[lines.length - 2]);
+
+                try {
+                    //If native units are imperial
+                    if (nativeUnits == 0) {
+                        //Last line of data file is already the correct format for displaying
+                        if (nordic == 0) {
+                            if (units == 0) {
+                                outBuild.append(lines[lines.length - 2]);
+                            }
+                            //If units are different from file then create correctly formatted string
+                            else {
+                                outBuild.append(timStamp);
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(Math.round(temp[temp.length - 2] * 100.0) / 100.0));
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(Math.round(dew[dew.length - 2] * 100.0) / 100.0));
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(Math.round(press[press.length - 2] * 100.0) / 100.0));
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(windDir));
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(windDeg[windDeg.length - 2]));
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(Math.round(windSpeed[windSpeed.length - 2] * 100.0) / 100.0));
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(Math.round(windGust[windGust.length - 2] * 100.0) / 100.0));
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(hum[hum.length - 2]));
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(Math.round(precip[precip.length - 2] * 100.0) / 100.0));
+                                outBuild.append(",,,,,,");
+                            }
                         }
                         //If units are different from file then create correctly formatted string
                         else {
@@ -520,34 +546,34 @@ public class MainActivity extends AppCompatActivity
                             outBuild.append(",,,,,,");
                         }
                     }
-                    //If units are different from file then create correctly formatted string
+                    //If native units are metric
                     else {
-                        outBuild.append(timStamp);
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(Math.round(temp[temp.length - 2] * 100.0) / 100.0));
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(Math.round(dew[dew.length - 2] * 100.0) / 100.0));
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(Math.round(press[press.length - 2] * 100.0) / 100.0));
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(windDir));
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(windDeg[windDeg.length - 2]));
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(Math.round(windSpeed[windSpeed.length - 2] * 100.0) / 100.0));
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(Math.round(windGust[windGust.length - 2] * 100.0) / 100.0));
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(hum[hum.length - 2]));
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(Math.round(precip[precip.length - 2] * 100.0) / 100.0));
-                        outBuild.append(",,,,,,");
-                    }
-                }
-                //If native units are metric
-                else {
-                    if (nordic == 0) {
-                        if (units == 0) {
+                        if (nordic == 0) {
+                            if (units == 0) {
+                                outBuild.append(timStamp);
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(Math.round(temp[temp.length - 2] * 100.0) / 100.0));
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(Math.round(dew[dew.length - 2] * 100.0) / 100.0));
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(Math.round(press[press.length - 2] * 100.0) / 100.0));
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(windDir));
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(windDeg[windDeg.length - 2]));
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(Math.round(windSpeed[windSpeed.length - 2] * 100.0) / 100.0));
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(Math.round(windGust[windGust.length - 2] * 100.0) / 100.0));
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(hum[hum.length - 2]));
+                                outBuild.append(",");
+                                outBuild.append(String.valueOf(Math.round(precip[precip.length - 2] * 100.0) / 100.0));
+                                outBuild.append(",,,,,,");
+                            } else {
+                                outBuild.append(lines[lines.length - 2]);
+                            }
+                        } else {
                             outBuild.append(timStamp);
                             outBuild.append(",");
                             outBuild.append(String.valueOf(Math.round(temp[temp.length - 2] * 100.0) / 100.0));
@@ -568,61 +594,59 @@ public class MainActivity extends AppCompatActivity
                             outBuild.append(",");
                             outBuild.append(String.valueOf(Math.round(precip[precip.length - 2] * 100.0) / 100.0));
                             outBuild.append(",,,,,,");
-                        } else {
-                            outBuild.append(lines[lines.length - 2]);
                         }
-                    } else {
-                        outBuild.append(timStamp);
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(Math.round(temp[temp.length - 2] * 100.0) / 100.0));
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(Math.round(dew[dew.length - 2] * 100.0) / 100.0));
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(Math.round(press[press.length - 2] * 100.0) / 100.0));
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(windDir));
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(windDeg[windDeg.length - 2]));
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(Math.round(windSpeed[windSpeed.length - 2] * 100.0) / 100.0));
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(Math.round(windGust[windGust.length - 2] * 100.0) / 100.0));
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(hum[hum.length - 2]));
-                        outBuild.append(",");
-                        outBuild.append(String.valueOf(Math.round(precip[precip.length - 2] * 100.0) / 100.0));
-                        outBuild.append(",,,,,,");
                     }
                 }
+                catch (ArrayIndexOutOfBoundsException a){
+                    outBuild.append(0);
+                    outBuild.append(",");
+                    outBuild.append(0);
+                    outBuild.append(",");
+                    outBuild.append(0);
+                    outBuild.append(",");
+                    outBuild.append(0);
+                    outBuild.append(",");
+                    outBuild.append(0);
+                    outBuild.append(",");
+                    outBuild.append(0);
+                    outBuild.append(",");
+                    outBuild.append(0);
+                    outBuild.append(",");
+                    outBuild.append(0);
+                    outBuild.append(",");
+                    outBuild.append(0);
+                    outBuild.append(",");
+                    outBuild.append(0);
+                    outBuild.append(",,,,,,");
+                }
 
-                //Build average string
-                outBuild.append(";");
-                outBuild.append(String.valueOf(Math.round(tempAvg * 100.0) / 100.0));
-                outBuild.append(",");
-                outBuild.append(String.valueOf(Math.round(tempHigh * 100.0) / 100.0));
-                outBuild.append(",");
-                outBuild.append(String.valueOf(Math.round(tempLow * 100.0) / 100.0));
-                outBuild.append(",");
-                outBuild.append(String.valueOf(Math.round(dewAvg * 100.0) / 100.0));
-                outBuild.append(",");
-                outBuild.append(String.valueOf(Math.round(dewHigh * 100.0) / 100.0));
-                outBuild.append(",");
-                outBuild.append(String.valueOf(Math.round(dewLow * 100.0) / 100.0));
-                outBuild.append(",");
-                outBuild.append(String.valueOf(Math.round(pressAvg * 100.0) / 100.0));
-                outBuild.append(",");
-                outBuild.append(String.valueOf(Math.round(windDAvg * 100.0) / 100.0));
-                outBuild.append(",");
-                outBuild.append(String.valueOf(Math.round(windSAvg * 100.0) / 100.0));
-                outBuild.append(",");
-                outBuild.append(String.valueOf(Math.round(windG * 100.0) / 100.0));
-                outBuild.append(",");
-                outBuild.append(String.valueOf(Math.round(humAvg * 100.0) / 100.0));
-                outBuild.append(",");
-                outBuild.append(String.valueOf(Math.round(precipMax * 100.0) / 100.0));
-                //Return current status; average values
-                return outBuild.toString();
-
+                    //Build average string
+                    outBuild.append(";");
+                    outBuild.append(String.valueOf(Math.round(tempAvg * 100.0) / 100.0));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(Math.round(tempHigh * 100.0) / 100.0));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(Math.round(tempLow * 100.0) / 100.0));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(Math.round(dewAvg * 100.0) / 100.0));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(Math.round(dewHigh * 100.0) / 100.0));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(Math.round(dewLow * 100.0) / 100.0));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(Math.round(pressAvg * 100.0) / 100.0));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(Math.round(windDAvg * 100.0) / 100.0));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(Math.round(windSAvg * 100.0) / 100.0));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(Math.round(windG * 100.0) / 100.0));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(Math.round(humAvg * 100.0) / 100.0));
+                    outBuild.append(",");
+                    outBuild.append(String.valueOf(Math.round(precipMax * 100.0) / 100.0));
+                    //Return current status; average values
+                    return outBuild.toString();
 
             }
             catch(IOException e){
