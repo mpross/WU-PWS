@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class DateActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     Bundle b=new Bundle();
@@ -52,7 +53,7 @@ public class DateActivity extends AppCompatActivity implements AdapterView.OnIte
             errText.setText("");
         }
         //Calendar
-        CalendarView calendar = (CalendarView) findViewById(R.id.calendarView);
+        final CalendarView calendar = (CalendarView) findViewById(R.id.calendarView);
         try{
             calendar.setDate(new SimpleDateFormat("dd,MM,yyyy").parse(calDate).getTime(), true, true);
         }
@@ -64,6 +65,13 @@ public class DateActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onSelectedDayChange(CalendarView view, int year, int month,
                                             int dayOfMonth) {
                 calDate =String.valueOf(dayOfMonth)+","+String.valueOf(month+1)+","+String.valueOf(year);
+            }
+        });
+
+        final Button todayButton = (Button) findViewById(R.id.todayButton);
+        todayButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                calendar.setDate(Calendar.getInstance().getTimeInMillis(),false,true);
             }
         });
 
