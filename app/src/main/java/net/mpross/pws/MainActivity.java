@@ -1,6 +1,6 @@
 /*
 Personal Weather Station Data Viewer by M.P.Ross
-Copyright (C) 2017  M.P.Ross
+Copyright (C) 2018  M.P.Ross
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -728,15 +728,7 @@ public class MainActivity extends AppCompatActivity
         }
         //Excluded labels that are included in data file
         String exString = "Conditions,Clouds,SoftwareType,DateUTC,Daily Rain";
-        String[] split = result.split(";");
-        String[] dataCur = new String[1];
-        String[] dataDay = new String[1];
-        try {
-            dataCur = split[0].split(",");
-            dataDay = split[1].split(",");
-        } catch (ArrayIndexOutOfBoundsException a) {
-            System.out.println(a);
-        }
+
         StringBuilder outCur = new StringBuilder();
         StringBuilder outDay = new StringBuilder();
         TextView text = (TextView) findViewById(R.id.text1);
@@ -768,13 +760,28 @@ public class MainActivity extends AppCompatActivity
         String[] ends = endString.split(",");
         String[] endsD = endStringD.split(",");
         List exclude = Arrays.asList(exString.split(","));
+
+        String[] split = result.split(";");
+        String[] dataCur = new String[fields.length];
+        String[] dataDay = new String[fields.length];
+        try {
+            dataCur = split[0].split(",");
+            dataDay = split[1].split(",");
+        } catch (ArrayIndexOutOfBoundsException a) {
+            throw a;
+        }
         try {
             int i = 0;
             for (String field : fields) {
                 if (!exclude.contains(field)) {
                     outCur.append(field);
                     outCur.append(": ");
-                    outCur.append(dataCur[i]);
+                    if( i<= dataCur.length) {
+                        outCur.append(dataCur[i]);
+                    }
+                    else{
+                        outCur.append(" ");
+                    }
                     outCur.append(ends[i]);
                     outCur.append("\n");
 
@@ -825,7 +832,6 @@ public class MainActivity extends AppCompatActivity
             text2.setText(station);
         }
         catch(NullPointerException n){
-            throw n;
         }
         try {
             GraphView graph = (GraphView) findViewById(R.id.graph);

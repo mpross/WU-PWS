@@ -1,6 +1,6 @@
 /*
 Personal Weather Station Data Viewer by M.P.Ross
-Copyright (C) 2017  M.P.Ross
+Copyright (C) 2018  M.P.Ross
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
