@@ -27,6 +27,9 @@
             android:id="@+id/nav_rainPlot"
             android:title="Rain Plot" />
         <item
+            android:id="@+id/nav_raw"
+            android:title="Raw Data" />
+        <item
             android:id="@+id/nav_support"
             android:title="Support the Developer :)" />
 

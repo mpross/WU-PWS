@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity
 
     String currentString=new String(); //String for current stats
     String dailyString=new String(); //String for daily stats
+    String rawData = new String();
     String station=""; //Weather station name
     static String viewSel="current";
     int units=0; // User unit choice
@@ -693,6 +694,8 @@ public class MainActivity extends AppCompatActivity
             outBuild.append(",");
             outBuild.append(String.valueOf(Math.round(precipMax * 100.0) / 100.0));
             //Return current status; average values
+            outBuild.append("!");
+            outBuild.append(build.toString());
             return outBuild.toString();
         }
 
@@ -761,7 +764,8 @@ public class MainActivity extends AppCompatActivity
         String[] endsD = endStringD.split(",");
         List exclude = Arrays.asList(exString.split(","));
 
-        String[] split = result.split(";");
+        rawData = result.split("!")[1];
+        String[] split = result.split("!")[0].split(";");
         String[] dataCur = new String[fields.length];
         String[] dataDay = new String[fields.length];
         try {
@@ -1404,6 +1408,32 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
                 seriesRD.setColor(Color.GRAY);
+            } else if(viewSel=="rawData") {
+                text.setVisibility(View.VISIBLE);
+                temp.setVisibility(View.GONE);
+                tempHigh.setVisibility(View.GONE);
+                tempLow.setVisibility(View.GONE);
+                dew.setVisibility(View.GONE);
+                dewHigh.setVisibility(View.GONE);
+                dewLow.setVisibility(View.GONE);
+                press.setVisibility(View.GONE);
+                windSpeed.setVisibility(View.GONE);
+                windGust.setVisibility(View.GONE);
+                windDir.setVisibility(View.GONE);
+                windDeg.setVisibility(View.GONE);
+                rain.setVisibility(View.GONE);
+                hum.setVisibility(View.GONE);
+                time.setVisibility(View.GONE);
+                humBar.setVisibility(View.GONE);
+                windLabel.setVisibility(View.GONE);
+                graph.setVisibility(View.INVISIBLE);
+                windIcon.setVisibility(View.INVISIBLE);
+                statusIcon.setVisibility(View.INVISIBLE);
+                windDirIcon.setVisibility(View.INVISIBLE);
+                snowIcon.setVisibility(View.INVISIBLE);
+                pressChange.setVisibility(View.INVISIBLE);
+
+                text.setText(rawData);
             }
 
         } catch (ArrayIndexOutOfBoundsException a) {
@@ -2108,6 +2138,34 @@ public class MainActivity extends AppCompatActivity
             } else if (id == R.id.nav_support) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.me/mpross"));
                 startActivity(browserIntent);
+            } else if(id == R.id.nav_raw) {
+                viewSel = "rawData";
+
+                text.setVisibility(View.VISIBLE);
+                temp.setVisibility(View.GONE);
+                tempHigh.setVisibility(View.GONE);
+                tempLow.setVisibility(View.GONE);
+                dew.setVisibility(View.GONE);
+                dewHigh.setVisibility(View.GONE);
+                dewLow.setVisibility(View.GONE);
+                press.setVisibility(View.GONE);
+                windSpeed.setVisibility(View.GONE);
+                windGust.setVisibility(View.GONE);
+                windDir.setVisibility(View.GONE);
+                windDeg.setVisibility(View.GONE);
+                rain.setVisibility(View.GONE);
+                hum.setVisibility(View.GONE);
+                time.setVisibility(View.GONE);
+                humBar.setVisibility(View.GONE);
+                windLabel.setVisibility(View.GONE);
+                graph.setVisibility(View.INVISIBLE);
+                windIcon.setVisibility(View.INVISIBLE);
+                statusIcon.setVisibility(View.INVISIBLE);
+                windDirIcon.setVisibility(View.INVISIBLE);
+                snowIcon.setVisibility(View.INVISIBLE);
+                pressChange.setVisibility(View.INVISIBLE);
+
+                text.setText(rawData);
             }
 
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
