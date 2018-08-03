@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package net.mpross.pws;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,6 +36,8 @@ public class DateActivity extends AppCompatActivity implements AdapterView.OnIte
     Bundle b=new Bundle();
     Intent i=new Intent();
     String calDate="";
+    float selectedDate =Calendar.getInstance().getTimeInMillis();
+    float currentDate=Calendar.getInstance().getTimeInMillis();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -78,9 +82,24 @@ public class DateActivity extends AppCompatActivity implements AdapterView.OnIte
         final Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                    i.putExtra("calDate",calDate);
-                    setResult(0,i);
+                try {
+                   selectedDate = new SimpleDateFormat("dd,MM,yyyy").parse(calDate).getTime();
+                   currentDate=Calendar.getInstance().getTimeInMillis();
+                }
+                catch(ParseException p){}
+                if(selectedDate<=currentDate) {
+                    i.putExtra("calDate", calDate);
+                    setResult(0, i);
                     finish();
+                }
+                else{
+                    Context context = getApplicationContext();
+                    CharSequence toastText = "Time Travel Not Enabled.";
+                    int duration = Toast.LENGTH_LONG;
+
+                    Toast toast = Toast.makeText(context, toastText, duration);
+                    toast.show();
+                }
             }
         });
 
