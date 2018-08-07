@@ -11,17 +11,24 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:scrollbars="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="net.mpross.pws.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <TextView
-        android:id="@+id/text1"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true"
-        android:text="Loading..."
-        android:textSize="30sp" />
+        android:scrollbarAlwaysDrawVerticalTrack="true">
+
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:text="Loading..."
+            android:textSize="30sp" />
+    </ScrollView>
 
     <com.jjoe64.graphview.GraphView
         android:id="@+id/graph"

@@ -1491,6 +1491,7 @@ public class MainActivity extends AppCompatActivity
         Intent dateIntent = new Intent(this, DateActivity.class);
         if (id==R.id.action_refresh){
             TextView text =(TextView) findViewById(R.id.text1);
+            text.setTextSize(30);
             text.setText("Loading...");
             new datagrab().execute("");
         }
@@ -2165,6 +2166,7 @@ public class MainActivity extends AppCompatActivity
                 snowIcon.setVisibility(View.INVISIBLE);
                 pressChange.setVisibility(View.INVISIBLE);
 
+                text.setTextSize(16);
                 text.setText(rawData);
             }
 
