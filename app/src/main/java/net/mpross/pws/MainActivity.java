@@ -194,9 +194,11 @@ public class MainActivity extends AppCompatActivity
                 Context context = getApplicationContext();
                 CharSequence toastText = "Connection Error";
                 int duration = Toast.LENGTH_LONG;
-
-                Toast toast = Toast.makeText(context, toastText, duration);
-                toast.show();
+                try {
+                    Toast toast = Toast.makeText(context, toastText, duration);
+                    toast.show();
+                }
+                catch (RuntimeException r){}
                 System.out.println(e);
             }
             //Splits lines
@@ -818,7 +820,6 @@ public class MainActivity extends AppCompatActivity
                 text.setText(dailyString);
             }
         } catch (ArrayIndexOutOfBoundsException a) {
-            throw a;
         }
 
         String station = "0";
@@ -1433,6 +1434,7 @@ public class MainActivity extends AppCompatActivity
                 snowIcon.setVisibility(View.INVISIBLE);
                 pressChange.setVisibility(View.INVISIBLE);
 
+                text.setTextSize(16);
                 text.setText(rawData);
             }
 
