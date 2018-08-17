@@ -765,8 +765,12 @@ public class MainActivity extends AppCompatActivity
         String[] ends = endString.split(",");
         String[] endsD = endStringD.split(",");
         List exclude = Arrays.asList(exString.split(","));
-
-        rawData = result.split("!")[1];
+        try {
+            rawData = result.split("!")[1];
+        }
+        catch (ArrayIndexOutOfBoundsException a){
+            rawData="";
+        }
         String[] split = result.split("!")[0].split(";");
         String[] dataCur = new String[fields.length];
         String[] dataDay = new String[fields.length];
