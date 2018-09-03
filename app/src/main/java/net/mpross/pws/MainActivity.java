@@ -22,18 +22,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.NetworkOnMainThreadException;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -1471,12 +1467,6 @@ public class MainActivity extends AppCompatActivity
             intent.putExtra("error", true);
             startActivityForResult(intent, 2);
         }
-        else if(errSrcId==1 && errBool==false){
-            Intent intent = new Intent(this, DateActivity.class);
-            intent.putExtra("calDate",calDate);
-            startActivityForResult(intent, 2);
-            errBool=true;
-        }
         else{
             errBool=false;
             Intent intent = new Intent(this, SettingsActivity.class);
@@ -1494,7 +1484,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         Intent setIntent = new Intent(this, SettingsActivity.class);
-        Intent dateIntent = new Intent(this, DateActivity.class);
         if (id==R.id.action_refresh){
             TextView text =(TextView) findViewById(R.id.text1);
             text.setTextSize(30);
@@ -1505,12 +1494,6 @@ public class MainActivity extends AppCompatActivity
             setIntent.putExtra("error",false);
             setIntent.putExtra("unit",units);
             startActivityForResult(setIntent,0);
-            return true;
-        }
-        if (id == R.id.action_date) {
-            setIntent.putExtra("error",false);
-            dateIntent.putExtra("calDate",calDate);
-            startActivityForResult(dateIntent,1);
             return true;
         }
 
