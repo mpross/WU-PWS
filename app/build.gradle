@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "net.mpross.pws"
+        applicationId "net.mpross.pwspaid"
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 39

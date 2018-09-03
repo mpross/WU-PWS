@@ -13,7 +13,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:scrollbars="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="net.mpross.pws.MainActivity"
+    tools:context="net.mpross.pwspaid.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
     <ScrollView
