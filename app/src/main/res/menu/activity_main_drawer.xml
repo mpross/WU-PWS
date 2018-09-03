@@ -9,29 +9,8 @@
             android:id="@+id/nav_daily"
             android:title="Daily Averages" />
         <item
-            android:id="@+id/nav_dailyPlot"
-            android:title="Temperature/Dewpoint Plot" />
-        <item
-            android:id="@+id/nav_pressPlot"
-            android:title="Pressure Plot" />
-        <item
-            android:id="@+id/nav_windPlot"
-            android:title="Wind Plot" />
-        <item
-            android:id="@+id/nav_windDPlot"
-            android:title="Wind Direction Plot" />
-        <item
-            android:id="@+id/nav_humPlot"
-            android:title="Humidity Plot" />
-        <item
-            android:id="@+id/nav_rainPlot"
-            android:title="Rain Plot" />
-        <item
             android:id="@+id/nav_raw"
             android:title="Raw Data" />
-        <item
-            android:id="@+id/nav_support"
-            android:title="Support the Developer :)" />
 
 
     </group>

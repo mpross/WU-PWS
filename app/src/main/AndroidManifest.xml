@@ -27,18 +27,6 @@
             android:name=".DateActivity"
             android:launchMode="singleInstance" />
 
-        <receiver android:name=".SimpleWidget">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="AUTO_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/simple_widget_info" />
-        </receiver>
     </application>
 
 </manifest>
