@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -1739,6 +1740,12 @@ public class MainActivity extends AppCompatActivity
 
                 text.setTextSize(16);
                 text.setText(rawData);
+            }else if(id == R.id.nav_paid) {
+                try{
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=net.mpross.pwspaid")));
+                }catch(android.content.ActivityNotFoundException a){
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=net.mpross.pwspaid")));
+                }
             }
 
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
