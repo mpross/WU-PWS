@@ -76,6 +76,7 @@ public class DateActivity extends AppCompatActivity implements AdapterView.OnIte
         todayButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 calendar.setDate(Calendar.getInstance().getTimeInMillis(),false,true);
+                selectedDate=currentDate;
             }
         });
 
