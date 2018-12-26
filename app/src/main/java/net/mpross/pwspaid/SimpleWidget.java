@@ -17,14 +17,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package net.mpross.pwspaid;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.NetworkOnMainThreadException;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -34,18 +41,21 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-/**
- * Implementation of App Widget functionality.
- */
 public class SimpleWidget extends AppWidgetProvider {
     String station = ""; //Weather station name
     int units = 0; // User unit choice
     int nativeUnits = 0; // Units the data is in
     int nordic=0; // Wind speed unit choice
+
+    int testInt=0;
+
+    private PendingIntent pendingIntent;
+
     Context con;
-    public String widText="Loading";
+    public String widText="Loading...";
 
     public static final String ACTION_AUTO_UPDATE = "AUTO_UPDATE";
+    public static String WIDGET_BUTTON = "WIDGET_BUTTON";
 
     public class datagrab extends AsyncTask<String, Void, String> {
 
@@ -54,6 +64,9 @@ public class SimpleWidget extends AppWidgetProvider {
 
             byte[] by = new byte[13];
             byte[] byU = new byte[1];
+
+            testInt++;
+
             CharSequence widgetText = "";
             //Reads station id from station file
             try {
@@ -197,7 +210,6 @@ public class SimpleWidget extends AppWidgetProvider {
                     j++;
                 }
                 if (units == 0) {
-                    outBuild.append("PWS:\n");
                     outBuild.append(String.valueOf(Math.round(temp[temp.length -1] * 100.0) / 100.0));
                     outBuild.append(" °F  ");
                     outBuild.append(String.valueOf(Math.round(dew[dew.length - 1] * 100.0) / 100.0));
@@ -211,11 +223,12 @@ public class SimpleWidget extends AppWidgetProvider {
                     outBuild.append(String.valueOf(Math.round(precip[precip.length - 1] * 100.0) / 100.0));
                     outBuild.append(" in.   ");
                     outBuild.append(String.valueOf(Math.round(hum[hum.length - 1] * 100.0) / 100.0));
-                    outBuild.append(" %");
+                    outBuild.append(" % hum");
+                    outBuild.append(" ");
+                    outBuild.append(Integer.toString(testInt));
 
                 } else {
                     if(nordic==0) {
-                        outBuild.append("PWS:\n");
                         outBuild.append(String.valueOf(Math.round(temp[temp.length - 1] * 100.0) / 100.0));
                         outBuild.append(" °C   ");
                         outBuild.append(String.valueOf(Math.round(dew[dew.length - 1] * 100.0) / 100.0));
@@ -229,10 +242,9 @@ public class SimpleWidget extends AppWidgetProvider {
                         outBuild.append(String.valueOf(Math.round(precip[precip.length - 1] * 100.0) / 100.0));
                         outBuild.append(" mm   ");
                         outBuild.append(String.valueOf(Math.round(hum[hum.length - 1] * 100.0) / 100.0));
-                        outBuild.append(" %");
+                        outBuild.append(" % hum");
                     }
                     else{
-                        outBuild.append("PWS:\n");
                         outBuild.append(String.valueOf(Math.round(temp[temp.length - 1] * 100.0) / 100.0));
                         outBuild.append(" °C   ");
                         outBuild.append(String.valueOf(Math.round(dew[dew.length - 1] * 100.0) / 100.0));
@@ -276,13 +288,27 @@ public class SimpleWidget extends AppWidgetProvider {
 
         }
     }
-
     public void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                          int appWidgetId) {
         con=context;
-        new datagrab().execute("");
         RemoteViews views = new RemoteViews(con.getPackageName(), R.layout.simple_widget);
+        views.setTextViewText(R.id.appwidget_text, "Loading...");
+        new datagrab().execute("");
         views.setTextViewText(R.id.appwidget_text, widText);
+
+        Intent intentUpdate = new Intent(context, SimpleWidget.class);
+        intentUpdate.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        int[] idArray = new int[]{appWidgetId};
+        intentUpdate.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, idArray);
+
+        PendingIntent pendingUpdate = PendingIntent.getBroadcast(
+                context, appWidgetId, intentUpdate,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        views.setOnClickPendingIntent(R.id.widget_refresh, pendingUpdate);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://code.tutsplus.com/"));
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.widget_refresh, pendingIntent);
 
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
@@ -291,14 +317,15 @@ public class SimpleWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
+            Toast.makeText(context, "Widget has been updated! ", Toast.LENGTH_SHORT).show();
         }
     }
     @Override
     public void onEnabled(Context context) {
         AppWidgetAlarm appWidgetAlarm = new AppWidgetAlarm(context.getApplicationContext());
         appWidgetAlarm.startAlarm();
-    }
 
+    }
     @Override
     public void onDisabled(Context context) {
         AppWidgetAlarm appWidgetAlarm = new AppWidgetAlarm(context.getApplicationContext());
@@ -312,6 +339,11 @@ public class SimpleWidget extends AppWidgetProvider {
         if(intent.getAction().equals(ACTION_AUTO_UPDATE))
         {
             con=context;
+            new datagrab().execute("");
+        }
+        if (intent.getAction().equals(WIDGET_BUTTON)) {
+            con=context;
+            widText="Loading...";
             new datagrab().execute("");
         }
     }

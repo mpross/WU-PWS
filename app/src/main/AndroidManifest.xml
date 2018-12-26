@@ -34,7 +34,9 @@
             <intent-filter>
                 <action android:name="AUTO_UPDATE" />
             </intent-filter>
-
+            <intent-filter>
+                <action android:name="WIDGET_BUTTON" />
+            </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/simple_widget_info" />
