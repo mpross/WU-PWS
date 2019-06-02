@@ -225,6 +225,7 @@ public class SimpleWidget extends AppWidgetProvider {
                     outBuild.append(String.valueOf(Math.round(hum[hum.length - 1] * 100.0) / 100.0));
                     outBuild.append(" % hum");
                     outBuild.append(" ");
+                    outBuild.append(timStamp);
                     outBuild.append(Integer.toString(testInt));
 
                 } else {
@@ -271,10 +272,11 @@ public class SimpleWidget extends AppWidgetProvider {
             } catch (NumberFormatException n) {
                 widgetText = n.toString();
                 System.out.println(n);
-            } catch (ArrayIndexOutOfBoundsException a) {
-                widgetText = a.toString();
-                System.out.println(a);
             }
+//            } catch (ArrayIndexOutOfBoundsException a) {
+//                widgetText = a.toString();
+//                System.out.println(a);
+//            }
             widText=widgetText.toString();
             return widgetText.toString();
         }
@@ -296,29 +298,26 @@ public class SimpleWidget extends AppWidgetProvider {
         new datagrab().execute("");
         views.setTextViewText(R.id.appwidget_text, widText);
 
-        Intent intentUpdate = new Intent(context, SimpleWidget.class);
-        intentUpdate.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        int[] idArray = new int[]{appWidgetId};
-        intentUpdate.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, idArray);
-
-        PendingIntent pendingUpdate = PendingIntent.getBroadcast(
-                context, appWidgetId, intentUpdate,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        views.setOnClickPendingIntent(R.id.widget_refresh, pendingUpdate);
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://code.tutsplus.com/"));
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        views.setOnClickPendingIntent(R.id.widget_refresh, pendingIntent);
-
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.simple_widget);
+
+            remoteViews.setOnClickPendingIntent(R.id.widget_refresh, getPendingSelfIntent(context, WIDGET_BUTTON));
+
             Toast.makeText(context, "Widget has been updated! ", Toast.LENGTH_SHORT).show();
+            appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
         }
+    }
+
+
+    protected PendingIntent getPendingSelfIntent(Context context, String action) {
+        Intent intent = new Intent(context, getClass());
+        intent.setAction(action);
+        return PendingIntent.getBroadcast(context, 0, intent, 0);
     }
     @Override
     public void onEnabled(Context context) {
