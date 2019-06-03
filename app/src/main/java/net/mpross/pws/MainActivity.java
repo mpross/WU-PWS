@@ -124,7 +124,10 @@ public class MainActivity extends AppCompatActivity
         }
 
         //Initiated data grab from WeatherUnderground
-        new datagrab().execute("");
+        text.setText("Unfortunately WeatherUnderground has shut down the servers that this app was using so it is no longer functional. " +
+                "Thank you all for supporting the development of this app while it was alive! It's been a great experience developing this while taking in" +
+                " feedback from you all and wish this project could continue. Hope the weather's great where you are!");
+        //new datagrab().execute("");
 
         //Settings menu
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -1488,8 +1491,10 @@ public class MainActivity extends AppCompatActivity
         if (id==R.id.action_refresh){
             TextView text =(TextView) findViewById(R.id.text1);
             text.setTextSize(30);
-            text.setText("Loading...");
-            new datagrab().execute("");
+            text.setText("Unfortunately WeatherUnderground has shut down the servers that this app was using so it is no longer functional. " +
+                    "Thank you all for supporting the development of this app while it was alive! It's been a great experience developing this while taking in" +
+                    " feedback from you all and wish this project could continue. Hope the weather's great where you are!");
+            //new datagrab().execute("");
         }
         if (id == R.id.action_settings) {
             setIntent.putExtra("error",false);
